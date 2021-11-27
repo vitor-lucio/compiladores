@@ -1,0 +1,35 @@
+exp -> exp_soma_subtracao
+
+exp_soma_subtracao -> exp_soma_subtracao + exp_mult_div
+exp_soma_subtracao -> exp_soma_subtracao - exp_mult_div
+exp_soma_subtracao -> exp_mult_div
+
+
+exp_mult_div -> exp_mult_div * valor_final
+exp_mult_div -> exp_mult_div / valor_final
+exp_mult_div -> valor_final
+
+valor_final -> ( exp_soma_subtracao )
+valor_final -> numero
+
+
+
+
+
+
+
+
+exp_soma_subtracao -> + exp_mult_div exp_soma_subtracao
+exp_soma_subtracao -> - exp_mult_div exp_soma_subtracao
+exp_soma_subtracao -> ''
+
+exp_mult_div ->  exp_negativo exp_mult_literal
+
+exp_mult_literal ->  * exp_negativo exp_mult_literal
+exp_mult_literal ->  / exp_negativo exp_mult_literal
+exp_mult_literal -> ''
+
+exp_negativo -> - exp_negativo
+exp_negativo ->  exp_seq
+
+exp_seq -> num
