@@ -1,2 +1,40 @@
-2 + 3 +
-4 / 5
+2 + "fmgoed" + -3 
+- 4 / 5 * nil & 1
+|
+
+if "sdasd" then "aasda" else 1 * 5
+|
+while 
+    "a vida segue" 
+do 
+    "rodar"
+|
+for vari := 7 to 10 do "socorro"
+
+|
+
+ge_linda { sdsdsd = 1 + 2, id = 1 + 2 }
+
+|
+
+quero_terminar_isso_logo [1 + 2] of 5 / 0
+
+|
+
+asdasd := 1 + 2
+
+|
+
+classe.alta
+
+|
+
+asdasd[7]
+
+|
+
+(  1 + 2; 3 * 5; 0 / 0  )
+
+|
+
+asdasd(3 + 5, 7, "asdasdasd")

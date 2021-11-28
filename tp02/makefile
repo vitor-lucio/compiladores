@@ -1,6 +1,6 @@
 compile:
 	flex scanner.l
-	yacc -d sintaxe.y
+	yacc -v -d sintaxe.y
 	cc y.tab.c
 
 run:

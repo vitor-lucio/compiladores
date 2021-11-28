@@ -1,0 +1,2693 @@
+Grammar
+
+    0 $accept: exp $end
+
+    1 exp: exp MAIS exp
+    2    | exp MENOS exp
+    3    | exp MULTIPLICACAO exp
+    4    | exp DIVISAO exp
+    5    | MENOS exp
+    6    | NUMERO
+    7    | STRING_CONSTANTE
+    8    | NIL
+    9    | exp IGUAL exp
+   10    | exp DIFERENTE exp
+   11    | exp MENOR_QUE exp
+   12    | exp MAIOR_QUE exp
+   13    | exp MENOR_IGUAL exp
+   14    | exp MAIOR_IGUAL exp
+   15    | exp AND exp
+   16    | exp OR exp
+   17    | IF exp THEN exp ELSE exp
+   18    | IF exp THEN exp
+   19    | WHILE exp DO exp
+   20    | FOR VARIAVEL ATRIBUICAO exp TO exp DO exp
+   21    | BREAK
+   22    | type_id ABRE_CHAVES VARIAVEL IGUAL exp idexps FECHA_CHAVES
+   23    | type_id ABRE_COLCHETE exp FECHA_COLCHETE OF exp
+   24    | l_value ATRIBUICAO exp
+   25    | type_id ATRIBUICAO exp
+   26    | type_id
+   27    | l_value
+   28    | ABRE_PARENTESES expseq FECHA_PARENTESES
+   29    | VARIAVEL ABRE_PARENTESES args FECHA_PARENTESES
+   30    | LET decs IN expseq END
+
+   31 type_id: VARIAVEL
+
+   32 idexps: VIRGULA VARIAVEL IGUAL exp idexps
+   33       | %empty
+
+   34 l_value: type_id PONTO VARIAVEL
+   35        | l_value PONTO VARIAVEL
+   36        | type_id ABRE_COLCHETE exp FECHA_COLCHETE
+   37        | l_value ABRE_COLCHETE exp FECHA_COLCHETE
+
+   38 expseq: exp expseq1
+   39       | %empty
+
+   40 expseq1: PONTO_E_VIRGULA exp expseq1
+   41        | %empty
+
+   42 args: exp args1
+   43     | %empty
+
+   44 args1: VIRGULA exp args1
+   45      | %empty
+
+   46 tyfields: VARIAVEL DOIS_PONTOS type_id tyfields1
+   47         | %empty
+
+   48 tyfields1: VIRGULA VARIAVEL DOIS_PONTOS type_id tyfields1
+   49          | %empty
+
+   50 ty: VARIAVEL
+   51   | ABRE_CHAVES VARIAVEL DOIS_PONTOS type_id tyfields1 FECHA_CHAVES
+   52   | ARRAY OF VARIAVEL
+
+   53 tydec: TYPE VARIAVEL IGUAL ty
+
+   54 vardec: VAR VARIAVEL ATRIBUICAO exp
+   55       | VAR VARIAVEL DOIS_PONTOS type_id ATRIBUICAO exp
+
+   56 fundec: FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES IGUAL exp
+   57       | FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES DOIS_PONTOS type_id IGUAL exp
+
+   58 decs: dec decs
+   59     | %empty
+
+   60 dec: tydec
+   61    | vardec
+   62    | fundec
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    NUMERO (258) 6
+    STRING_CONSTANTE (259) 7
+    NIL (260) 8
+    BREAK (261) 21
+    LET (262) 30
+    IN (263) 30
+    END (264) 30
+    FUNCTION (265) 56 57
+    TYPE (266) 53
+    VAR (267) 54 55
+    ARRAY (268) 52
+    DOIS_PONTOS (269) 46 48 51 55 57
+    VIRGULA (270) 32 44 48
+    PONTO_E_VIRGULA (271) 40
+    PONTO (272) 34 35
+    ABRE_CHAVES (273) 22 51
+    FECHA_CHAVES (274) 22 51
+    ABRE_COLCHETE (275) 23 36 37
+    FECHA_COLCHETE (276) 23 36 37
+    ABRE_PARENTESES (277) 28 29 56 57
+    FECHA_PARENTESES (278) 28 29 56 57
+    WHILE (279) 19
+    IF (280) 17 18
+    FOR (281) 20
+    TO (282) 20
+    ATRIBUICAO (283) 20 24 25 54 55
+    VARIAVEL (284) 20 22 29 31 32 34 35 46 48 50 51 52 53 54 55 56 57
+    THEN (285) 17 18
+    ELSE (286) 17
+    DO (287) 19 20
+    OF (288) 23 52
+    OR (289) 16
+    AND (290) 15
+    MAIOR_QUE (291) 12
+    MENOR_QUE (292) 11
+    IGUAL (293) 9 22 32 53 56 57
+    DIFERENTE (294) 10
+    MAIOR_IGUAL (295) 14
+    MENOR_IGUAL (296) 13
+    MAIS (297) 1
+    MENOS (298) 2 5
+    MULTIPLICACAO (299) 3
+    DIVISAO (300) 4
+
+
+Nonterminals, with rules where they appear
+
+    $accept (46)
+        on left: 0
+    exp (47)
+        on left: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30
+        on right: 0 1 2 3 4 5 9 10 11 12 13 14 15 16 17 18 19 20 22 23 24 25 32 36 37 38 40 42 44 54 55 56 57
+    type_id (48)
+        on left: 31
+        on right: 22 23 25 26 34 36 46 48 51 55 57
+    idexps (49)
+        on left: 32 33
+        on right: 22 32
+    l_value (50)
+        on left: 34 35 36 37
+        on right: 24 27 35 37
+    expseq (51)
+        on left: 38 39
+        on right: 28 30
+    expseq1 (52)
+        on left: 40 41
+        on right: 38 40
+    args (53)
+        on left: 42 43
+        on right: 29
+    args1 (54)
+        on left: 44 45
+        on right: 42 44
+    tyfields (55)
+        on left: 46 47
+        on right: 56 57
+    tyfields1 (56)
+        on left: 48 49
+        on right: 46 48 51
+    ty (57)
+        on left: 50 51 52
+        on right: 53
+    tydec (58)
+        on left: 53
+        on right: 60
+    vardec (59)
+        on left: 54 55
+        on right: 61
+    fundec (60)
+        on left: 56 57
+        on right: 62
+    decs (61)
+        on left: 58 59
+        on right: 30 58
+    dec (62)
+        on left: 60 61 62
+        on right: 58
+
+
+State 0
+
+    0 $accept: . exp $end
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 12
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 1
+
+    6 exp: NUMERO .
+
+    $default  reduce using rule 6 (exp)
+
+
+State 2
+
+    7 exp: STRING_CONSTANTE .
+
+    $default  reduce using rule 7 (exp)
+
+
+State 3
+
+    8 exp: NIL .
+
+    $default  reduce using rule 8 (exp)
+
+
+State 4
+
+   21 exp: BREAK .
+
+    $default  reduce using rule 21 (exp)
+
+
+State 5
+
+   30 exp: LET . decs IN expseq END
+
+    FUNCTION  shift, and go to state 15
+    TYPE      shift, and go to state 16
+    VAR       shift, and go to state 17
+
+    $default  reduce using rule 59 (decs)
+
+    tydec   go to state 18
+    vardec  go to state 19
+    fundec  go to state 20
+    decs    go to state 21
+    dec     go to state 22
+
+
+State 6
+
+   28 exp: ABRE_PARENTESES . expseq FECHA_PARENTESES
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    $default  reduce using rule 39 (expseq)
+
+    exp      go to state 23
+    type_id  go to state 13
+    l_value  go to state 14
+    expseq   go to state 24
+
+
+State 7
+
+   19 exp: WHILE . exp DO exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 25
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 8
+
+   17 exp: IF . exp THEN exp ELSE exp
+   18    | IF . exp THEN exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 26
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 9
+
+   20 exp: FOR . VARIAVEL ATRIBUICAO exp TO exp DO exp
+
+    VARIAVEL  shift, and go to state 27
+
+
+State 10
+
+   29 exp: VARIAVEL . ABRE_PARENTESES args FECHA_PARENTESES
+   31 type_id: VARIAVEL .
+
+    ABRE_PARENTESES  shift, and go to state 28
+
+    $default  reduce using rule 31 (type_id)
+
+
+State 11
+
+    5 exp: MENOS . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 29
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 12
+
+    0 $accept: exp . $end
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+
+    $end           shift, and go to state 30
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+
+State 13
+
+   22 exp: type_id . ABRE_CHAVES VARIAVEL IGUAL exp idexps FECHA_CHAVES
+   23    | type_id . ABRE_COLCHETE exp FECHA_COLCHETE OF exp
+   25    | type_id . ATRIBUICAO exp
+   26    | type_id .
+   34 l_value: type_id . PONTO VARIAVEL
+   36        | type_id . ABRE_COLCHETE exp FECHA_COLCHETE
+
+    PONTO          shift, and go to state 43
+    ABRE_CHAVES    shift, and go to state 44
+    ABRE_COLCHETE  shift, and go to state 45
+    ATRIBUICAO     shift, and go to state 46
+
+    $default  reduce using rule 26 (exp)
+
+
+State 14
+
+   24 exp: l_value . ATRIBUICAO exp
+   27    | l_value .
+   35 l_value: l_value . PONTO VARIAVEL
+   37        | l_value . ABRE_COLCHETE exp FECHA_COLCHETE
+
+    PONTO          shift, and go to state 47
+    ABRE_COLCHETE  shift, and go to state 48
+    ATRIBUICAO     shift, and go to state 49
+
+    $default  reduce using rule 27 (exp)
+
+
+State 15
+
+   56 fundec: FUNCTION . VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES IGUAL exp
+   57       | FUNCTION . VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES DOIS_PONTOS type_id IGUAL exp
+
+    VARIAVEL  shift, and go to state 50
+
+
+State 16
+
+   53 tydec: TYPE . VARIAVEL IGUAL ty
+
+    VARIAVEL  shift, and go to state 51
+
+
+State 17
+
+   54 vardec: VAR . VARIAVEL ATRIBUICAO exp
+   55       | VAR . VARIAVEL DOIS_PONTOS type_id ATRIBUICAO exp
+
+    VARIAVEL  shift, and go to state 52
+
+
+State 18
+
+   60 dec: tydec .
+
+    $default  reduce using rule 60 (dec)
+
+
+State 19
+
+   61 dec: vardec .
+
+    $default  reduce using rule 61 (dec)
+
+
+State 20
+
+   62 dec: fundec .
+
+    $default  reduce using rule 62 (dec)
+
+
+State 21
+
+   30 exp: LET decs . IN expseq END
+
+    IN  shift, and go to state 53
+
+
+State 22
+
+   58 decs: dec . decs
+
+    FUNCTION  shift, and go to state 15
+    TYPE      shift, and go to state 16
+    VAR       shift, and go to state 17
+
+    $default  reduce using rule 59 (decs)
+
+    tydec   go to state 18
+    vardec  go to state 19
+    fundec  go to state 20
+    decs    go to state 54
+    dec     go to state 22
+
+
+State 23
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   38 expseq: exp . expseq1
+
+    PONTO_E_VIRGULA  shift, and go to state 55
+    OR               shift, and go to state 31
+    AND              shift, and go to state 32
+    MAIOR_QUE        shift, and go to state 33
+    MENOR_QUE        shift, and go to state 34
+    IGUAL            shift, and go to state 35
+    DIFERENTE        shift, and go to state 36
+    MAIOR_IGUAL      shift, and go to state 37
+    MENOR_IGUAL      shift, and go to state 38
+    MAIS             shift, and go to state 39
+    MENOS            shift, and go to state 40
+    MULTIPLICACAO    shift, and go to state 41
+    DIVISAO          shift, and go to state 42
+
+    $default  reduce using rule 41 (expseq1)
+
+    expseq1  go to state 56
+
+
+State 24
+
+   28 exp: ABRE_PARENTESES expseq . FECHA_PARENTESES
+
+    FECHA_PARENTESES  shift, and go to state 57
+
+
+State 25
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   19    | WHILE exp . DO exp
+
+    DO             shift, and go to state 58
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+
+State 26
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   17    | IF exp . THEN exp ELSE exp
+   18    | IF exp . THEN exp
+
+    THEN           shift, and go to state 59
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+
+State 27
+
+   20 exp: FOR VARIAVEL . ATRIBUICAO exp TO exp DO exp
+
+    ATRIBUICAO  shift, and go to state 60
+
+
+State 28
+
+   29 exp: VARIAVEL ABRE_PARENTESES . args FECHA_PARENTESES
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    $default  reduce using rule 43 (args)
+
+    exp      go to state 61
+    type_id  go to state 13
+    l_value  go to state 14
+    args     go to state 62
+
+
+State 29
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    5    | MENOS exp .
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 5 (exp)
+
+
+State 30
+
+    0 $accept: exp $end .
+
+    $default  accept
+
+
+State 31
+
+   16 exp: exp OR . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 63
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 32
+
+   15 exp: exp AND . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 64
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 33
+
+   12 exp: exp MAIOR_QUE . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 65
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 34
+
+   11 exp: exp MENOR_QUE . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 66
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 35
+
+    9 exp: exp IGUAL . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 67
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 36
+
+   10 exp: exp DIFERENTE . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 68
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 37
+
+   14 exp: exp MAIOR_IGUAL . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 69
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 38
+
+   13 exp: exp MENOR_IGUAL . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 70
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 39
+
+    1 exp: exp MAIS . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 71
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 40
+
+    2 exp: exp MENOS . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 72
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 41
+
+    3 exp: exp MULTIPLICACAO . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 73
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 42
+
+    4 exp: exp DIVISAO . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 74
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 43
+
+   34 l_value: type_id PONTO . VARIAVEL
+
+    VARIAVEL  shift, and go to state 75
+
+
+State 44
+
+   22 exp: type_id ABRE_CHAVES . VARIAVEL IGUAL exp idexps FECHA_CHAVES
+
+    VARIAVEL  shift, and go to state 76
+
+
+State 45
+
+   23 exp: type_id ABRE_COLCHETE . exp FECHA_COLCHETE OF exp
+   36 l_value: type_id ABRE_COLCHETE . exp FECHA_COLCHETE
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 77
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 46
+
+   25 exp: type_id ATRIBUICAO . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 78
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 47
+
+   35 l_value: l_value PONTO . VARIAVEL
+
+    VARIAVEL  shift, and go to state 79
+
+
+State 48
+
+   37 l_value: l_value ABRE_COLCHETE . exp FECHA_COLCHETE
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 80
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 49
+
+   24 exp: l_value ATRIBUICAO . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 81
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 50
+
+   56 fundec: FUNCTION VARIAVEL . ABRE_PARENTESES tyfields FECHA_PARENTESES IGUAL exp
+   57       | FUNCTION VARIAVEL . ABRE_PARENTESES tyfields FECHA_PARENTESES DOIS_PONTOS type_id IGUAL exp
+
+    ABRE_PARENTESES  shift, and go to state 82
+
+
+State 51
+
+   53 tydec: TYPE VARIAVEL . IGUAL ty
+
+    IGUAL  shift, and go to state 83
+
+
+State 52
+
+   54 vardec: VAR VARIAVEL . ATRIBUICAO exp
+   55       | VAR VARIAVEL . DOIS_PONTOS type_id ATRIBUICAO exp
+
+    DOIS_PONTOS  shift, and go to state 84
+    ATRIBUICAO   shift, and go to state 85
+
+
+State 53
+
+   30 exp: LET decs IN . expseq END
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    $default  reduce using rule 39 (expseq)
+
+    exp      go to state 23
+    type_id  go to state 13
+    l_value  go to state 14
+    expseq   go to state 86
+
+
+State 54
+
+   58 decs: dec decs .
+
+    $default  reduce using rule 58 (decs)
+
+
+State 55
+
+   40 expseq1: PONTO_E_VIRGULA . exp expseq1
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 87
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 56
+
+   38 expseq: exp expseq1 .
+
+    $default  reduce using rule 38 (expseq)
+
+
+State 57
+
+   28 exp: ABRE_PARENTESES expseq FECHA_PARENTESES .
+
+    $default  reduce using rule 28 (exp)
+
+
+State 58
+
+   19 exp: WHILE exp DO . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 88
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 59
+
+   17 exp: IF exp THEN . exp ELSE exp
+   18    | IF exp THEN . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 89
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 60
+
+   20 exp: FOR VARIAVEL ATRIBUICAO . exp TO exp DO exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 90
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 61
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   42 args: exp . args1
+
+    VIRGULA        shift, and go to state 91
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 45 (args1)
+
+    args1  go to state 92
+
+
+State 62
+
+   29 exp: VARIAVEL ABRE_PARENTESES args . FECHA_PARENTESES
+
+    FECHA_PARENTESES  shift, and go to state 93
+
+
+State 63
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   16    | exp OR exp .
+
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 16 (exp)
+
+
+State 64
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   15    | exp AND exp .
+   16    | exp . OR exp
+
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 15 (exp)
+
+
+State 65
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   12    | exp MAIOR_QUE exp .
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 12 (exp)
+
+
+State 66
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   11    | exp MENOR_QUE exp .
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 11 (exp)
+
+
+State 67
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+    9    | exp IGUAL exp .
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 9 (exp)
+
+
+State 68
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   10    | exp DIFERENTE exp .
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 10 (exp)
+
+
+State 69
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   14    | exp MAIOR_IGUAL exp .
+   15    | exp . AND exp
+   16    | exp . OR exp
+
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 14 (exp)
+
+
+State 70
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   13    | exp MENOR_IGUAL exp .
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 13 (exp)
+
+
+State 71
+
+    1 exp: exp . MAIS exp
+    1    | exp MAIS exp .
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 1 (exp)
+
+
+State 72
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    2    | exp MENOS exp .
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 2 (exp)
+
+
+State 73
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    3    | exp MULTIPLICACAO exp .
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+
+    $default  reduce using rule 3 (exp)
+
+
+State 74
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    4    | exp DIVISAO exp .
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+
+    $default  reduce using rule 4 (exp)
+
+
+State 75
+
+   34 l_value: type_id PONTO VARIAVEL .
+
+    $default  reduce using rule 34 (l_value)
+
+
+State 76
+
+   22 exp: type_id ABRE_CHAVES VARIAVEL . IGUAL exp idexps FECHA_CHAVES
+
+    IGUAL  shift, and go to state 94
+
+
+State 77
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   23    | type_id ABRE_COLCHETE exp . FECHA_COLCHETE OF exp
+   36 l_value: type_id ABRE_COLCHETE exp . FECHA_COLCHETE
+
+    FECHA_COLCHETE  shift, and go to state 95
+    OR              shift, and go to state 31
+    AND             shift, and go to state 32
+    MAIOR_QUE       shift, and go to state 33
+    MENOR_QUE       shift, and go to state 34
+    IGUAL           shift, and go to state 35
+    DIFERENTE       shift, and go to state 36
+    MAIOR_IGUAL     shift, and go to state 37
+    MENOR_IGUAL     shift, and go to state 38
+    MAIS            shift, and go to state 39
+    MENOS           shift, and go to state 40
+    MULTIPLICACAO   shift, and go to state 41
+    DIVISAO         shift, and go to state 42
+
+
+State 78
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   25    | type_id ATRIBUICAO exp .
+
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 25 (exp)
+
+
+State 79
+
+   35 l_value: l_value PONTO VARIAVEL .
+
+    $default  reduce using rule 35 (l_value)
+
+
+State 80
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   37 l_value: l_value ABRE_COLCHETE exp . FECHA_COLCHETE
+
+    FECHA_COLCHETE  shift, and go to state 96
+    OR              shift, and go to state 31
+    AND             shift, and go to state 32
+    MAIOR_QUE       shift, and go to state 33
+    MENOR_QUE       shift, and go to state 34
+    IGUAL           shift, and go to state 35
+    DIFERENTE       shift, and go to state 36
+    MAIOR_IGUAL     shift, and go to state 37
+    MENOR_IGUAL     shift, and go to state 38
+    MAIS            shift, and go to state 39
+    MENOS           shift, and go to state 40
+    MULTIPLICACAO   shift, and go to state 41
+    DIVISAO         shift, and go to state 42
+
+
+State 81
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   24    | l_value ATRIBUICAO exp .
+
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 24 (exp)
+
+
+State 82
+
+   56 fundec: FUNCTION VARIAVEL ABRE_PARENTESES . tyfields FECHA_PARENTESES IGUAL exp
+   57       | FUNCTION VARIAVEL ABRE_PARENTESES . tyfields FECHA_PARENTESES DOIS_PONTOS type_id IGUAL exp
+
+    VARIAVEL  shift, and go to state 97
+
+    $default  reduce using rule 47 (tyfields)
+
+    tyfields  go to state 98
+
+
+State 83
+
+   53 tydec: TYPE VARIAVEL IGUAL . ty
+
+    ARRAY        shift, and go to state 99
+    ABRE_CHAVES  shift, and go to state 100
+    VARIAVEL     shift, and go to state 101
+
+    ty  go to state 102
+
+
+State 84
+
+   55 vardec: VAR VARIAVEL DOIS_PONTOS . type_id ATRIBUICAO exp
+
+    VARIAVEL  shift, and go to state 103
+
+    type_id  go to state 104
+
+
+State 85
+
+   54 vardec: VAR VARIAVEL ATRIBUICAO . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 105
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 86
+
+   30 exp: LET decs IN expseq . END
+
+    END  shift, and go to state 106
+
+
+State 87
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   40 expseq1: PONTO_E_VIRGULA exp . expseq1
+
+    PONTO_E_VIRGULA  shift, and go to state 55
+    OR               shift, and go to state 31
+    AND              shift, and go to state 32
+    MAIOR_QUE        shift, and go to state 33
+    MENOR_QUE        shift, and go to state 34
+    IGUAL            shift, and go to state 35
+    DIFERENTE        shift, and go to state 36
+    MAIOR_IGUAL      shift, and go to state 37
+    MENOR_IGUAL      shift, and go to state 38
+    MAIS             shift, and go to state 39
+    MENOS            shift, and go to state 40
+    MULTIPLICACAO    shift, and go to state 41
+    DIVISAO          shift, and go to state 42
+
+    $default  reduce using rule 41 (expseq1)
+
+    expseq1  go to state 107
+
+
+State 88
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   19    | WHILE exp DO exp .
+
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 19 (exp)
+
+
+State 89
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   17    | IF exp THEN exp . ELSE exp
+   18    | IF exp THEN exp .
+
+    ELSE           shift, and go to state 108
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 18 (exp)
+
+
+State 90
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   20    | FOR VARIAVEL ATRIBUICAO exp . TO exp DO exp
+
+    TO             shift, and go to state 109
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+
+State 91
+
+   44 args1: VIRGULA . exp args1
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 110
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 92
+
+   42 args: exp args1 .
+
+    $default  reduce using rule 42 (args)
+
+
+State 93
+
+   29 exp: VARIAVEL ABRE_PARENTESES args FECHA_PARENTESES .
+
+    $default  reduce using rule 29 (exp)
+
+
+State 94
+
+   22 exp: type_id ABRE_CHAVES VARIAVEL IGUAL . exp idexps FECHA_CHAVES
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 111
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 95
+
+   23 exp: type_id ABRE_COLCHETE exp FECHA_COLCHETE . OF exp
+   36 l_value: type_id ABRE_COLCHETE exp FECHA_COLCHETE .
+
+    OF  shift, and go to state 112
+
+    $default  reduce using rule 36 (l_value)
+
+
+State 96
+
+   37 l_value: l_value ABRE_COLCHETE exp FECHA_COLCHETE .
+
+    $default  reduce using rule 37 (l_value)
+
+
+State 97
+
+   46 tyfields: VARIAVEL . DOIS_PONTOS type_id tyfields1
+
+    DOIS_PONTOS  shift, and go to state 113
+
+
+State 98
+
+   56 fundec: FUNCTION VARIAVEL ABRE_PARENTESES tyfields . FECHA_PARENTESES IGUAL exp
+   57       | FUNCTION VARIAVEL ABRE_PARENTESES tyfields . FECHA_PARENTESES DOIS_PONTOS type_id IGUAL exp
+
+    FECHA_PARENTESES  shift, and go to state 114
+
+
+State 99
+
+   52 ty: ARRAY . OF VARIAVEL
+
+    OF  shift, and go to state 115
+
+
+State 100
+
+   51 ty: ABRE_CHAVES . VARIAVEL DOIS_PONTOS type_id tyfields1 FECHA_CHAVES
+
+    VARIAVEL  shift, and go to state 116
+
+
+State 101
+
+   50 ty: VARIAVEL .
+
+    $default  reduce using rule 50 (ty)
+
+
+State 102
+
+   53 tydec: TYPE VARIAVEL IGUAL ty .
+
+    $default  reduce using rule 53 (tydec)
+
+
+State 103
+
+   31 type_id: VARIAVEL .
+
+    $default  reduce using rule 31 (type_id)
+
+
+State 104
+
+   55 vardec: VAR VARIAVEL DOIS_PONTOS type_id . ATRIBUICAO exp
+
+    ATRIBUICAO  shift, and go to state 117
+
+
+State 105
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   54 vardec: VAR VARIAVEL ATRIBUICAO exp .
+
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 54 (vardec)
+
+
+State 106
+
+   30 exp: LET decs IN expseq END .
+
+    $default  reduce using rule 30 (exp)
+
+
+State 107
+
+   40 expseq1: PONTO_E_VIRGULA exp expseq1 .
+
+    $default  reduce using rule 40 (expseq1)
+
+
+State 108
+
+   17 exp: IF exp THEN exp ELSE . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 118
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 109
+
+   20 exp: FOR VARIAVEL ATRIBUICAO exp TO . exp DO exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 119
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 110
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   44 args1: VIRGULA exp . args1
+
+    VIRGULA        shift, and go to state 91
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 45 (args1)
+
+    args1  go to state 120
+
+
+State 111
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   22    | type_id ABRE_CHAVES VARIAVEL IGUAL exp . idexps FECHA_CHAVES
+
+    VIRGULA        shift, and go to state 121
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 33 (idexps)
+
+    idexps  go to state 122
+
+
+State 112
+
+   23 exp: type_id ABRE_COLCHETE exp FECHA_COLCHETE OF . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 123
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 113
+
+   46 tyfields: VARIAVEL DOIS_PONTOS . type_id tyfields1
+
+    VARIAVEL  shift, and go to state 103
+
+    type_id  go to state 124
+
+
+State 114
+
+   56 fundec: FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES . IGUAL exp
+   57       | FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES . DOIS_PONTOS type_id IGUAL exp
+
+    DOIS_PONTOS  shift, and go to state 125
+    IGUAL        shift, and go to state 126
+
+
+State 115
+
+   52 ty: ARRAY OF . VARIAVEL
+
+    VARIAVEL  shift, and go to state 127
+
+
+State 116
+
+   51 ty: ABRE_CHAVES VARIAVEL . DOIS_PONTOS type_id tyfields1 FECHA_CHAVES
+
+    DOIS_PONTOS  shift, and go to state 128
+
+
+State 117
+
+   55 vardec: VAR VARIAVEL DOIS_PONTOS type_id ATRIBUICAO . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 129
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 118
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   17    | IF exp THEN exp ELSE exp .
+
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 17 (exp)
+
+
+State 119
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   20    | FOR VARIAVEL ATRIBUICAO exp TO exp . DO exp
+
+    DO             shift, and go to state 130
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+
+State 120
+
+   44 args1: VIRGULA exp args1 .
+
+    $default  reduce using rule 44 (args1)
+
+
+State 121
+
+   32 idexps: VIRGULA . VARIAVEL IGUAL exp idexps
+
+    VARIAVEL  shift, and go to state 131
+
+
+State 122
+
+   22 exp: type_id ABRE_CHAVES VARIAVEL IGUAL exp idexps . FECHA_CHAVES
+
+    FECHA_CHAVES  shift, and go to state 132
+
+
+State 123
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   23    | type_id ABRE_COLCHETE exp FECHA_COLCHETE OF exp .
+
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 23 (exp)
+
+
+State 124
+
+   46 tyfields: VARIAVEL DOIS_PONTOS type_id . tyfields1
+
+    VIRGULA  shift, and go to state 133
+
+    $default  reduce using rule 49 (tyfields1)
+
+    tyfields1  go to state 134
+
+
+State 125
+
+   57 fundec: FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES DOIS_PONTOS . type_id IGUAL exp
+
+    VARIAVEL  shift, and go to state 103
+
+    type_id  go to state 135
+
+
+State 126
+
+   56 fundec: FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES IGUAL . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 136
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 127
+
+   52 ty: ARRAY OF VARIAVEL .
+
+    $default  reduce using rule 52 (ty)
+
+
+State 128
+
+   51 ty: ABRE_CHAVES VARIAVEL DOIS_PONTOS . type_id tyfields1 FECHA_CHAVES
+
+    VARIAVEL  shift, and go to state 103
+
+    type_id  go to state 137
+
+
+State 129
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   55 vardec: VAR VARIAVEL DOIS_PONTOS type_id ATRIBUICAO exp .
+
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 55 (vardec)
+
+
+State 130
+
+   20 exp: FOR VARIAVEL ATRIBUICAO exp TO exp DO . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 138
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 131
+
+   32 idexps: VIRGULA VARIAVEL . IGUAL exp idexps
+
+    IGUAL  shift, and go to state 139
+
+
+State 132
+
+   22 exp: type_id ABRE_CHAVES VARIAVEL IGUAL exp idexps FECHA_CHAVES .
+
+    $default  reduce using rule 22 (exp)
+
+
+State 133
+
+   48 tyfields1: VIRGULA . VARIAVEL DOIS_PONTOS type_id tyfields1
+
+    VARIAVEL  shift, and go to state 140
+
+
+State 134
+
+   46 tyfields: VARIAVEL DOIS_PONTOS type_id tyfields1 .
+
+    $default  reduce using rule 46 (tyfields)
+
+
+State 135
+
+   57 fundec: FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES DOIS_PONTOS type_id . IGUAL exp
+
+    IGUAL  shift, and go to state 141
+
+
+State 136
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   56 fundec: FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES IGUAL exp .
+
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 56 (fundec)
+
+
+State 137
+
+   51 ty: ABRE_CHAVES VARIAVEL DOIS_PONTOS type_id . tyfields1 FECHA_CHAVES
+
+    VIRGULA  shift, and go to state 133
+
+    $default  reduce using rule 49 (tyfields1)
+
+    tyfields1  go to state 142
+
+
+State 138
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   20    | FOR VARIAVEL ATRIBUICAO exp TO exp DO exp .
+
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 20 (exp)
+
+
+State 139
+
+   32 idexps: VIRGULA VARIAVEL IGUAL . exp idexps
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 143
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 140
+
+   48 tyfields1: VIRGULA VARIAVEL . DOIS_PONTOS type_id tyfields1
+
+    DOIS_PONTOS  shift, and go to state 144
+
+
+State 141
+
+   57 fundec: FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES DOIS_PONTOS type_id IGUAL . exp
+
+    NUMERO            shift, and go to state 1
+    STRING_CONSTANTE  shift, and go to state 2
+    NIL               shift, and go to state 3
+    BREAK             shift, and go to state 4
+    LET               shift, and go to state 5
+    ABRE_PARENTESES   shift, and go to state 6
+    WHILE             shift, and go to state 7
+    IF                shift, and go to state 8
+    FOR               shift, and go to state 9
+    VARIAVEL          shift, and go to state 10
+    MENOS             shift, and go to state 11
+
+    exp      go to state 145
+    type_id  go to state 13
+    l_value  go to state 14
+
+
+State 142
+
+   51 ty: ABRE_CHAVES VARIAVEL DOIS_PONTOS type_id tyfields1 . FECHA_CHAVES
+
+    FECHA_CHAVES  shift, and go to state 146
+
+
+State 143
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   32 idexps: VIRGULA VARIAVEL IGUAL exp . idexps
+
+    VIRGULA        shift, and go to state 121
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 33 (idexps)
+
+    idexps  go to state 147
+
+
+State 144
+
+   48 tyfields1: VIRGULA VARIAVEL DOIS_PONTOS . type_id tyfields1
+
+    VARIAVEL  shift, and go to state 103
+
+    type_id  go to state 148
+
+
+State 145
+
+    1 exp: exp . MAIS exp
+    2    | exp . MENOS exp
+    3    | exp . MULTIPLICACAO exp
+    4    | exp . DIVISAO exp
+    9    | exp . IGUAL exp
+   10    | exp . DIFERENTE exp
+   11    | exp . MENOR_QUE exp
+   12    | exp . MAIOR_QUE exp
+   13    | exp . MENOR_IGUAL exp
+   14    | exp . MAIOR_IGUAL exp
+   15    | exp . AND exp
+   16    | exp . OR exp
+   57 fundec: FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES DOIS_PONTOS type_id IGUAL exp .
+
+    OR             shift, and go to state 31
+    AND            shift, and go to state 32
+    MAIOR_QUE      shift, and go to state 33
+    MENOR_QUE      shift, and go to state 34
+    IGUAL          shift, and go to state 35
+    DIFERENTE      shift, and go to state 36
+    MAIOR_IGUAL    shift, and go to state 37
+    MENOR_IGUAL    shift, and go to state 38
+    MAIS           shift, and go to state 39
+    MENOS          shift, and go to state 40
+    MULTIPLICACAO  shift, and go to state 41
+    DIVISAO        shift, and go to state 42
+
+    $default  reduce using rule 57 (fundec)
+
+
+State 146
+
+   51 ty: ABRE_CHAVES VARIAVEL DOIS_PONTOS type_id tyfields1 FECHA_CHAVES .
+
+    $default  reduce using rule 51 (ty)
+
+
+State 147
+
+   32 idexps: VIRGULA VARIAVEL IGUAL exp idexps .
+
+    $default  reduce using rule 32 (idexps)
+
+
+State 148
+
+   48 tyfields1: VIRGULA VARIAVEL DOIS_PONTOS type_id . tyfields1
+
+    VIRGULA  shift, and go to state 133
+
+    $default  reduce using rule 49 (tyfields1)
+
+    tyfields1  go to state 149
+
+
+State 149
+
+   48 tyfields1: VIRGULA VARIAVEL DOIS_PONTOS type_id tyfields1 .
+
+    $default  reduce using rule 48 (tyfields1)

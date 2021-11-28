@@ -541,76 +541,9 @@ char *yytext;
     #include"y.tab.h"
 
     char string_lexema[8000];
+#line 545 "lex.yy.c"
 
-    /* padroes aritmeticos */
-
-    /* padroes escopo */
-
-    const int ABRE_PARENTESES  = 20;
-    const int FECHA_PARENTESES = 21;
-    const int ABRE_COLCHETE    = 22;
-    const int FECHA_COLCHETE   = 23;
-    const int ABRE_CHAVES      = 24;
-    const int FECHA_CHAVES     = 25;
-
-    /* padroes delimitadores */
-
-    const int PONTO_E_VIRGULA = 30;
-    const int VIRGULA         = 31;
-
-    /* padroes operadores logicos */
-
-    const int MAIOR_QUE   = 50;
-    const int MENOR_QUE   = 51;
-    const int IGUAL       = 52;
-    const int DIFERENTE   = 53;
-    const int AND         = 54;
-    const int OR          = 55;
-    const int MAIOR_IGUAL = 56;
-    const int MENOR_IGUAL = 57;
-
-    /* padroes atribuicao, tipagem e acesso a atributos de classe */
-
-    const int ATRIBUICAO  = 60;
-    const int DOIS_PONTOS = 61;
-    const int PONTO       = 62;
-
-    /* padroes palavras reservadas de logica */
-    
-    const int IF    = 70;
-    const int THEN  = 71;
-    const int ELSE  = 72;
-
-    /* padroes palavras reservadas loop */
-
-    const int WHILE = 80;
-    const int DO    = 81;
-    const int FOR   = 82;
-    const int TO    = 83;
-    const int BREAK = 84;
-
-    /* padroes palavras reservadas gerais */
-
-    const int LET      = 90;
-    const int IN       = 91;
-    const int END      = 92;
-    const int VAR      = 93;
-    const int FUNCTION = 94;
-    const int ARRAY    = 95;
-    const int OF       = 96;
-    const int TYPE     = 97;
-    const int NIL      = 98;
-
-    /* string constante */
-
-    const int STRING_CONSTANTE   = 100;
-
-    /* padroes nao constantes */
-
-    const int VARIAVEL           = 41;
-#line 612 "lex.yy.c"
-
-#line 614 "lex.yy.c"
+#line 547 "lex.yy.c"
 
 #define INITIAL 0
 #define STRING 1
@@ -829,10 +762,10 @@ YY_DECL
 		}
 
 	{
-#line 77 "scanner.l"
+#line 10 "scanner.l"
 
 
-#line 80 "scanner.l"
+#line 13 "scanner.l"
  /*
  ---------------------------------------------------------------
  ------------------------ TAG INITIAL --------------------------
@@ -841,7 +774,7 @@ YY_DECL
 
  /* padroes aritmeticos */
 
-#line 845 "lex.yy.c"
+#line 778 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -900,232 +833,232 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 88 "scanner.l"
+#line 21 "scanner.l"
 {return MAIS;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 89 "scanner.l"
+#line 22 "scanner.l"
 {return MENOS;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 90 "scanner.l"
+#line 23 "scanner.l"
 {return MULTIPLICACAO;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 91 "scanner.l"
+#line 24 "scanner.l"
 {return DIVISAO;}
 	YY_BREAK
 /* padroes escopo */
 case 5:
 YY_RULE_SETUP
-#line 95 "scanner.l"
+#line 28 "scanner.l"
 {return ABRE_CHAVES;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 96 "scanner.l"
+#line 29 "scanner.l"
 {return FECHA_CHAVES;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 97 "scanner.l"
+#line 30 "scanner.l"
 {return ABRE_COLCHETE;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 98 "scanner.l"
+#line 31 "scanner.l"
 {return FECHA_COLCHETE;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 99 "scanner.l"
+#line 32 "scanner.l"
 {return ABRE_PARENTESES;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 100 "scanner.l"
+#line 33 "scanner.l"
 {return FECHA_PARENTESES;}
 	YY_BREAK
 /* padroes delimitadores */
 case 11:
 YY_RULE_SETUP
-#line 104 "scanner.l"
+#line 37 "scanner.l"
 {return PONTO_E_VIRGULA;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 105 "scanner.l"
+#line 38 "scanner.l"
 {return VIRGULA;}
 	YY_BREAK
 /* padroes operadores logicos */
 case 13:
 YY_RULE_SETUP
-#line 109 "scanner.l"
+#line 42 "scanner.l"
 {return MAIOR_QUE;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 110 "scanner.l"
+#line 43 "scanner.l"
 {return MENOR_QUE;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 111 "scanner.l"
+#line 44 "scanner.l"
 {return IGUAL;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 112 "scanner.l"
+#line 45 "scanner.l"
 {return DIFERENTE;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 113 "scanner.l"
+#line 46 "scanner.l"
 {return AND;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 114 "scanner.l"
+#line 47 "scanner.l"
 {return OR;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 115 "scanner.l"
+#line 48 "scanner.l"
 {return MAIOR_IGUAL;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 116 "scanner.l"
+#line 49 "scanner.l"
 {return MENOR_IGUAL;}
 	YY_BREAK
 /* padroes atribuicao, tipagem e acesso a atributos de classe */
 case 21:
 YY_RULE_SETUP
-#line 120 "scanner.l"
+#line 53 "scanner.l"
 {return ATRIBUICAO;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 121 "scanner.l"
+#line 54 "scanner.l"
 {return DOIS_PONTOS;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 122 "scanner.l"
+#line 55 "scanner.l"
 {return PONTO;}
 	YY_BREAK
 /* padroes palavras reservadas de logica */
 case 24:
 YY_RULE_SETUP
-#line 126 "scanner.l"
+#line 59 "scanner.l"
 {return IF;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 127 "scanner.l"
+#line 60 "scanner.l"
 {return THEN;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 128 "scanner.l"
+#line 61 "scanner.l"
 {return ELSE;}
 	YY_BREAK
 /* padroes palavras reservadas loop */
 case 27:
 YY_RULE_SETUP
-#line 132 "scanner.l"
+#line 65 "scanner.l"
 {return WHILE;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 133 "scanner.l"
+#line 66 "scanner.l"
 {return DO;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 134 "scanner.l"
+#line 67 "scanner.l"
 {return FOR;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 135 "scanner.l"
+#line 68 "scanner.l"
 {return TO;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 136 "scanner.l"
+#line 69 "scanner.l"
 {return BREAK;}
 	YY_BREAK
 /* padroes palavras reservadas gerais */
 case 32:
 YY_RULE_SETUP
-#line 140 "scanner.l"
+#line 73 "scanner.l"
 {return LET;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 141 "scanner.l"
+#line 74 "scanner.l"
 {return IN;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 142 "scanner.l"
+#line 75 "scanner.l"
 {return END;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 143 "scanner.l"
+#line 76 "scanner.l"
 {return VAR;}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 144 "scanner.l"
+#line 77 "scanner.l"
 {return FUNCTION;}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 145 "scanner.l"
+#line 78 "scanner.l"
 {return ARRAY;}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 146 "scanner.l"
+#line 79 "scanner.l"
 {return OF;}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 147 "scanner.l"
+#line 80 "scanner.l"
 {return TYPE;}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 148 "scanner.l"
+#line 81 "scanner.l"
 {return NIL;}
 	YY_BREAK
 /* inicio de uma string constante */
 case 41:
 YY_RULE_SETUP
-#line 152 "scanner.l"
+#line 85 "scanner.l"
 { BEGIN(STRING); string_lexema[0] = '\0'; strcat(string_lexema,"\"");}
 	YY_BREAK
 /* inicio de um comentario */
 case 42:
 YY_RULE_SETUP
-#line 156 "scanner.l"
+#line 89 "scanner.l"
 { BEGIN(COMENTARIO);}
 	YY_BREAK
 /* padroes nao constantes */
 case 43:
 YY_RULE_SETUP
-#line 160 "scanner.l"
+#line 93 "scanner.l"
 {return VARIAVEL;}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 161 "scanner.l"
+#line 94 "scanner.l"
 {return NUMERO;}
 	YY_BREAK
 /*
@@ -1136,114 +1069,114 @@ YY_RULE_SETUP
 /* montando a string constante */
 case 45:
 YY_RULE_SETUP
-#line 171 "scanner.l"
+#line 104 "scanner.l"
 {BEGIN(INITIAL); strcat(string_lexema,"\""); yytext=string_lexema; return STRING_CONSTANTE;}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 172 "scanner.l"
+#line 105 "scanner.l"
 {strcat(string_lexema, yytext);}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 173 "scanner.l"
+#line 106 "scanner.l"
 {strcat(string_lexema, yytext);}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 174 "scanner.l"
+#line 107 "scanner.l"
 {strcat(string_lexema, yytext);}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 175 "scanner.l"
+#line 108 "scanner.l"
 {strcat(string_lexema, yytext);}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 176 "scanner.l"
+#line 109 "scanner.l"
 {strcat(string_lexema, yytext);}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 177 "scanner.l"
+#line 110 "scanner.l"
 {strcat(string_lexema, yytext);}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 178 "scanner.l"
+#line 111 "scanner.l"
 {strcat(string_lexema, yytext);}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 179 "scanner.l"
+#line 112 "scanner.l"
 {strcat(string_lexema, yytext);}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 180 "scanner.l"
+#line 113 "scanner.l"
 {strcat(string_lexema, yytext);}
 	YY_BREAK
 /* montando o comentario */
 case 55:
 YY_RULE_SETUP
-#line 184 "scanner.l"
+#line 117 "scanner.l"
 {BEGIN(INITIAL);}
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 185 "scanner.l"
+#line 118 "scanner.l"
 {}
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 186 "scanner.l"
+#line 119 "scanner.l"
 {}
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 187 "scanner.l"
+#line 120 "scanner.l"
 {}
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 188 "scanner.l"
+#line 121 "scanner.l"
 {}
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 189 "scanner.l"
+#line 122 "scanner.l"
 {}
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 190 "scanner.l"
+#line 123 "scanner.l"
 {}
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 191 "scanner.l"
+#line 124 "scanner.l"
 {}
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 192 "scanner.l"
+#line 125 "scanner.l"
 {}
 	YY_BREAK
 case 64:
 /* rule 64 can match eol */
 YY_RULE_SETUP
-#line 193 "scanner.l"
+#line 126 "scanner.l"
 {}
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 194 "scanner.l"
+#line 127 "scanner.l"
 {}
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 195 "scanner.l"
+#line 128 "scanner.l"
 {}
 	YY_BREAK
 /*
@@ -1253,26 +1186,26 @@ YY_RULE_SETUP
  */
 case 67:
 YY_RULE_SETUP
-#line 203 "scanner.l"
+#line 136 "scanner.l"
 {}
 	YY_BREAK
 case 68:
 /* rule 68 can match eol */
 YY_RULE_SETUP
-#line 204 "scanner.l"
+#line 137 "scanner.l"
 {}
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 205 "scanner.l"
+#line 138 "scanner.l"
 {}
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 206 "scanner.l"
+#line 139 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 1276 "lex.yy.c"
+#line 1209 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(STRING):
 case YY_STATE_EOF(COMENTARIO):
@@ -2279,7 +2212,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 206 "scanner.l"
+#line 139 "scanner.l"
 
 
 int yywrap() {
