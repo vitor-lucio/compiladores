@@ -3,11 +3,13 @@ let
 	let
 		var b : int := 0 in	
 		let
-			var c : int := 0
+			var c : if := 0
 		in
 			let
 				var a : int := 0
 				in
 			end
 		end
-	end
+	
+end
+
