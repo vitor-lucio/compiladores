@@ -1,0 +1,42 @@
+let
+ type a = array of int /* Declaração de tipo não é escrita no código intermediário */
+ type b = a /* Declaração de tipo não é escrita no código intermediário */
+
+ var arr1:a := b [10] of 0
+in
+ arr1[2]
+end
+---------------------------------------Código Intermediário------------------------------------------------------------
+Variavel "arr1" esta associada a "t0"
+Analise Semantica: OK!
+
+null:
+EXP( /* Esse EXP significa que o resultado (ou seja, o valor de arr1[2]) vai ser descartado. Teoricamente esse código poderia estar no MEM */
+    ESEQ(
+        SEQ(
+            EXP( /* Esse EXP é necessário para chamar SEQ em uma atribuição simples. Significa que vamos ignorar este valor (CONST 0) neste primeiro parâmetro de SEQ */
+            CONST 0
+            ),
+            MOVE(
+                TEMP t0,
+                CALL( 
+                    NAME initarray, /* Metodo interno do código intermediário, para criar um array */
+                    CONST 0, /* Posição inicial do array? (se for, acho que sempre vai ser CONST 0) */
+                    CONST 10, /* tamanho do array, definido dentro dos colchetes */
+                    CONST 0 /* Numero a direita do "of" */
+                )
+            )
+        ),
+        MEM( /* arr1[2] é conteúdo(MEM) na posição de memória dada por: <posição de memória atual de arr1> + (<posição referenciada dentro dos colchetes array> * <tamanho do inteiro em bytes>) */
+            BINOP(
+                PLUS,
+                TEMP t0,
+                BINOP(
+                    MUL,
+                    CONST 2,
+                    CONST 4
+                )
+            )
+        )
+    )
+)

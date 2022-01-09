@@ -1,0 +1,44 @@
+let
+ function soma(x1: int, x2: int) : int = x1 + x2
+ var resultado : int := 0
+in
+ resultado := soma(2, 5)
+end
+---------------------------------------Código Intermediário------------------------------------------------------------
+
+soma está rotulada como L0
+Parâmetro "x1" está associado a "t0"
+Parâmetro "x2" está associado a "t1"
+Variável "resultado" está associada a "t2"
+Análise Semântica: OK!
+
+null:
+    SEQ(
+        SEQ(
+            EXP( /* Esse EXP é necessário para chamar SEQ em uma atribuição simples. Significa que vamos ignorar este valor (CONST 0) neste primeiro parâmetro de SEQ */
+                CONST 0
+            ),
+            MOVE(
+                TEMP t2,
+                CONST 0
+            )
+        ),
+        MOVE(
+            TEMP t2,
+            CALL(
+                NAME L0,
+                TEMP fp,
+                CONST 2,
+                CONST 5
+            )
+        )
+    )
+L0:
+    MOVE(
+        TEMP rv,
+        BINOP(
+            PLUS,
+            TEMP t0,
+            TEMP t1
+        )
+    )
