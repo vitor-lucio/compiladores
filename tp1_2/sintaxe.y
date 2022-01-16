@@ -1,5 +1,5 @@
 %{
-    #include <stdio.h>
+    #include <stdio.h>  
     #include"lex.yy.c"
     
     void yyerror(const char *s);
@@ -20,29 +20,29 @@
 %start exp
 
 %%
-exp:  exp MAIS exp              { printf("exp -> exp + exp\n"); }
-    | exp MENOS exp             { printf("exp -> exp - exp\n"); }
-    | exp MULTIPLICACAO exp     { printf("exp -> exp * exp\n"); }
-    | exp DIVISAO exp           { printf("exp -> exp / exp\n"); }
+exp:  exp MAIS exp              { printf("exp -> exp + exp\n"); } /* BINOP(MAIS, exp, exp) */
+    | exp MENOS exp             { printf("exp -> exp - exp\n"); } /* BINOP(MENOS, exp, exp) */
+    | exp MULTIPLICACAO exp     { printf("exp -> exp * exp\n"); } /* BINOP(MULTIPLICACAO, exp, exp) */
+    | exp DIVISAO exp           { printf("exp -> exp / exp\n"); } /* BINOP(DIVISAO, exp, exp) */
 
-    | MENOS exp                 { printf("exp -> - exp\n"); }
+    | MENOS exp                 { printf("exp -> - exp\n"); } /* CONST(- exp) */
 
-    | NUMERO                    { printf("exp -> num\n"); }
-    | STRING_CONSTANTE          { printf("exp -> string\n"); }
-    | NIL                       { printf("exp -> nil\n"); }
+    | NUMERO                    { printf("exp -> num\n"); } /* CONST(NUMERO) */
+    | STRING_CONSTANTE          { printf("exp -> string\n"); } /* 'STRING_CONSTANTE' */
+    | NIL                       { printf("exp -> nil\n"); } /* NIL */
 
-    | exp IGUAL exp             { printf("exp -> exp = exp\n"); }
-    | exp DIFERENTE exp         { printf("exp -> exp <> exp\n"); }   
-    | exp MENOR_QUE exp         { printf("exp -> exp < exp\n"); }
-    | exp MAIOR_QUE exp         { printf("exp -> exp > exp\n"); }
-    | exp MENOR_IGUAL exp       { printf("exp -> exp <= exp\n"); }
-    | exp MAIOR_IGUAL exp       { printf("exp -> exp >= exp\n"); }
-    | exp AND exp               { printf("exp -> exp & exp\n"); }
-    | exp OR exp                { printf("exp -> exp | exp\n"); }
+    | exp IGUAL exp             { printf("exp -> exp = exp\n"); } /* BINOP(IGUAL, exp, exp) */
+    | exp DIFERENTE exp         { printf("exp -> exp <> exp\n"); } /* BINOP(DIFERENTE, exp, exp) */   
+    | exp MENOR_QUE exp         { printf("exp -> exp < exp\n"); } /* BINOP(MENOR_QUE, exp, exp) */
+    | exp MAIOR_QUE exp         { printf("exp -> exp > exp\n"); } /* BINOP(MAIOR_QUE, exp, exp) */
+    | exp MENOR_IGUAL exp       { printf("exp -> exp <= exp\n"); } /* BINOP(MENOR_IGUAL, exp, exp) */
+    | exp MAIOR_IGUAL exp       { printf("exp -> exp >= exp\n"); } /* BINOP(MAIOR_IGUAL, exp, exp) */
+    | exp AND exp               { printf("exp -> exp & exp\n"); } /* BINOP(AND, exp, exp) */
+    | exp OR exp                { printf("exp -> exp | exp\n"); } /* BINOP(OR, exp, exp) */
 
-    | IF exp THEN exp ELSE exp  { printf("exp -> if exp then exp else exp\n"); }
-    | IF exp THEN exp           { printf("exp -> if exp then exp\n"); }
-    | WHILE exp DO exp          { printf("exp -> while exp do exp\n"); }
+    | IF exp THEN exp ELSE exp  { printf("exp -> if exp then exp else exp\n"); } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, Labelexp3) */
+    | IF exp THEN exp           { printf("exp -> if exp then exp\n"); } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, enderecoDoCodigoAposIf) */
+    | WHILE exp DO exp          { printf("exp -> while exp do exp\n"); } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, enderecoDoCodigoAposWhile) */
 
     | FOR VARIAVEL ATRIBUICAO exp TO exp DO exp { printf("exp -> for id := exp to exp do exp\n"); }
     | BREAK                                     { printf("exp -> break\n"); }
