@@ -6,7 +6,6 @@
     - O nó da árvore conterá os seguintes dados:
         - Tipo de comando (String): Indicará qual o tipo de comando desse nó, ou seja, se é um "Let", "Function", "For", "Var". Esse tipo tem o objetivo de permitir que a gente possa tratar cada tipo de comando de forma independente.
         - Código intermediário correspondente (String): Conterá a string do código intermediário correspondente. Colocando valores para serem substituidos (exemplo: call(NomeDeUmaFuncao, %parametro1, %parametro2)) pelo código intermediário que esta em outro nó da árvore.
-        - Valor (String): Algum valor que precise ser guardado no nó (Por exemplo um numero, ou uma string, ou o nome de um tipo)
         - Node_filho1 (Node): Nó filho do nó atual
         - Node_filho2 (Node): Nó filho do nó atual
         - Node_filho3 (Node): Nó filho do nó atual 
@@ -14,7 +13,6 @@
     - Guardando nome de variáveis, podemos identificar variaveis usadas sem estarem declaradas e guardar o tipo delas para verificar se, por exemplo, estão sendo usadas nos parâmetros corretos de uma função.
     - Guardando nome de tipos podemos identificar se o tipo usado, em qualquer parte do código, é válido (se não for inteiro ou string, que são tipos já reconhecidos nas linguagem)
 - **String para guardar o código intermediário**
-- **Numero do próximo comando a ser executado na "main" do código intermediário**
 
 ## Montando os tipos de comandos
 
@@ -24,14 +22,15 @@
 - Caso, na montagem, não tenha nenhum parâmetro, ela irá retornar a string do código intermediário resultado.
 - Caso, na montagem, os parâmetros sejam preenchidos pelas outras montagens, ela também irá retornar a string do código intermediário resultado.
 
-## Insights
-
-- Não vai ser preciso guardar o nome das variaveis, podemos colocar o nome que quisermos. O que importa para o código intermediário é a posição de memória delas.
-
 ## Fluxo de execução
 
 - Montar a árvore
 - Montar o código intermediário
+
+## O que foi interpretado mas a documentação não explicita
+
+- Podemos fazer call para qualquer label, sendo função ou não, pois não existe essa distinção no assembly.
+- Quando call é executado, ele vai para o label e, após o label executar, ele volta para o label anterior e executa o próximo comando.
 
 ## Partes que ainda faltam modelar
 
@@ -40,5 +39,6 @@
 ## Dúvidas
 
 - Como escrever string no código intermediário?
-- Como calcular endereços para os desvios?
-- Mem(null + 1) corresponde ao endereço do primeiro comando a ser executado no código intermediário?
+- Como calcular endereços de memoria para os desvios?
+- Um label qualquer corresponde, tambem, a um endereço de memoria? senão, o que corresponde a um endereço de memória, tem como dar exemplos?
+- (null + 1) corresponde ao endereço de memoria do primeiro comando a ser executado no código intermediário?
