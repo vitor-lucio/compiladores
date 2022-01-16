@@ -5,18 +5,14 @@
     void yyerror(const char *s);
     int yylex();
     int yywrap();
-
-    struct pointer_para_nodes {
-		struct pointer_para_nodes* node_filho1;
-        struct pointer_para_nodes* node_filho2;
-        struct pointer_para_nodes* node_filho3;
-	};
 %}
 
 %union { 
 	struct node_da_arvore {
 		char* codigo_intermediario;
-        struct pointer_para_nodes* nodes_filho;
+        struct node_da_arvore* node_filho1;
+        struct node_da_arvore* node_filho2;
+        struct node_da_arvore* node_filho3;
 	} node_da_arvore; 
 } 
  
