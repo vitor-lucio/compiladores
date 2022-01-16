@@ -6,6 +6,12 @@
     int yylex();
     int yywrap();
 %}
+
+%union { 
+	struct node { 
+		char* codigo_intermediario;
+	} node; 
+} 
  
 %token NUMERO STRING_CONSTANTE NIL BREAK LET IN END FUNCTION TYPE VAR ARRAY DOIS_PONTOS VIRGULA PONTO_E_VIRGULA PONTO ABRE_CHAVES FECHA_CHAVES ABRE_COLCHETE FECHA_COLCHETE ABRE_PARENTESES FECHA_PARENTESES
 %nonassoc WHILE IF FOR TO ATRIBUICAO VARIAVEL
@@ -16,6 +22,8 @@
 %left MAIOR_QUE MENOR_QUE IGUAL DIFERENTE MAIOR_IGUAL MENOR_IGUAL
 %left MAIS MENOS
 %left MULTIPLICACAO DIVISAO
+
+%type <node> exp type_id idexps l_value expseq expseq1 args args1 tyfields tyfields1 ty tydec vardec fundec decs dec
 
 %start exp
 
@@ -44,8 +52,8 @@ exp:  exp MAIS exp              { printf("exp -> exp + exp\n"); } /* BINOP(MAIS,
     | IF exp THEN exp           { printf("exp -> if exp then exp\n"); } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, enderecoDoCodigoAposIf) */
     | WHILE exp DO exp          { printf("exp -> while exp do exp\n"); } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, enderecoDoCodigoAposWhile) */
 
-    | FOR VARIAVEL ATRIBUICAO exp TO exp DO exp { printf("exp -> for id := exp to exp do exp\n"); }
-    | BREAK                                     { printf("exp -> break\n"); }
+    | FOR VARIAVEL ATRIBUICAO exp TO exp DO exp { printf("exp -> for id := exp to exp do exp\n"); } /* CJUMP(MENOR_IGUAL, exp1.exp1, exp1.exp2, Labelexp2, enderecoDoCodigoAposWhile) */
+    | BREAK                                     { printf("exp -> break\n"); } /* JUMP(labelAnteriorAoDoLabelQueExecutouBreak + proximoComandoDoLabelQueExecutouBreak, labelAnteriorAoDoLabelQueExecutouBreak + proximoComandoDoLabelQueExecutouBreak) */
 
     | type_id ABRE_CHAVES VARIAVEL IGUAL exp idexps FECHA_CHAVES    { printf("exp -> type-id { id = exp idexps }\n"); }
     | type_id ABRE_COLCHETE exp FECHA_COLCHETE OF exp               { printf("exp -> type-id [ exp ] of exp\n"); }
@@ -56,7 +64,7 @@ exp:  exp MAIS exp              { printf("exp -> exp + exp\n"); } /* BINOP(MAIS,
     | type_id                   { printf("exp -> type-id\n"); }
     | l_value                   { printf("exp -> l-value\n"); }
 
-    | ABRE_PARENTESES expseq FECHA_PARENTESES           { printf("exp -> ( expseq )\n"); }
+    | ABRE_PARENTESES expseq FECHA_PARENTESES           { printf("exp -> ( expseq )\n"); } /* Nenhum código intermediário neste nó */
     | VARIAVEL ABRE_PARENTESES args FECHA_PARENTESES    { printf("exp -> id ( args )\n"); }
 
     | LET decs IN expseq END                            { printf("exp -> let decs in expseq end\n"); }
@@ -75,12 +83,12 @@ l_value: type_id PONTO VARIAVEL                 { printf("l-value -> type-id . i
     | l_value ABRE_COLCHETE exp FECHA_COLCHETE  { printf("l-value -> l-value [ exp ]\n"); }
     ;
 
-expseq: exp expseq1                             { printf("expseq -> exp expseq1\n"); }
-    |                                           { printf("expseq -> \n"); }
+expseq: exp expseq1                             { printf("expseq -> exp expseq1\n"); } /* Nenhum código intermediário neste nó */
+    |                                           { printf("expseq -> \n"); } /* Nenhum código intermediário neste nó */
     ;
 
-expseq1: PONTO_E_VIRGULA exp expseq1            { printf("expseq1 -> ; exp expseq1\n"); }
-    |                                           { printf("expseq1 -> \n"); }
+expseq1: PONTO_E_VIRGULA exp expseq1            { printf("expseq1 -> ; exp expseq1\n"); } /* Nenhum código intermediário neste nó */
+    |                                           { printf("expseq1 -> \n"); } /* Nenhum código intermediário neste nó */
     ;
 
 args: exp args1                                 { printf("args -> exp args1\n"); }

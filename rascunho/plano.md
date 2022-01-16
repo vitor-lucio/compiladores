@@ -31,11 +31,15 @@
 
 - Podemos fazer call para qualquer label, sendo função ou não, pois não existe essa distinção no assembly.
 - Quando call é executado, ele vai para o label e, após o label executar, ele volta para o label anterior e executa o próximo comando.
+- O nome dos operadores aritméticos ou lógicos (no código intermediário) é de nossa escolha, só precisamos mostrar quais usamos.
 
 ## Partes que ainda faltam modelar
 
 - Como lidar com nested functions/loops/ifs.
 
+## Casos de erros que ainda faltam tratar
+
+- comando break na "main" do código intermediário.
 ## Dúvidas
 
 - Como escrever string no código intermediário?
