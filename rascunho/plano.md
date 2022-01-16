@@ -4,7 +4,6 @@
 
 - **Arvore** para montar as partes do código relevantes para a análise semântica, geração do código intermediário e análise de erros.
     - O nó da árvore conterá os seguintes dados:
-        - Tipo de comando (String): Indicará qual o tipo de comando desse nó, ou seja, se é um "Let", "Function", "For", "Var". Esse tipo tem o objetivo de permitir que a gente possa tratar cada tipo de comando de forma independente.
         - Código intermediário correspondente (String): Conterá a string do código intermediário correspondente. Colocando valores para serem substituidos (exemplo: call(NomeDeUmaFuncao, %parametro1, %parametro2)) pelo código intermediário que esta em outro nó da árvore.
         - Node_filho1 (Node): Nó filho do nó atual
         - Node_filho2 (Node): Nó filho do nó atual

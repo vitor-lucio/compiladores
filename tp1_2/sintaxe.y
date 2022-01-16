@@ -5,12 +5,19 @@
     void yyerror(const char *s);
     int yylex();
     int yywrap();
+
+    struct pointer_para_nodes {
+		struct pointer_para_nodes* node_filho1;
+        struct pointer_para_nodes* node_filho2;
+        struct pointer_para_nodes* node_filho3;
+	};
 %}
 
 %union { 
-	struct node { 
+	struct node_da_arvore {
 		char* codigo_intermediario;
-	} node; 
+        struct pointer_para_nodes* nodes_filho;
+	} node_da_arvore; 
 } 
  
 %token NUMERO STRING_CONSTANTE NIL BREAK LET IN END FUNCTION TYPE VAR ARRAY DOIS_PONTOS VIRGULA PONTO_E_VIRGULA PONTO ABRE_CHAVES FECHA_CHAVES ABRE_COLCHETE FECHA_COLCHETE ABRE_PARENTESES FECHA_PARENTESES
@@ -23,7 +30,7 @@
 %left MAIS MENOS
 %left MULTIPLICACAO DIVISAO
 
-%type <node> exp type_id idexps l_value expseq expseq1 args args1 tyfields tyfields1 ty tydec vardec fundec decs dec
+%type <node_da_arvore> exp type_id idexps l_value expseq expseq1 args args1 tyfields tyfields1 ty tydec vardec fundec decs dec
 
 %start exp
 
