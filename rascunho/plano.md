@@ -45,6 +45,8 @@
 - Como calcular endereços de memoria para os desvios?
 - Um label qualquer corresponde, tambem, a um endereço de memoria? senão, o que corresponde a um endereço de memória, tem como dar exemplos?
 - (null + 1) corresponde ao endereço de memoria do primeiro comando a ser executado no código intermediário?
+- Todo código Tiger semânticamente válido começa com um "let in end"? Pois na documentação tem a seguinte frase na seção 2, primeiro paragrafo, "TIGER é composta de duas seções, uma seção de declarações e uma seção de variáveis e expressões."
+- Para as funções nativas do Tiger, como devemos proceder com o código intermediário, sendo que a gente não vai ter o código dessas funções para escrever no código intermediário? A gente só escreve o comando de CALL() e não cria o label?
 
 ## Referências
 

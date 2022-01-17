@@ -40,7 +40,6 @@ char* codigo_intermediario_final;
 	};
 
     struct node* raiz_da_arvore; /* raiz da arvore */
-    int arvore_inicializada = 0; /* variavel que indica se a arvore foi inicializada (valor = 1) ou nao (valor = 0)  */
 
 
 /*
@@ -89,11 +88,7 @@ char* codigo_intermediario_final;
 ////////////////////////////////////////////////////////////////////////////////
 */
 
-    int inicializa_arvore(struct node* node_raiz_candidato){
-        if(arvore_inicializada == 1){ /* se arvore ja esta inicializada a funcao nao tem que fazer nada */
-            return 1;
-        }
-
+    int aponta_raiz_da_arvore(struct node* node_raiz_candidato){
         if(!node_raiz_candidato){ /* verifica se o node candidato e nulo */
             printf("Este node nao pode ser a raiz da arvore");
             return 0;
@@ -102,12 +97,8 @@ char* codigo_intermediario_final;
         /* 
             A raiz da arvore recebe o endereco do node candidato,
             iniciando assim a arvore.
-
-            A variavel global "arvore_inicializada" recebe 1, indicando que a arvore
-            ja foi inicializada
         */
         raiz_da_arvore = node_raiz_candidato;
-        arvore_inicializada = 1;
         return 1;
     }
 
@@ -230,7 +221,12 @@ char* codigo_intermediario_final;
 %%
 exp:  exp MAIS exp              {
                                     $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
-                                    printf("%s\n", $$.node->codigo_intermediario);   
+                                    aponta_raiz_da_arvore($$.node); /* O ponto de inicio da gramatica é a expressao "let in end", mas por
+                                                                    motivos de teste, estamos considerando que este e o ponto inicial
+                                                                    atualmente*/
+                                    printf("%s\n", $$.node->codigo_intermediario);
+                                    printf("node filho1: %s\n", $$.node->node_filho1->codigo_intermediario);
+                                    printf("node filho2: %s\n", $$.node->node_filho2->codigo_intermediario);
                                     printf("exp -> exp + exp\n"); 
                                 } /* BINOP(MAIS, exp, exp) */
     | exp MENOS exp             { printf("exp -> exp - exp\n"); } /* BINOP(MENOS, exp, exp) */
@@ -241,7 +237,6 @@ exp:  exp MAIS exp              {
 
     | NUMERO                    {
                                     $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_const($1));
-                                    inicializa_arvore($$.node);
                                     printf("%s\n", $$.node->codigo_intermediario);   
                                     printf("exp -> num\n"); 
                                 } /* CONST(NUMERO) */
@@ -369,6 +364,12 @@ int main(int argc, char** argv) {
     }
     
     printCode(argv[1]);
+
+
+    printf("\n----------------------------------------\n\n");
+    printf("CODIGO INTERMEDIARIO GERADO:\n\n");
+    codigo_intermediario_final = monta_codigo_intermediario_da_arvore(raiz_da_arvore);
+    printf("%s\n", codigo_intermediario_final);
 
     return 0;
 }
