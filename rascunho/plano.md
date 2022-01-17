@@ -4,7 +4,7 @@
 
 - **Arvore** para montar as partes do código relevantes para a análise semântica, geração do código intermediário e análise de erros.
     - O nó da árvore conterá os seguintes dados:
-        - Código intermediário correspondente (String): Conterá a string do código intermediário correspondente. Colocando valores para serem substituidos (exemplo: call(NomeDeUmaFuncao, %parametro1, %parametro2)) pelo código intermediário que esta em outro nó da árvore.
+        - Código intermediário correspondente (String): Conterá a string do código intermediário correspondente. Colocando valores para serem substituidos (exemplo: call(NomeDeUmaFuncao, $parametro1, $parametro2)) pelo código intermediário que esta em outro nó da árvore.
         - Node_filho1 (Node): Nó filho do nó atual
         - Node_filho2 (Node): Nó filho do nó atual
         - Node_filho3 (Node): Nó filho do nó atual 

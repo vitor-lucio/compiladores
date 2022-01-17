@@ -17,7 +17,7 @@
 
  /* padroes aritmeticos */
 
-<INITIAL>"+" {return MAIS;}
+<INITIAL>"+" {yylval.valor_constante = "MAIS"; return MAIS;}
 <INITIAL>"-" {return MENOS;}
 <INITIAL>"*" {return MULTIPLICACAO;}
 <INITIAL>"/" {return DIVISAO;}
