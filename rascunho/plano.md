@@ -45,3 +45,7 @@
 - Como calcular endereços de memoria para os desvios?
 - Um label qualquer corresponde, tambem, a um endereço de memoria? senão, o que corresponde a um endereço de memória, tem como dar exemplos?
 - (null + 1) corresponde ao endereço de memoria do primeiro comando a ser executado no código intermediário?
+
+## Referências
+
+- [Tutorial de como fazer um compilador de c usando lex e yacc](https://medium.com/codex/building-a-c-compiler-using-lex-and-yacc-446262056aaa)

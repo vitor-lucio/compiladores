@@ -1,22 +1,90 @@
 %{
-    #include <stdio.h>  
+    #include <stdio.h>
+    #include <string.h>
+    #include <stdlib.h>
     #include"lex.yy.c"
     
     void yyerror(const char *s);
     int yylex();
     int yywrap();
+/*
+    Estrutura e funcoes da arvore
+*/
+    struct node {
+		char* codigo_intermediario;
+        struct node* node_filho1;
+        struct node* node_filho2;
+        struct node* node_filho3;
+	};
+
+    struct node* raiz_da_arvore; /* raiz da arvore */
+    int arvore_inicializada = 0; /* variavel que indica se a arvore foi inicializada (valor = 1) ou nao (valor = 0)  */
+
+    int inicializa_arvore(struct node* node_raiz_candidato){
+        if(arvore_inicializada == 1){ /* se arvore ja esta inicializada a funcao nao tem que fazer nada */
+            return 1;
+        }
+
+        if(!node_raiz_candidato){ /* verifica se o node candidato e nulo */
+            printf("Este node nao pode ser a raiz da arvore");
+            return 0;
+        }
+
+        /* 
+            A raiz da arvore recebe o endereco do node candidato,
+            iniciando assim a arvore.
+            
+            A variavel global "arvore_inicializada" recebe 1, indicando que a arvore
+            ja foi inicializada
+        */
+        raiz_da_arvore = node_raiz_candidato;
+        arvore_inicializada = 1;
+        return 1;
+    }
+
+    struct node* inicializa_node(struct node* node_filho1, struct node *node_filho2, struct node *node_filho3, char* codigo_intermediario) {
+        
+        struct node* novo_node = (struct node*) malloc(sizeof(struct node));
+        
+        char* copia_codigo_intermediario = (char*) malloc(strlen(codigo_intermediario)+1);
+        
+        strcpy(copia_codigo_intermediario, codigo_intermediario);
+        
+        novo_node->node_filho1 = node_filho1;
+        novo_node->node_filho2 = node_filho2;
+        novo_node->node_filho3 = node_filho3;
+        novo_node->codigo_intermediario = copia_codigo_intermediario;
+        return novo_node;
+    }
+
+
+/*
+    Funcoes de construcao de codigo intermediario
+*/
+
+    char* constroi_codigo_intermediario_const(char* valor_constante){
+
+        char* codigo_intermediario = (char*) malloc(strlen(valor_constante) + 7 + 1); //= "CONST(";
+        codigo_intermediario[0] = '\0';
+
+        strcat(codigo_intermediario, "CONST(");
+        strcat(codigo_intermediario, valor_constante);
+        strcat(codigo_intermediario, ")");
+
+        return codigo_intermediario;
+    }
+
 %}
 
 %union { 
 	struct node_da_arvore {
-		char* codigo_intermediario;
-        struct node_da_arvore* node_filho1;
-        struct node_da_arvore* node_filho2;
-        struct node_da_arvore* node_filho3;
-	} node_da_arvore; 
+		struct node* node;
+	} node_da_arvore;
+
+    char* valor_constante;
 } 
  
-%token NUMERO STRING_CONSTANTE NIL BREAK LET IN END FUNCTION TYPE VAR ARRAY DOIS_PONTOS VIRGULA PONTO_E_VIRGULA PONTO ABRE_CHAVES FECHA_CHAVES ABRE_COLCHETE FECHA_COLCHETE ABRE_PARENTESES FECHA_PARENTESES
+%token <valor_constante> NUMERO STRING_CONSTANTE NIL BREAK LET IN END FUNCTION TYPE VAR ARRAY DOIS_PONTOS VIRGULA PONTO_E_VIRGULA PONTO ABRE_CHAVES FECHA_CHAVES ABRE_COLCHETE FECHA_COLCHETE ABRE_PARENTESES FECHA_PARENTESES
 %nonassoc WHILE IF FOR TO ATRIBUICAO VARIAVEL
 %nonassoc THEN
 %nonassoc ELSE DO OF
@@ -38,7 +106,12 @@ exp:  exp MAIS exp              { printf("exp -> exp + exp\n"); } /* BINOP(MAIS,
 
     | MENOS exp                 { printf("exp -> - exp\n"); } /* CONST(- exp) */
 
-    | NUMERO                    { printf("exp -> num\n"); } /* CONST(NUMERO) */
+    | NUMERO                    {
+                                    $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_const($1));
+                                    inicializa_arvore($$.node);
+
+                                    printf("exp -> num\n"); 
+                                } /* CONST(NUMERO) */
     | STRING_CONSTANTE          { printf("exp -> string\n"); } /* 'STRING_CONSTANTE' */
     | NIL                       { printf("exp -> nil\n"); } /* NIL */
 

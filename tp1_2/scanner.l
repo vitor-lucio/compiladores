@@ -90,7 +90,7 @@
  /* padroes nao constantes */
 
 <INITIAL>[a-zA-Z][0-9a-zA-Z_]* {return VARIAVEL;}
-<INITIAL>[0-9]+                {return NUMERO;}
+<INITIAL>[0-9]+                {yylval.valor_constante = yytext; return NUMERO;}
 
  /*
  ---------------------------------------------------------------
