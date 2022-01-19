@@ -44,8 +44,8 @@
 <INITIAL>"<>"   {yylval.valor_constante = "DIFERENTE"; return DIFERENTE;}
 <INITIAL>"&"    {yylval.valor_constante = "AND"; return AND;}
 <INITIAL>"|"    {yylval.valor_constante = "OR"; return OR;}
-<INITIAL>">="   {return MAIOR_IGUAL;}
-<INITIAL>"<="   {return MENOR_IGUAL;}
+<INITIAL>">="   {yylval.valor_constante = "MAIOR_IGUAL"; return MAIOR_IGUAL;}
+<INITIAL>"<="   {yylval.valor_constante = "MENOR_IGUAL"; return MENOR_IGUAL;}
 
  /* padroes atribuicao, tipagem e acesso a atributos de classe */
 
