@@ -244,11 +244,11 @@ char* codigo_intermediario_final;
 %nonassoc WHILE IF FOR TO ATRIBUICAO VARIAVEL
 %nonassoc THEN
 %nonassoc ELSE DO OF
-%left OR
-%left AND
-%left MAIOR_QUE MENOR_QUE IGUAL DIFERENTE MAIOR_IGUAL MENOR_IGUAL
+%left <valor_constante> OR
+%left <valor_constante> AND
+%left <valor_constante> MAIOR_QUE MENOR_QUE IGUAL DIFERENTE MAIOR_IGUAL MENOR_IGUAL
 %left <valor_constante> MAIS MENOS
-%left MULTIPLICACAO DIVISAO
+%left <valor_constante> MULTIPLICACAO DIVISAO
 
 %type <node_da_arvore> exp type_id idexps l_value expseq expseq1 args args1 tyfields tyfields1 ty tydec vardec fundec decs dec
 

@@ -18,9 +18,9 @@
  /* padroes aritmeticos */
 
 <INITIAL>"+" {yylval.valor_constante = "MAIS"; return MAIS;}
-<INITIAL>"-" {return MENOS;}
-<INITIAL>"*" {return MULTIPLICACAO;}
-<INITIAL>"/" {return DIVISAO;}
+<INITIAL>"-" {yylval.valor_constante = "MENOS"; return MENOS;}
+<INITIAL>"*" {yylval.valor_constante = "MULTIPLICACAO"; return MULTIPLICACAO;}
+<INITIAL>"/" {yylval.valor_constante = "DIVISAO"; return DIVISAO;}
 
  /* padroes escopo */
 
@@ -38,12 +38,12 @@
 
  /* padroes operadores logicos */
 
-<INITIAL>">"    {return MAIOR_QUE;}
-<INITIAL>"<"    {return MENOR_QUE;}
-<INITIAL>"="    {return IGUAL;}
-<INITIAL>"<>"   {return DIFERENTE;}
-<INITIAL>"&"    {return AND;}
-<INITIAL>"|"    {return OR;}
+<INITIAL>">"    {yylval.valor_constante = "MAIOR_QUE"; return MAIOR_QUE;}
+<INITIAL>"<"    {yylval.valor_constante = "MENOR_QUE"; return MENOR_QUE;}
+<INITIAL>"="    {yylval.valor_constante = "IGUAL"; return IGUAL;}
+<INITIAL>"<>"   {yylval.valor_constante = "DIFERENTE"; return DIFERENTE;}
+<INITIAL>"&"    {yylval.valor_constante = "AND"; return AND;}
+<INITIAL>"|"    {yylval.valor_constante = "OR"; return OR;}
 <INITIAL>">="   {return MAIOR_IGUAL;}
 <INITIAL>"<="   {return MENOR_IGUAL;}
 
