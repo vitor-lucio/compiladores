@@ -51,12 +51,10 @@ char* codigo_intermediario_final;
     char* constroi_codigo_intermediario_vazio(){
 
         char* codigo_intermediario = (char*) malloc(
-                                                        13 /* tamanho de: EXP(CONST(0)) */
-                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                        1 /* \0 da string, indicando seu fim em C */
                                                     );
         
         codigo_intermediario[0] = '\0';
-        strcat(codigo_intermediario, "EXP(CONST(0))");
 
         return codigo_intermediario;
     }
