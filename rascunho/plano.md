@@ -4,10 +4,11 @@
 
 - **Arvore** para montar as partes do código relevantes para a análise semântica, geração do código intermediário e análise de erros.
     - O nó da árvore conterá os seguintes dados:
-        - Código intermediário correspondente (String): Conterá a string do código intermediário correspondente. Colocando valores para serem substituidos (exemplo: call(NomeDeUmaFuncao, $parametro1, $parametro2)) pelo código intermediário que esta em outro nó da árvore.
+        - Código intermediário correspondente (char*): Conterá a string do código intermediário correspondente. Colocando valores para serem substituidos (exemplo: call(NomeDeUmaFuncao, $parametro1, $parametro2)) pelo código intermediário que esta em outro nó da árvore.
         - Node_filho1 (Node): Nó filho do nó atual
         - Node_filho2 (Node): Nó filho do nó atual
-        - Node_filho3 (Node): Nó filho do nó atual 
+        - Node_filho3 (Node): Nó filho do nó atual
+        - tipo_codigo_intermediario (char*): tipo de codigo intermediário do nó (statement ou expression, por enquanto, para que possamos definir o comando assembly para "let in end") 
 - **Tabela de simbolos** para guardar nome de variáveis e de tipo. 
     - Guardando nome de variáveis, podemos identificar variaveis usadas sem estarem declaradas e guardar o tipo delas para verificar se, por exemplo, estão sendo usadas nos parâmetros corretos de uma função.
     - Guardando nome de tipos podemos identificar se o tipo usado, em qualquer parte do código, é válido (se não for inteiro ou string, que são tipos já reconhecidos nas linguagem)

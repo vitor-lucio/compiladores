@@ -48,9 +48,26 @@ char* codigo_intermediario_final;
 ////////////////////////////////////////////////////////////////////////////////
 */
 
+    char* constroi_codigo_intermediario_vazio(){
+
+        char* codigo_intermediario = (char*) malloc(
+                                                        13 /* tamanho de: EXP(CONST(0)) */
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, "EXP(CONST(0))");
+
+        return codigo_intermediario;
+    }
+
     char* constroi_codigo_intermediario_const(char* valor_constante){
 
-        char* codigo_intermediario = (char*) malloc(strlen(valor_constante) + 7 + 1);
+        char* codigo_intermediario = (char*) malloc(
+                                                        strlen(valor_constante) 
+                                                        + 7 /* tamanho de: const() */
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
         
         codigo_intermediario[0] = '\0';
         strcat(codigo_intermediario, "CONST(");
@@ -74,6 +91,25 @@ char* codigo_intermediario_final;
         strcat(codigo_intermediario, "binop(");
         strcat(codigo_intermediario, tipo_operacao);
         strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, ")");
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_eseq(){
+
+        char* codigo_intermediario = (char*) malloc(
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)
+                                                        + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO) 
+                                                        + 7 /* tamanho de: eseq(,) */ 
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, "eseq(");
         strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
         strcat(codigo_intermediario, ",");
         strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
@@ -221,9 +257,6 @@ char* codigo_intermediario_final;
 %%
 exp:  exp MAIS exp              {
                                     $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
-                                    aponta_raiz_da_arvore($$.node); /* O ponto de inicio da gramatica é a expressao "let in end", mas por
-                                                                    motivos de teste, estamos considerando que este e o ponto inicial
-                                                                    atualmente*/
                                     printf("%s\n", $$.node->codigo_intermediario);
                                     printf("node filho1: %s\n", $$.node->node_filho1->codigo_intermediario);
                                     printf("node filho2: %s\n", $$.node->node_filho2->codigo_intermediario);
@@ -271,7 +304,14 @@ exp:  exp MAIS exp              {
     | ABRE_PARENTESES expseq FECHA_PARENTESES           { printf("exp -> ( expseq )\n"); } /* Nenhum código intermediário neste nó */
     | VARIAVEL ABRE_PARENTESES args FECHA_PARENTESES    { printf("exp -> id ( args )\n"); }
 
-    | LET decs IN expseq END                            { printf("exp -> let decs in expseq end\n"); }
+    | LET decs IN expseq END                            { 
+                                                            $$.node = inicializa_node($2.node, $4.node, NULL, constroi_codigo_intermediario_eseq());
+                                                            aponta_raiz_da_arvore($$.node);
+                                                            printf("%s\n", $$.node->codigo_intermediario);
+                                                            printf("node filho1: %s\n", $$.node->node_filho1->codigo_intermediario);
+                                                            printf("node filho2: %s\n", $$.node->node_filho2->codigo_intermediario);
+                                                            printf("exp -> let decs in expseq end\n"); 
+                                                        } /* ESEQ(decs, expseq) ou SEQ(decs, expseq) */
     ;  
 
 type_id: VARIAVEL   { printf("type-id -> id\n"); }
@@ -328,7 +368,11 @@ fundec: FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES IGUAL exp   
     ;
 
 decs: dec decs  { printf("decs -> dec decs\n"); }
-    |           { printf("decs -> \n"); }
+    |           { 
+                    $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_vazio());
+                    printf("%s\n", $$.node->codigo_intermediario);   
+                    printf("decs -> \n"); 
+                } /* Nenhum código intermediário neste nó */
     ;
 
 dec: tydec      { printf("dec -> tydec\n"); }
