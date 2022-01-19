@@ -262,9 +262,27 @@ exp:  exp MAIS exp              {
                                     printf("node filho2: %s\n", $$.node->node_filho2->codigo_intermediario);
                                     printf("exp -> exp + exp\n"); 
                                 } /* BINOP(MAIS, exp, exp) */
-    | exp MENOS exp             { printf("exp -> exp - exp\n"); } /* BINOP(MENOS, exp, exp) */
-    | exp MULTIPLICACAO exp     { printf("exp -> exp * exp\n"); } /* BINOP(MULTIPLICACAO, exp, exp) */
-    | exp DIVISAO exp           { printf("exp -> exp / exp\n"); } /* BINOP(DIVISAO, exp, exp) */
+    | exp MENOS exp             {
+                                    $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
+                                    printf("%s\n", $$.node->codigo_intermediario);
+                                    printf("node filho1: %s\n", $$.node->node_filho1->codigo_intermediario);
+                                    printf("node filho2: %s\n", $$.node->node_filho2->codigo_intermediario); 
+                                    printf("exp -> exp - exp\n"); 
+                                } /* BINOP(MENOS, exp, exp) */
+    | exp MULTIPLICACAO exp     {
+                                    $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
+                                    printf("%s\n", $$.node->codigo_intermediario);
+                                    printf("node filho1: %s\n", $$.node->node_filho1->codigo_intermediario);
+                                    printf("node filho2: %s\n", $$.node->node_filho2->codigo_intermediario); 
+                                    printf("exp -> exp * exp\n"); 
+                                } /* BINOP(MULTIPLICACAO, exp, exp) */
+    | exp DIVISAO exp           {
+                                    $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
+                                    printf("%s\n", $$.node->codigo_intermediario);
+                                    printf("node filho1: %s\n", $$.node->node_filho1->codigo_intermediario);
+                                    printf("node filho2: %s\n", $$.node->node_filho2->codigo_intermediario);  
+                                    printf("exp -> exp / exp\n"); 
+                                } /* BINOP(DIVISAO, exp, exp) */
 
     | MENOS exp                 { printf("exp -> - exp\n"); } /* CONST(- exp) */
 
@@ -276,14 +294,62 @@ exp:  exp MAIS exp              {
     | STRING_CONSTANTE          { printf("exp -> string\n"); } /* 'STRING_CONSTANTE' */
     | NIL                       { printf("exp -> nil\n"); } /* NIL */
 
-    | exp IGUAL exp             { printf("exp -> exp = exp\n"); } /* BINOP(IGUAL, exp, exp) */
-    | exp DIFERENTE exp         { printf("exp -> exp <> exp\n"); } /* BINOP(DIFERENTE, exp, exp) */   
-    | exp MENOR_QUE exp         { printf("exp -> exp < exp\n"); } /* BINOP(MENOR_QUE, exp, exp) */
-    | exp MAIOR_QUE exp         { printf("exp -> exp > exp\n"); } /* BINOP(MAIOR_QUE, exp, exp) */
-    | exp MENOR_IGUAL exp       { printf("exp -> exp <= exp\n"); } /* BINOP(MENOR_IGUAL, exp, exp) */
-    | exp MAIOR_IGUAL exp       { printf("exp -> exp >= exp\n"); } /* BINOP(MAIOR_IGUAL, exp, exp) */
-    | exp AND exp               { printf("exp -> exp & exp\n"); } /* BINOP(AND, exp, exp) */
-    | exp OR exp                { printf("exp -> exp | exp\n"); } /* BINOP(OR, exp, exp) */
+    | exp IGUAL exp             {
+                                    $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
+                                    printf("%s\n", $$.node->codigo_intermediario);
+                                    printf("node filho1: %s\n", $$.node->node_filho1->codigo_intermediario);
+                                    printf("node filho2: %s\n", $$.node->node_filho2->codigo_intermediario);   
+                                    printf("exp -> exp = exp\n"); 
+                                } /* BINOP(IGUAL, exp, exp) */
+    | exp DIFERENTE exp         {
+                                    $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
+                                    printf("%s\n", $$.node->codigo_intermediario);
+                                    printf("node filho1: %s\n", $$.node->node_filho1->codigo_intermediario);
+                                    printf("node filho2: %s\n", $$.node->node_filho2->codigo_intermediario);   
+                                    printf("exp -> exp <> exp\n"); 
+                                } /* BINOP(DIFERENTE, exp, exp) */   
+    | exp MENOR_QUE exp         {
+                                    $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
+                                    printf("%s\n", $$.node->codigo_intermediario);
+                                    printf("node filho1: %s\n", $$.node->node_filho1->codigo_intermediario);
+                                    printf("node filho2: %s\n", $$.node->node_filho2->codigo_intermediario);   
+                                    printf("exp -> exp < exp\n"); 
+                                } /* BINOP(MENOR_QUE, exp, exp) */
+    | exp MAIOR_QUE exp         {
+                                    $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
+                                    printf("%s\n", $$.node->codigo_intermediario);
+                                    printf("node filho1: %s\n", $$.node->node_filho1->codigo_intermediario);
+                                    printf("node filho2: %s\n", $$.node->node_filho2->codigo_intermediario);   
+                                    printf("exp -> exp > exp\n"); 
+                                } /* BINOP(MAIOR_QUE, exp, exp) */
+    | exp MENOR_IGUAL exp       {
+                                    $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
+                                    printf("%s\n", $$.node->codigo_intermediario);
+                                    printf("node filho1: %s\n", $$.node->node_filho1->codigo_intermediario);
+                                    printf("node filho2: %s\n", $$.node->node_filho2->codigo_intermediario);   
+                                    printf("exp -> exp <= exp\n");
+                                } /* BINOP(MENOR_IGUAL, exp, exp) */
+    | exp MAIOR_IGUAL exp       {
+                                    $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
+                                    printf("%s\n", $$.node->codigo_intermediario);
+                                    printf("node filho1: %s\n", $$.node->node_filho1->codigo_intermediario);
+                                    printf("node filho2: %s\n", $$.node->node_filho2->codigo_intermediario);   
+                                    printf("exp -> exp >= exp\n"); 
+                                } /* BINOP(MAIOR_IGUAL, exp, exp) */
+    | exp AND exp               { 
+                                    $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
+                                    printf("%s\n", $$.node->codigo_intermediario);
+                                    printf("node filho1: %s\n", $$.node->node_filho1->codigo_intermediario);
+                                    printf("node filho2: %s\n", $$.node->node_filho2->codigo_intermediario);  
+                                    printf("exp -> exp & exp\n");
+                                } /* BINOP(AND, exp, exp) */
+    | exp OR exp                {
+                                    $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
+                                    printf("%s\n", $$.node->codigo_intermediario);
+                                    printf("node filho1: %s\n", $$.node->node_filho1->codigo_intermediario);
+                                    printf("node filho2: %s\n", $$.node->node_filho2->codigo_intermediario);   
+                                    printf("exp -> exp | exp\n");
+                                } /* BINOP(OR, exp, exp) */
 
     | IF exp THEN exp ELSE exp  { printf("exp -> if exp then exp else exp\n"); } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, Labelexp3) */
     | IF exp THEN exp           { printf("exp -> if exp then exp\n"); } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, enderecoDoCodigoAposIf) */
