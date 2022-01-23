@@ -550,7 +550,6 @@ tydec: TYPE VARIAVEL IGUAL ty   { printf("tydec -> type id = ty\n"); }
 vardec: VAR VARIAVEL ATRIBUICAO exp                     { printf("vardec -> var id := exp\n"); }
     | VAR VARIAVEL DOIS_PONTOS type_id ATRIBUICAO exp   { 
                                                             $$.node = inicializa_node($4.node, $6.node, NULL, "variavel");
-                                                            printf("%s OIEEEE\n", $2);
                                                             struct simbolo *s = inicializa_simbolo($2, ($4.node)->valor, "par", "1", "1");
                                                             adiciona_simbolo(s);
                                                             printf("vardec -> var id : type-id := exp\n");
