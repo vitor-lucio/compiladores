@@ -1,0 +1,5 @@
+let
+    var coco : int := 1
+in
+ 
+end

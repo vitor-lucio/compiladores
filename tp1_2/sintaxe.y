@@ -2,7 +2,8 @@
     #include <stdio.h>
     #include <string.h>
     #include <stdlib.h>
-    #include"lex.yy.c"
+    #include "lex.yy.c"
+    // #include "table.h"
     
     void yyerror(const char *s);
     int yylex();
@@ -37,6 +38,8 @@ char* codigo_intermediario_final;
         struct node* node_filho1;
         struct node* node_filho2;
         struct node* node_filho3;
+        char* tipo;
+        char* valor;
 	};
 
     struct node* raiz_da_arvore; /* raiz da arvore */
@@ -228,6 +231,96 @@ char* codigo_intermediario_final;
         return copia_codigo_intermediario;
     }
 
+
+
+
+
+
+
+
+
+
+    typedef struct simbolo{
+
+        char* nome;
+        char* tipo;
+        char* classe;
+        char* numero_parametros;
+        char* endereco;    
+
+        struct simbolo *next;
+        
+    }simbolo;
+
+    typedef struct tabela{
+        struct simbolo *primeiro_elemento;
+    }tabela;
+
+    struct tabela tabela_simbolos;
+
+
+    struct simbolo *inicializa_simbolo(char* nome, char* tipo, char* classe, char* numero_parametros, char* endereco){
+        struct simbolo* novo_simbolo = (struct simbolo*) malloc (sizeof(struct simbolo));
+        
+        char* aux = (char*) malloc (strlen(nome)+1); 
+        strcpy(aux, nome);
+        novo_simbolo->nome = aux;
+
+        aux = (char*) malloc (strlen(tipo)+1); 
+        strcpy(aux, tipo);
+        novo_simbolo->tipo = aux;
+        
+        aux = (char*) malloc (strlen(classe)+1); 
+        strcpy(aux, classe);
+        novo_simbolo->classe = aux;
+        
+        aux = (char*) malloc (strlen(numero_parametros)+1); 
+        strcpy(aux, numero_parametros);
+        novo_simbolo->numero_parametros = aux;
+        
+        aux = (char*) malloc (strlen(endereco)+1); 
+        strcpy(aux, endereco);
+        novo_simbolo->endereco = aux;
+
+        return novo_simbolo;
+    }
+
+    void inicializa_tabela_simbolos(){
+        tabela_simbolos.primeiro_elemento = NULL;
+    }
+
+    void adiciona_simbolo(struct simbolo *s){
+      
+        if(!tabela_simbolos.primeiro_elemento){
+            tabela_simbolos.primeiro_elemento = s;
+            tabela_simbolos.primeiro_elemento->next = NULL;
+        }else{
+            struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
+            
+            while(iterador->next != NULL){
+                iterador = iterador->next;
+            }
+            
+            iterador->next = s;
+            iterador->next->next = NULL;
+        }
+    }
+
+    void imprime_tabela_simbolos(){
+        struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
+        
+        while(iterador != NULL){
+            printf("%s - %s, ", iterador->nome, iterador->tipo);
+            iterador = iterador->next;
+        }
+
+        printf("\n");
+    }
+
+    /*
+        Inicializações
+    */
+    
 %}
 
 %union { 
@@ -237,9 +330,9 @@ char* codigo_intermediario_final;
 
     char* valor_constante;
 } 
- 
+
 %token <valor_constante> NUMERO STRING_CONSTANTE NIL BREAK LET IN END FUNCTION TYPE VAR ARRAY DOIS_PONTOS VIRGULA PONTO_E_VIRGULA PONTO ABRE_CHAVES FECHA_CHAVES ABRE_COLCHETE FECHA_COLCHETE ABRE_PARENTESES FECHA_PARENTESES
-%nonassoc WHILE IF FOR TO ATRIBUICAO VARIAVEL
+%nonassoc <valor_constante> WHILE IF FOR TO ATRIBUICAO VARIAVEL
 %nonassoc THEN
 %nonassoc ELSE DO OF
 %left <valor_constante> OR
@@ -255,10 +348,19 @@ char* codigo_intermediario_final;
 %%
 exp:  exp MAIS exp              {
                                     $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
+                                    
+                                    if($$.node->node_filho1->tipo == "int" && $$.node->node_filho2->tipo == "int"){
+                                        $$.node->tipo = $$.node->node_filho1->tipo; 
+                                        printf("TIPO: %s\n", $$.node->tipo);
+                                    }else{
+                                        printf("ERRO!\n");
+                                    }
+
                                     printf("%s\n", $$.node->codigo_intermediario);
                                     printf("node filho1: %s\n", $$.node->node_filho1->codigo_intermediario);
                                     printf("node filho2: %s\n", $$.node->node_filho2->codigo_intermediario);
                                     printf("exp -> exp + exp\n"); 
+
                                 } /* BINOP(MAIS, exp, exp) */
     | exp MENOS exp             {
                                     $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
@@ -286,10 +388,15 @@ exp:  exp MAIS exp              {
 
     | NUMERO                    {
                                     $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_const($1));
+                                    $$.node->tipo = "int";
                                     printf("%s\n", $$.node->codigo_intermediario);   
-                                    printf("exp -> num\n"); 
+                                    printf("exp -> num\n");
                                 } /* CONST(NUMERO) */
-    | STRING_CONSTANTE          { printf("exp -> string\n"); } /* 'STRING_CONSTANTE' */
+    | STRING_CONSTANTE          { 
+                                    $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_const($1));
+                                    $$.node->tipo = "string";
+                                    printf("exp -> string\n"); 
+                                } /* 'STRING_CONSTANTE' */
     | NIL                       { printf("exp -> nil\n"); } /* NIL */
 
     | exp IGUAL exp             {
@@ -378,7 +485,13 @@ exp:  exp MAIS exp              {
                                                         } /* ESEQ(decs, expseq) ou SEQ(decs, expseq) */
     ;  
 
-type_id: VARIAVEL   { printf("type-id -> id\n"); }
+type_id: VARIAVEL                           {   
+                                                $$.node = inicializa_node(NULL, NULL, NULL, "variavel");
+                                                char* aux = (char*) malloc (strlen($1)+1);
+                                                strcpy(aux, $1);
+                                                $$.node->valor = aux;
+                                                printf("type-id -> id\n"); 
+                                            }
     ;
 
 idexps: VIRGULA VARIAVEL IGUAL exp idexps   { printf("idexps  -> , id = exp idexps\n"); }
@@ -391,8 +504,13 @@ l_value: type_id PONTO VARIAVEL                 { printf("l-value -> type-id . i
     | l_value ABRE_COLCHETE exp FECHA_COLCHETE  { printf("l-value -> l-value [ exp ]\n"); }
     ;
 
-expseq: exp expseq1                             { printf("expseq -> exp expseq1\n"); } /* Nenhum código intermediário neste nó */
-    |                                           { printf("expseq -> \n"); } /* Nenhum código intermediário neste nó */
+expseq: exp expseq1                             {    
+                                                    printf("expseq -> exp expseq1\n"); 
+                                                } /* Nenhum código intermediário neste nó */
+    |                                           {   
+                                                    $$.node = inicializa_node(NULL, NULL, NULL, "variavel");
+                                                    printf("expseq -> \n"); 
+                                                } /* Nenhum código intermediário neste nó */
     ;
 
 expseq1: PONTO_E_VIRGULA exp expseq1            { printf("expseq1 -> ; exp expseq1\n"); } /* Nenhum código intermediário neste nó */
@@ -407,7 +525,13 @@ args1: VIRGULA exp args1                        { printf("args1 -> , exp args1\n
     |                                           { printf("args1 -> \n"); }
     ;
 
-tyfields: VARIAVEL DOIS_PONTOS type_id tyfields1    { printf("tyfields -> id : type-id tyfields1\n"); }
+tyfields: VARIAVEL DOIS_PONTOS type_id tyfields1    {   
+                                                        // $$.node = inicializa_node(NULL, NULL, NULL, "VARIAVEL");
+                                                        printf("tyfields -> id : type-id tyfields1\n"); 
+                                                        
+                                                        // struct simbolo *s = inicializa_simbolo($1, "int", "par", "0", "1");
+                                                        // adiciona_simbolo(s);
+                                                    }
     |                                               { printf("tyfields -> \n"); }
     ;   
 
@@ -424,14 +548,23 @@ tydec: TYPE VARIAVEL IGUAL ty   { printf("tydec -> type id = ty\n"); }
     ;
 
 vardec: VAR VARIAVEL ATRIBUICAO exp                     { printf("vardec -> var id := exp\n"); }
-    | VAR VARIAVEL DOIS_PONTOS type_id ATRIBUICAO exp   { printf("vardec -> var id : type-id := exp\n"); }
+    | VAR VARIAVEL DOIS_PONTOS type_id ATRIBUICAO exp   { 
+                                                            $$.node = inicializa_node($4.node, $6.node, NULL, "variavel");
+                                                            printf("%s OIEEEE\n", $2);
+                                                            struct simbolo *s = inicializa_simbolo($2, ($4.node)->valor, "par", "1", "1");
+                                                            adiciona_simbolo(s);
+                                                            printf("vardec -> var id : type-id := exp\n");
+                                                        }
     ;
 
 fundec: FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES IGUAL exp   { printf("fundec -> function id ( tyfields ) = exp\n"); }
     | FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES DOIS_PONTOS type_id IGUAL exp { printf("fundec -> function id ( tyfields ) : type-id = exp\n"); }
     ;
 
-decs: dec decs  { printf("decs -> dec decs\n"); }
+decs: dec decs  { 
+                    $$.node = inicializa_node($1.node, $2.node, NULL, "variavel");                                              
+                    printf("decs -> dec decs\n"); 
+                }
     |           { 
                     $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_vazio());
                     printf("%s\n", $$.node->codigo_intermediario);   
@@ -440,7 +573,10 @@ decs: dec decs  { printf("decs -> dec decs\n"); }
     ;
 
 dec: tydec      { printf("dec -> tydec\n"); }
-    | vardec    { printf("dec -> vardec\n"); }
+    | vardec    { 
+                    $$.node = inicializa_node($1.node, NULL, NULL, "variavel");
+                    printf("dec -> vardec\n"); 
+                }
     | fundec    { printf("dec -> fundec\n"); }
     ;
 
@@ -462,6 +598,7 @@ void printCode(char* filename){
 }
 
 int main(int argc, char** argv) {
+    inicializa_tabela_simbolos();
     printf("\nREGRAS UTILIZADAS:\n\n");
 
     yyin = fopen(argv[1], "r" );
@@ -478,6 +615,11 @@ int main(int argc, char** argv) {
     printf("CODIGO INTERMEDIARIO GERADO:\n\n");
     codigo_intermediario_final = monta_codigo_intermediario_da_arvore(raiz_da_arvore);
     printf("%s\n", codigo_intermediario_final);
+
+    printf("\n----------------------------------------\n\n");
+    printf("TABELA DE SIMBOLOS:\n\n");
+    
+    imprime_tabela_simbolos();
 
     return 0;
 }

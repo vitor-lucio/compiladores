@@ -89,8 +89,18 @@
 
  /* padroes nao constantes */
 
-<INITIAL>[a-zA-Z][0-9a-zA-Z_]* {return VARIAVEL;}
-<INITIAL>[0-9]+                {yylval.valor_constante = yytext; return NUMERO;}
+<INITIAL>[a-zA-Z][0-9a-zA-Z_]* {
+                                    char* aux = (char*) malloc (strlen(yytext)+1);
+                                    strcpy(aux, yytext);
+                                    yylval.valor_constante = aux; 
+                                    return VARIAVEL;
+                                }
+<INITIAL>[0-9]+                {
+                                    char* aux = (char*) malloc (strlen(yytext)+1);
+                                    strcpy(aux, yytext);
+                                    yylval.valor_constante = aux; 
+                                    return NUMERO;
+                                }
 
  /*
  ---------------------------------------------------------------
@@ -100,7 +110,7 @@
 
  /* montando a string constante */
 
-<STRING>"\""        {BEGIN(INITIAL); strcat(string_lexema,"\""); yytext=string_lexema; return STRING_CONSTANTE;}
+<STRING>"\""        {BEGIN(INITIAL); strcat(string_lexema,"\""); yytext=string_lexema; yylval.valor_constante = yytext; return STRING_CONSTANTE;}
 <STRING>[0-9a-zA-Z ]+               {strcat(string_lexema, yytext);}
 <STRING>"\t"                        {strcat(string_lexema, yytext);}
 <STRING>"\\n"                       {strcat(string_lexema, yytext);}
