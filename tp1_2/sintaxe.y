@@ -133,30 +133,44 @@ char* codigo_intermediario_final;
         return codigo_intermediario;
     }
 
-    char* constroi_codigo_intermediario_temp(char* valor_constante){
+    char* constroi_codigo_intermediario_temp(){
         char* codigo_intermediario = (char*) malloc(
-                                                        strlen(valor_constante) 
+                                                        // strlen(valor) 
                                                         + 5 /* tamanho de: temp */
                                                         + 1 /* \0 da string, indicando seu fim em C */
                                                     );
         
         codigo_intermediario[0] = '\0';
-        strcat(codigo_intermediario, "TEMP ");
-        strcat(codigo_intermediario, valor_constante);
+        strcat(codigo_intermediario, "TEMP t0");
+        // strcat(codigo_intermediario, valor);
 
         return codigo_intermediario;
     }
 
-    char* constroi_codigo_intermediario_move_temp(){
-        char* codigo_intermediario = (char*) malloc(                                                    
-                                                        strlen(PARAMETRO2_CODIGO_INTERMEDIARIO) 
+    char* constroi_codigo_intermediario_type_id(){
+        char* codigo_intermediario = (char*) malloc(
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)                                 
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+        // strcat(codigo_intermediario, valor);
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_move(){
+        char* codigo_intermediario = (char*) malloc(      
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)                                              
+                                                        + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO) 
                                                         + 14 /* tamanho de: move(temp t2,) */
                                                         + 1 /* \0 da string, indicando seu fim em C */
                                                     );
         
         codigo_intermediario[0] = '\0';
         strcat(codigo_intermediario, "MOVE(");
-        strcat(codigo_intermediario, "TEMP t2");
+        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
         strcat(codigo_intermediario, ",");
         strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
         strcat(codigo_intermediario, ")");
@@ -177,6 +191,32 @@ char* codigo_intermediario_final;
 
         return codigo_intermediario;
     }
+
+    char* constroi_codigo_intermediario_cjump(){
+        char* codigo_intermediario = (char*) malloc(    
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)
+                                                        + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO)
+                                                        + strlen(PARAMETRO3_CODIGO_INTERMEDIARIO)
+                                                        + 11 /* tamanho de: cjump(,,,,) */                                                     
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, "CJUMP(");
+        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO); // PRECISO DESMEMBRAR ESSE PARAMETRO
+        strcat(codigo_intermediario, ",");
+        // strcat(codigo_intermediario, "");
+        strcat(codigo_intermediario, ",");
+        // strcat(codigo_intermediario, "");
+        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO); // TROCAR PRA LABEL
+        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, PARAMETRO3_CODIGO_INTERMEDIARIO); // TROCAR PRA LABEL
+        strcat(codigo_intermediario, ")");
+
+        return codigo_intermediario;
+    }
+
 
 
 /*
@@ -311,6 +351,7 @@ char* codigo_intermediario_final;
         char* tipo;
         char* classe;
         char* numero_parametros;
+        char* valor; 
         char* endereco;    
 
         struct simbolo *next;
@@ -329,7 +370,7 @@ char* codigo_intermediario_final;
 ////////////////////////////////////////////////////////////////////////////////
 */
 
-    struct simbolo *inicializa_simbolo(char* nome, char* tipo, char* classe, char* numero_parametros, char* endereco){
+    struct simbolo *inicializa_simbolo(char* nome, char* tipo, char* valor, char* classe, char* numero_parametros, char* endereco){
         struct simbolo* novo_simbolo = (struct simbolo*) malloc (sizeof(struct simbolo));
         
         novo_simbolo->nome              = get_copia_string(nome);
@@ -337,12 +378,25 @@ char* codigo_intermediario_final;
         novo_simbolo->classe            = get_copia_string(classe);
         novo_simbolo->numero_parametros = get_copia_string(numero_parametros);
         novo_simbolo->endereco          = get_copia_string(endereco);
+        novo_simbolo->valor             = get_copia_string(valor);
 
         return novo_simbolo;
     }
 
     void inicializa_tabela_simbolos(){
         tabela_simbolos.primeiro_elemento = NULL;
+    }
+
+    struct simbolo *busca_simbolo(struct simbolo *s){
+        struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
+        
+        while(iterador != NULL){
+            if(!strcmp(iterador->nome, s->nome)){
+                return s;
+            }
+            iterador = iterador->next;
+        }
+        return NULL;
     }
 
     void adiciona_simbolo(struct simbolo *s){
@@ -352,6 +406,13 @@ char* codigo_intermediario_final;
 
             printf("SIMBOLO ADICIONADO: %s\n", tabela_simbolos.primeiro_elemento->nome);
         }else{
+
+            if(busca_simbolo(s)){
+                printf("ESSE SIMBOLO JA EXISTE!\n");
+                // atualiza_simbolo(s);
+                // return;
+            }
+
             struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
             
             while(iterador->next != NULL){
@@ -368,8 +429,13 @@ char* codigo_intermediario_final;
     void imprime_tabela_simbolos(){
         struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
         
+        printf("|    NOME   |    TIPO   |   VALOR   |   CLASSE  | NUM PARAM |  ENDERECO |");
+        printf("\nx-----------x-----------x-----------x-----------x-----------x-----------x");
+
         while(iterador != NULL){
-            printf("%s - %s, ", iterador->nome, iterador->tipo);
+            printf("\n|%10s |%10s |%10s |%10s |%10s |%10s |", iterador->nome, iterador->tipo, 
+                                                iterador->valor, iterador->classe, 
+                                                iterador->numero_parametros, iterador->endereco);
             iterador = iterador->next;
         }
 
@@ -404,8 +470,8 @@ char* codigo_intermediario_final;
 
 %token <valor_constante> NUMERO STRING_CONSTANTE NIL BREAK LET IN END FUNCTION TYPE VAR ARRAY DOIS_PONTOS VIRGULA PONTO_E_VIRGULA PONTO ABRE_CHAVES FECHA_CHAVES ABRE_COLCHETE FECHA_COLCHETE ABRE_PARENTESES FECHA_PARENTESES
 %nonassoc <valor_constante> WHILE IF FOR TO ATRIBUICAO VARIAVEL
-%nonassoc THEN
-%nonassoc ELSE DO OF
+%nonassoc <valor_constante> THEN
+%nonassoc <valor_constante> ELSE DO OF
 %left <valor_constante> OR
 %left <valor_constante> AND
 %left <valor_constante> MAIOR_QUE MENOR_QUE IGUAL DIFERENTE MAIOR_IGUAL MENOR_IGUAL
@@ -483,8 +549,14 @@ exp:  exp MAIS exp                                      {
                                                             printf("exp -> exp | exp\n");
                                                         } /* BINOP(OR, exp, exp) */
 
-    | IF exp THEN exp ELSE exp                          { printf("exp -> if exp then exp else exp\n"); } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, Labelexp3) */
-    | IF exp THEN exp                                   { printf("exp -> if exp then exp\n"); } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, enderecoDoCodigoAposIf) */
+    | IF exp THEN exp ELSE exp                          { 
+                                                            $$.node = inicializa_node($2.node, $4.node, $6.node, constroi_codigo_intermediario_cjump());
+                                                            printf("exp -> if exp then exp else exp\n"); 
+                                                        } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, Labelexp3) */
+    | IF exp THEN exp                                   { 
+                                                            $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_cjump());
+                                                            printf("exp -> if exp then exp\n"); 
+                                                        } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, enderecoDoCodigoAposIf) */
     | WHILE exp DO exp                                  { printf("exp -> while exp do exp\n"); } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, enderecoDoCodigoAposWhile) */
 
     | FOR VARIAVEL ATRIBUICAO exp TO exp DO exp         { printf("exp -> for id := exp to exp do exp\n"); } /* CJUMP(MENOR_IGUAL, exp1.exp1, exp1.exp2, Labelexp2, enderecoDoCodigoAposWhile) */
@@ -496,7 +568,10 @@ exp:  exp MAIS exp                                      {
     | l_value ATRIBUICAO exp                            { printf("exp -> l-value := exp\n"); }
     | type_id ATRIBUICAO exp                            { printf("exp -> type-id := exp\n"); }
 
-    | type_id                                           { printf("exp -> type-id\n"); }
+    | type_id                                           { 
+                                                            $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_type_id());                                                         
+                                                            printf("exp -> type-id\n"); 
+                                                        }
     | l_value                                           { printf("exp -> l-value\n"); }
 
     | ABRE_PARENTESES expseq FECHA_PARENTESES           { printf("exp -> ( expseq )\n"); } /* Nenhum código intermediário neste nó */
@@ -510,8 +585,12 @@ exp:  exp MAIS exp                                      {
     ;  
 
 type_id: VARIAVEL                                       {   
-                                                            $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_vazio());                                                         
-                                                            $$.node->valor = get_copia_string($1);                               
+                                                            $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_temp());                                                        
+                                                            $$.node->valor = get_copia_string($1); 
+
+                                                            struct simbolo *s = inicializa_simbolo($1, "?", "?", "?", "?", "?");
+                                                            adiciona_simbolo(s);     
+
                                                             printf("type-id -> id\n"); 
                                                         }
     ;
@@ -567,9 +646,9 @@ tydec: TYPE VARIAVEL IGUAL ty                           { printf("tydec -> type 
 
 vardec: VAR VARIAVEL ATRIBUICAO exp                     { printf("vardec -> var id := exp\n"); }
     | VAR VARIAVEL DOIS_PONTOS type_id ATRIBUICAO exp   {  
-                                                            $$.node = inicializa_node($4.node, $6.node, NULL, constroi_codigo_intermediario_move_temp());
-                                                            //TODO: lembrar de mudar esses parâmetros
-                                                            struct simbolo *s = inicializa_simbolo($2, ($4.node)->valor, "par", "1", "1");
+                                                            $$.node = inicializa_node($4.node, $6.node, NULL, constroi_codigo_intermediario_move());
+                                                            //TODO: lembrar de mudar esses parâmetros.
+                                                            struct simbolo *s = inicializa_simbolo($2, ($4.node)->valor, "?", "var", "?", "?");
                                                             adiciona_simbolo(s);
                                                             
                                                             printf("vardec -> var id : type-id := exp\n");

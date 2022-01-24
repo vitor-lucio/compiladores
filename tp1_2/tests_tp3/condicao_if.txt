@@ -1,0 +1,8 @@
+let
+    var n : int := 1
+in
+    if  n = 0 
+        then 5
+    else 9 + 8
+end
+
