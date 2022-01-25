@@ -20,6 +20,25 @@
         strcpy(copia_string, string);
         return copia_string;
     }
+
+    char* calcula(char* str1, char* str2, char* op){
+        int x = atoi(str1), y = atoi(str2);
+        int resultado = 0;
+        char* string_resultado = (char*) malloc (strlen(str1) + strlen(str2) + 1);
+        
+        if(!strcmp(op, "+")){
+            resultado = x + y;
+        }else if(!strcmp(op, "*")){
+            resultado = x * y;
+        }else if(!strcmp(op, "-")){
+            resultado = x - y;
+        }else if(!strcmp(op, "*")){
+            resultado = x / y;
+        }
+               
+        sprintf(string_resultado, "%d", resultado);
+        return string_resultado;
+    }
     
 /*
 ////////////////////////////////////////////////////////////////////////////////
@@ -524,7 +543,7 @@ char* codigo_intermediario_final;
 ////////////////////////////////////////////////////////////////////////////////
 */
 
-    struct simbolo *inicializa_simbolo(char* nome, char* tipo, char* valor, char* classe, char* numero_parametros, char* endereco){
+    struct simbolo* inicializa_simbolo(char* nome, char* tipo, char* valor, char* classe, char* numero_parametros, char* endereco){
         struct simbolo* novo_simbolo = (struct simbolo*) malloc (sizeof(struct simbolo));
         
         novo_simbolo->nome              = get_copia_string(nome);
@@ -541,7 +560,7 @@ char* codigo_intermediario_final;
         tabela_simbolos.primeiro_elemento = NULL;
     }
 
-    struct simbolo *busca_simbolo(struct simbolo *s){
+    struct simbolo* busca_simbolo(struct simbolo *s){
         struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
         
         while(iterador != NULL){
@@ -580,6 +599,14 @@ char* codigo_intermediario_final;
         }
     }
 
+    void atualiza_simbolo(struct simbolo *s){
+
+    }
+
+    void remove_simbolo(struct simbolo *s){
+
+    }
+
     void imprime_tabela_simbolos(){
         struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
         
@@ -611,6 +638,15 @@ char* codigo_intermediario_final;
             return "";
         }
     }
+
+    char* verifica_e_define_tipos_vardec(char* tipo_parametro_1, char* tipo_parametro_2){
+        if(strcmp(tipo_parametro_1, tipo_parametro_2)){
+            printf("ERRO DE TIPAGEM!\n");
+            exit(1);
+        }
+
+        return tipo_parametro_2;
+    }                                                                                                                                                   
                                                                                                             
 %}
 
@@ -639,178 +675,217 @@ char* codigo_intermediario_final;
 %%
 /* EXPRESSOES */
 exp:  
-      exp MAIS exp                                      {
-                                                            $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
-                                                            $$.node->tipo = verifica_e_define_tipos_binop($$.node->node_filho1->tipo, $$.node->node_filho2->tipo);
-                                                            printf("exp -> exp + exp\n"); 
-                                                        } /* BINOP(MAIS, exp, exp) */
-    | exp MENOS exp                                     {
-                                                            $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
-                                                            printf("exp -> exp - exp\n"); 
-                                                        } /* BINOP(MENOS, exp, exp) */
-    | exp MULTIPLICACAO exp                             {
-                                                            $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
-                                                            printf("exp -> exp * exp\n"); 
-                                                        } /* BINOP(MULTIPLICACAO, exp, exp) */
-    | exp DIVISAO exp                                   {
-                                                            $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
-                                                            printf("exp -> exp / exp\n"); 
-                                                        } /* BINOP(DIVISAO, exp, exp) */
+      exp MAIS exp                                                  {
+                                                                        $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
+                                                                        $$.node->tipo = verifica_e_define_tipos_binop($$.node->node_filho1->tipo, $$.node->node_filho2->tipo);
+                                                                        $$.node->valor = calcula(($1.node)->valor, ($3.node)->valor, "+");
+                                                                        printf("exp -> exp + exp\n"); 
+                                                                    } /* BINOP(MAIS, exp, exp) */
+    | exp MENOS exp                                                 {
+                                                                        $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
+                                                                        $$.node->tipo = verifica_e_define_tipos_binop($$.node->node_filho1->tipo, $$.node->node_filho2->tipo);
+                                                                        $$.node->valor = calcula(($1.node)->valor, ($3.node)->valor, "-");
+                                                                        printf("exp -> exp - exp\n"); 
+                                                                    } /* BINOP(MENOS, exp, exp) */
+    | exp MULTIPLICACAO exp                                         {
+                                                                        $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
+                                                                        $$.node->tipo = verifica_e_define_tipos_binop($$.node->node_filho1->tipo, $$.node->node_filho2->tipo);
+                                                                        $$.node->valor = calcula(($1.node)->valor, ($3.node)->valor, "*");
+                                                                        printf("exp -> exp * exp\n"); 
+                                                                    } /* BINOP(MULTIPLICACAO, exp, exp) */
+    | exp DIVISAO exp                                               {
+                                                                        $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
+                                                                        $$.node->tipo = verifica_e_define_tipos_binop($$.node->node_filho1->tipo, $$.node->node_filho2->tipo);
+                                                                        $$.node->valor = calcula(($1.node)->valor, ($3.node)->valor, "/");
+                                                                        printf("exp -> exp / exp\n"); 
+                                                                    } /* BINOP(DIVISAO, exp, exp) */
 
-    | MENOS exp                                         { printf("exp -> - exp\n"); } /* CONST(- exp) */
+    | MENOS exp                                                     { 
+                                                                        printf("exp -> - exp\n"); 
+                                                                    } /* CONST(- exp) */
 
-    | NUMERO                                            {
-                                                            $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_const($1));
-                                                            $$.node->tipo = "int";
-                                                            printf("exp -> num\n");
-                                                        } /* CONST(NUMERO) */
-    | STRING_CONSTANTE                                  { 
-                                                            $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_const($1));
-                                                            $$.node->tipo = "string";
-                                                            printf("exp -> string\n"); 
-                                                        } /* 'STRING_CONSTANTE' */
-    | NIL                                               { printf("exp -> nil\n"); } /* NIL */
+    | NUMERO                                                        {
+                                                                        $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_const($1));
+                                                                        $$.node->tipo = "int";
+                                                                        $$.node->valor = $1;
+                                                                        printf("exp -> num\n");
+                                                                    } /* CONST(NUMERO) */
+    | STRING_CONSTANTE                                              { 
+                                                                        $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_const($1));
+                                                                        $$.node->tipo = "string";
+                                                                        printf("exp -> string\n"); 
+                                                                    } /* 'STRING_CONSTANTE' */
+    | NIL                                                           { 
+                                                                        printf("exp -> nil\n"); 
+                                                                    } /* NIL */
 
-    | exp IGUAL exp                                     {
-                                                            $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
-                                                            printf("exp -> exp = exp\n"); 
-                                                        } /* BINOP(IGUAL, exp, exp) */
-    | exp DIFERENTE exp                                 {
-                                                            $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
-                                                            printf("exp -> exp <> exp\n"); 
-                                                        } /* BINOP(DIFERENTE, exp, exp) */   
-    | exp MENOR_QUE exp                                 {
-                                                            $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));  
-                                                            printf("exp -> exp < exp\n"); 
-                                                        } /* BINOP(MENOR_QUE, exp, exp) */
-    | exp MAIOR_QUE exp                                 {
-                                                            $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));  
-                                                            printf("exp -> exp > exp\n"); 
-                                                        } /* BINOP(MAIOR_QUE, exp, exp) */
-    | exp MENOR_IGUAL exp                               {
-                                                            $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));  
-                                                            printf("exp -> exp <= exp\n");
-                                                        } /* BINOP(MENOR_IGUAL, exp, exp) */
-    | exp MAIOR_IGUAL exp                               {
-                                                            $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));  
-                                                            printf("exp -> exp >= exp\n"); 
-                                                        } /* BINOP(MAIOR_IGUAL, exp, exp) */
-    | exp AND exp                                       { 
-                                                            $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2)); 
-                                                            printf("exp -> exp & exp\n");
-                                                        } /* BINOP(AND, exp, exp) */
-    | exp OR exp                                        {
-                                                            $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));  
-                                                            printf("exp -> exp | exp\n");
-                                                        } /* BINOP(OR, exp, exp) */
+    | exp IGUAL exp                                                 {
+                                                                        $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
+                                                                        printf("exp -> exp = exp\n"); 
+                                                                    } /* BINOP(IGUAL, exp, exp) */
+    | exp DIFERENTE exp                                             {
+                                                                        $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
+                                                                        printf("exp -> exp <> exp\n"); 
+                                                                    } /* BINOP(DIFERENTE, exp, exp) */   
+    | exp MENOR_QUE exp                                             {
+                                                                        $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));  
+                                                                        printf("exp -> exp < exp\n"); 
+                                                                    } /* BINOP(MENOR_QUE, exp, exp) */
+    | exp MAIOR_QUE exp                                             {
+                                                                        $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));  
+                                                                        printf("exp -> exp > exp\n"); 
+                                                                    } /* BINOP(MAIOR_QUE, exp, exp) */
+    | exp MENOR_IGUAL exp                                           {
+                                                                        $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));  
+                                                                        printf("exp -> exp <= exp\n");
+                                                                    } /* BINOP(MENOR_IGUAL, exp, exp) */
+    | exp MAIOR_IGUAL exp                                           {
+                                                                        $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));  
+                                                                        printf("exp -> exp >= exp\n"); 
+                                                                    } /* BINOP(MAIOR_IGUAL, exp, exp) */
+    | exp AND exp                                                   { 
+                                                                        $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2)); 
+                                                                        printf("exp -> exp & exp\n");
+                                                                    } /* BINOP(AND, exp, exp) */
+    | exp OR exp                                                    {
+                                                                        $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));  
+                                                                        printf("exp -> exp | exp\n");
+                                                                    } /* BINOP(OR, exp, exp) */
 
-    | IF exp THEN exp ELSE exp                          { 
-                                                            $$.node = inicializa_node($2.node, $4.node, $6.node, constroi_codigo_intermediario_cjump());
-                                                            printf("exp -> if exp then exp else exp\n"); 
-                                                        } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, Labelexp3) */
-    | IF exp THEN exp                                   { 
-                                                            $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_cjump());
-                                                            printf("exp -> if exp then exp\n"); 
-                                                        } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, enderecoDoCodigoAposIf) */
-    | WHILE exp DO exp                                  { printf("exp -> while exp do exp\n"); } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, enderecoDoCodigoAposWhile) */
+    | IF exp THEN exp ELSE exp                                      { 
+                                                                        $$.node = inicializa_node($2.node, $4.node, $6.node, constroi_codigo_intermediario_cjump());
+                                                                        printf("exp -> if exp then exp else exp\n"); 
+                                                                    } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, Labelexp3) */
+    | IF exp THEN exp                                               { 
+                                                                        $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_cjump());
+                                                                        printf("exp -> if exp then exp\n"); 
+                                                                    } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, enderecoDoCodigoAposIf) */
+    | WHILE exp DO exp                                              { 
+                                                                        printf("exp -> while exp do exp\n"); 
+                                                                    } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, enderecoDoCodigoAposWhile) */
+    | FOR VARIAVEL ATRIBUICAO exp TO exp DO exp                     { 
+                                                                        printf("exp -> for id := exp to exp do exp\n"); 
+                                                                    } /* CJUMP(MENOR_IGUAL, exp1.exp1, exp1.exp2, Labelexp2, enderecoDoCodigoAposWhile) */
+    | BREAK                                                         {  
+                                                                        printf("exp -> break\n"); 
+                                                                    } /* JUMP(labelAnteriorAoDoLabelQueExecutouBreak + proximoComandoDoLabelQueExecutouBreak, labelAnteriorAoDoLabelQueExecutouBreak + proximoComandoDoLabelQueExecutouBreak) */
+    | type_id ABRE_CHAVES VARIAVEL IGUAL exp idexps FECHA_CHAVES    { 
+                                                                        printf("exp -> type-id { id = exp idexps }\n"); 
+                                                                    }
+    | type_id ABRE_COLCHETE exp FECHA_COLCHETE OF exp               { 
+                                                                        printf("exp -> type-id [ exp ] of exp\n"); 
+                                                                    }
 
-    | FOR VARIAVEL ATRIBUICAO exp TO exp DO exp         { printf("exp -> for id := exp to exp do exp\n"); } /* CJUMP(MENOR_IGUAL, exp1.exp1, exp1.exp2, Labelexp2, enderecoDoCodigoAposWhile) */
-    | BREAK                                             { printf("exp -> break\n"); } /* JUMP(labelAnteriorAoDoLabelQueExecutouBreak + proximoComandoDoLabelQueExecutouBreak, labelAnteriorAoDoLabelQueExecutouBreak + proximoComandoDoLabelQueExecutouBreak) */
-
-    | type_id ABRE_CHAVES VARIAVEL IGUAL exp idexps FECHA_CHAVES    { printf("exp -> type-id { id = exp idexps }\n"); }
-    | type_id ABRE_COLCHETE exp FECHA_COLCHETE OF exp               { printf("exp -> type-id [ exp ] of exp\n"); }
-
-    | l_value ATRIBUICAO exp                            { printf("exp -> l-value := exp\n"); }
-    | type_id ATRIBUICAO exp                            { 
-                                                            $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_move());
-                                                            printf("exp -> type-id := exp\n"); 
-                                                        }
-
-    | type_id                                           { 
-                                                            $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_type_id());                                                         
-                                                            printf("exp -> type-id\n"); 
-                                                        }
-    | l_value                                           { printf("exp -> l-value\n"); }
-
-    | ABRE_PARENTESES expseq FECHA_PARENTESES           { printf("exp -> ( expseq )\n"); } /* Nenhum código intermediário neste nó */
-    | VARIAVEL ABRE_PARENTESES args FECHA_PARENTESES    { 
-                                                            $$.node = inicializa_node($3.node, NULL, NULL, constroi_codigo_intermediario_call());
-                                                            printf("exp -> id ( args )\n"); 
-                                                        }
-
-    | LET decs IN expseq END                            { 
-                                                            $$.node = inicializa_node($2.node, $4.node, NULL, constroi_codigo_intermediario_eseq());
-                                                            aponta_raiz_da_arvore($$.node);
-                                                            printf("exp -> let decs in expseq end\n"); 
-                                                        } /* ESEQ(decs, expseq) ou SEQ(decs, expseq) */
+    | l_value ATRIBUICAO exp                                        { 
+                                                                        printf("exp -> l-value := exp\n"); 
+                                                                    }
+    | type_id ATRIBUICAO exp                                        { 
+                                                                        $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_move());
+                                                                        printf("exp -> type-id := exp\n"); 
+                                                                    }
+    | type_id                                                       { 
+                                                                        $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_type_id());                                                         
+                                                                        printf("exp -> type-id\n"); 
+                                                                    }
+    | l_value                                                       { 
+                                                                        printf("exp -> l-value\n"); 
+                                                                    }
+    | ABRE_PARENTESES expseq FECHA_PARENTESES                       { 
+                                                                        printf("exp -> ( expseq )\n"); 
+                                                                    } /* Nenhum código intermediário neste nó */
+    | VARIAVEL ABRE_PARENTESES args FECHA_PARENTESES                { 
+                                                                        $$.node = inicializa_node($3.node, NULL, NULL, constroi_codigo_intermediario_call());
+                                                                        printf("exp -> id ( args )\n"); 
+                                                                    }
+    | LET decs IN expseq END                                        { 
+                                                                        $$.node = inicializa_node($2.node, $4.node, NULL, constroi_codigo_intermediario_eseq());
+                                                                        aponta_raiz_da_arvore($$.node);
+                                                                        printf("exp -> let decs in expseq end\n"); 
+                                                                    } /* ESEQ(decs, expseq) ou SEQ(decs, expseq) */
     ;  
 
 /* NOME DE TIPO */
 type_id: 
-      VARIAVEL                                          {   
-                                                            $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_temp());                                                        
-                                                            $$.node->valor = get_copia_string($1); 
+      VARIAVEL  {   
+                    $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_temp());                                                        
+                    $$.node->valor = get_copia_string($1); 
 
-                                                            struct simbolo *s = inicializa_simbolo($1, "?", "?", "?", "?", "?");
-                                                            adiciona_simbolo(s);     
+                    // struct simbolo *s = inicializa_simbolo($1, "?", "?", "?", "?", "?");
+                    // adiciona_simbolo(s);     
 
-                                                            printf("type-id -> id\n"); 
-                                                        }
+                    printf("type-id -> id\n"); 
+                }
     ;
 
 /**/
 idexps: 
-      VIRGULA VARIAVEL IGUAL exp idexps                 { printf("idexps  -> , id = exp idexps\n"); }
-    |                                                   { printf("idexps -> \n"); }
+      VIRGULA VARIAVEL IGUAL exp idexps     { 
+                                                printf("idexps  -> , id = exp idexps\n"); 
+                                            }
+    |                                       { 
+                                                printf("idexps -> \n"); 
+                                            }
     ;
 
 /**/
 l_value: 
-      type_id PONTO VARIAVEL                            { printf("l-value -> type-id . id\n"); }
-    | l_value PONTO VARIAVEL                            { printf("l-value -> l-value . id\n"); }
-    | type_id ABRE_COLCHETE exp FECHA_COLCHETE          { printf("l-value -> type-id [ exp ]\n"); }
-    | l_value ABRE_COLCHETE exp FECHA_COLCHETE          { printf("l-value -> l-value [ exp ]\n"); }
+      type_id PONTO VARIAVEL                            { 
+                                                            printf("l-value -> type-id . id\n"); 
+                                                        }
+    | l_value PONTO VARIAVEL                            { 
+                                                            printf("l-value -> l-value . id\n"); 
+                                                        }
+    | type_id ABRE_COLCHETE exp FECHA_COLCHETE          { 
+                                                            printf("l-value -> type-id [ exp ]\n"); 
+                                                        }
+    | l_value ABRE_COLCHETE exp FECHA_COLCHETE          { 
+                                                            printf("l-value -> l-value [ exp ]\n"); 
+                                                        }
     ;
 
 /**/
 expseq: 
-      exp expseq1                                       {    
-                                                            printf("expseq -> exp expseq1\n"); 
-                                                        } /* Nenhum código intermediário neste nó */
-    |                                                   {   
-                                                            $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_vazio());
-                                                            printf("expseq -> \n"); 
-                                                        } /* Nenhum código intermediário neste nó */
+      exp expseq1           {    
+                                printf("expseq -> exp expseq1\n"); 
+                            } /* Nenhum código intermediário neste nó */
+    |                       {   
+                                $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_vazio());
+                                printf("expseq -> \n"); 
+                            } /* Nenhum código intermediário neste nó */
     ;
 
 /**/
 expseq1: 
-      PONTO_E_VIRGULA exp expseq1                       { printf("expseq1 -> ; exp expseq1\n"); } /* Nenhum código intermediário neste nó */
-    |                                                   { printf("expseq1 -> \n"); } /* Nenhum código intermediário neste nó */
+      PONTO_E_VIRGULA exp expseq1               { 
+                                                    printf("expseq1 -> ; exp expseq1\n"); 
+                                                } /* Nenhum código intermediário neste nó */
+    |                                           { 
+                                                    printf("expseq1 -> \n"); 
+                                                } /* Nenhum código intermediário neste nó */
     ;
 
 /**/
 args: 
-      exp args1                                         { 
-                                                            $$.node = inicializa_node($1.node, $2.node, NULL, constroi_codigo_intermediario_args());                                                            
-                                                            printf("args -> exp args1\n"); 
-                                                        }
-    |                                                   { 
-                                                            $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_vazio());
-                                                            printf("args -> \n"); 
-                                                        }
+      exp args1                 { 
+                                    $$.node = inicializa_node($1.node, $2.node, NULL, constroi_codigo_intermediario_args());                                                            
+                                    printf("args -> exp args1\n"); 
+                                }
+    |                           { 
+                                    $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_vazio());
+                                    printf("args -> \n"); 
+                                }
     ;
 
 /**/
 args1: 
-      VIRGULA exp args1                                 { 
-                                                            $$.node = inicializa_node($2.node, $3.node, NULL, constroi_codigo_intermediario_args1());
-                                                            printf("args1 -> , exp args1\n"); 
-                                                        }
-    |                                                   { 
-                                                            $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_vazio());
-                                                            printf("args1 -> \n"); 
-                                                        }
+      VIRGULA exp args1             { 
+                                        $$.node = inicializa_node($2.node, $3.node, NULL, constroi_codigo_intermediario_args1());
+                                        printf("args1 -> , exp args1\n"); 
+                                    }
+    |                               { 
+                                        $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_vazio());
+                                        printf("args1 -> \n"); 
+                                    }
     ;
 
 /**/
@@ -864,13 +939,21 @@ tydec:
 /**/
 vardec: 
       VAR VARIAVEL ATRIBUICAO exp                       { 
-                                                            $$.node = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_move());
+                                                            $$.node  = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_move());
+                                                            $$.node->tipo  = ($4.node)->tipo;
+                                                            $$.node->valor = ($4.node)->valor;                                                          
+
+                                                            struct simbolo *s = inicializa_simbolo($2, $$.node->tipo, $$.node->valor, "var", "?", "?");
+                                                            adiciona_simbolo(s); 
+
                                                             printf("vardec -> var id := exp\n"); 
                                                         }
     | VAR VARIAVEL DOIS_PONTOS type_id ATRIBUICAO exp   {  
                                                             $$.node = inicializa_node($4.node, $6.node, NULL, constroi_codigo_intermediario_move());
-                                                            //TODO: lembrar de mudar esses parâmetros.
-                                                            struct simbolo *s = inicializa_simbolo($2, ($4.node)->valor, "?", "var", "?", "?");
+                                                            $$.node->tipo = verifica_e_define_tipos_vardec(($4.node)->valor, $$.node->node_filho2->tipo);
+                                                            $$.node->valor = $$.node->node_filho2->valor;
+                                                        
+                                                            struct simbolo *s = inicializa_simbolo($2, $$.node->tipo, $$.node->valor, "var", "?", "?");
                                                             adiciona_simbolo(s);
                                                             
                                                             printf("vardec -> var id : type-id := exp\n");
@@ -891,30 +974,30 @@ fundec:
 
 /**/
 decs: 
-      dec decs                                          { 
-                                                            $$.node = inicializa_node($1.node, $2.node, NULL, constroi_codigo_intermediario_decs()); 
-                                                            printf("decs -> dec decs\n"); 
-                                                        }
-    |                                                   { 
-                                                            $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_vazio());
-                                                            printf("decs -> \n"); 
-                                                        } /* Nenhum código intermediário neste nó */
+      dec decs          { 
+                            $$.node = inicializa_node($1.node, $2.node, NULL, constroi_codigo_intermediario_decs()); 
+                            printf("decs -> dec decs\n"); 
+                        }
+    |                   { 
+                            $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_vazio());
+                            printf("decs -> \n"); 
+                        } /* Nenhum código intermediário neste nó */
     ;
 
 /**/
 dec: 
-      tydec                                             { 
-                                                            $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_dec());
-                                                            printf("dec -> tydec\n"); 
-                                                        }
-    | vardec                                            { 
-                                                            $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_dec());                                                           
-                                                            printf("dec -> vardec\n"); 
-                                                        }
-    | fundec                                            { 
-                                                            $$.node = inicializa_node($1.node, NULL, NULL, "");                                                           
-                                                            printf("dec -> fundec\n"); 
-                                                        }
+      tydec         { 
+                        $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_dec());
+                        printf("dec -> tydec\n"); 
+                    }
+    | vardec        { 
+                        $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_dec());                                                           
+                        printf("dec -> vardec\n"); 
+                    }
+    | fundec        { 
+                        $$.node = inicializa_node($1.node, NULL, NULL, "");                                                           
+                        printf("dec -> fundec\n"); 
+                    }
     ;
 
 %%

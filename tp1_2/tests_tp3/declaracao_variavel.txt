@@ -1,6 +1,6 @@
 let
     var coco : int := 1 + 2
-    var xixi := 5 + 2
+    var xixi := 50 + 2 * 4
 in
     
 end
