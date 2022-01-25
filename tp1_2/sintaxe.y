@@ -701,6 +701,7 @@ exp:
                                                                     } /* BINOP(DIVISAO, exp, exp) */
 
     | MENOS exp                                                     { 
+                                                                        $$.node = inicializa_node($2.node, NULL, NULL, "TODO");
                                                                         printf("exp -> - exp\n"); 
                                                                     } /* CONST(- exp) */
 
@@ -716,9 +717,9 @@ exp:
                                                                         printf("exp -> string\n"); 
                                                                     } /* 'STRING_CONSTANTE' */
     | NIL                                                           { 
+                                                                        $$.node = inicializa_node(NULL, NULL, NULL, "TODO");
                                                                         printf("exp -> nil\n"); 
                                                                     } /* NIL */
-
     | exp IGUAL exp                                                 {
                                                                         $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
                                                                         printf("exp -> exp = exp\n"); 
@@ -761,22 +762,27 @@ exp:
                                                                         printf("exp -> if exp then exp\n"); 
                                                                     } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, enderecoDoCodigoAposIf) */
     | WHILE exp DO exp                                              { 
+                                                                        $$.node = inicializa_node($2.node, $4.node, NULL, "TODO");
                                                                         printf("exp -> while exp do exp\n"); 
                                                                     } /* CJUMP(exp1.op, exp1.exp1, exp1.exp2, Labelexp2, enderecoDoCodigoAposWhile) */
     | FOR VARIAVEL ATRIBUICAO exp TO exp DO exp                     { 
+                                                                        $$.node = inicializa_node($4.node, $6.node, $8.node, "TODO");
                                                                         printf("exp -> for id := exp to exp do exp\n"); 
                                                                     } /* CJUMP(MENOR_IGUAL, exp1.exp1, exp1.exp2, Labelexp2, enderecoDoCodigoAposWhile) */
     | BREAK                                                         {  
                                                                         printf("exp -> break\n"); 
                                                                     } /* JUMP(labelAnteriorAoDoLabelQueExecutouBreak + proximoComandoDoLabelQueExecutouBreak, labelAnteriorAoDoLabelQueExecutouBreak + proximoComandoDoLabelQueExecutouBreak) */
     | type_id ABRE_CHAVES VARIAVEL IGUAL exp idexps FECHA_CHAVES    { 
+                                                                        $$.node = inicializa_node($1.node, $5.node, $6.node, "TODO");
                                                                         printf("exp -> type-id { id = exp idexps }\n"); 
                                                                     }
     | type_id ABRE_COLCHETE exp FECHA_COLCHETE OF exp               { 
+                                                                        $$.node = inicializa_node($1.node, $3.node, $6.node, "TODO");
                                                                         printf("exp -> type-id [ exp ] of exp\n"); 
                                                                     }
 
     | l_value ATRIBUICAO exp                                        { 
+                                                                        $$.node = inicializa_node($1.node, $3.node, NULL, "TODO");
                                                                         printf("exp -> l-value := exp\n"); 
                                                                     }
     | type_id ATRIBUICAO exp                                        { 
@@ -788,9 +794,11 @@ exp:
                                                                         printf("exp -> type-id\n"); 
                                                                     }
     | l_value                                                       { 
+                                                                        $$.node = inicializa_node($1.node, NULL, NULL, "TODO");
                                                                         printf("exp -> l-value\n"); 
                                                                     }
     | ABRE_PARENTESES expseq FECHA_PARENTESES                       { 
+                                                                        $$.node = inicializa_node($2.node, NULL, NULL, "TODO");
                                                                         printf("exp -> ( expseq )\n"); 
                                                                     } /* Nenhum código intermediário neste nó */
     | VARIAVEL ABRE_PARENTESES args FECHA_PARENTESES                { 
@@ -820,9 +828,11 @@ type_id:
 /**/
 idexps: 
       VIRGULA VARIAVEL IGUAL exp idexps     { 
+                                                $$.node = inicializa_node($4.node, $5.node, NULL, "TODO");
                                                 printf("idexps  -> , id = exp idexps\n"); 
                                             }
     |                                       { 
+                                                $$.node = inicializa_node(NULL, NULL, NULL, "TODO");
                                                 printf("idexps -> \n"); 
                                             }
     ;
@@ -830,15 +840,19 @@ idexps:
 /**/
 l_value: 
       type_id PONTO VARIAVEL                            { 
+                                                            $$.node = inicializa_node($1.node, NULL, NULL, "TODO");
                                                             printf("l-value -> type-id . id\n"); 
                                                         }
     | l_value PONTO VARIAVEL                            { 
+                                                            $$.node = inicializa_node($1.node, NULL, NULL, "TODO");
                                                             printf("l-value -> l-value . id\n"); 
                                                         }
     | type_id ABRE_COLCHETE exp FECHA_COLCHETE          { 
+                                                            $$.node = inicializa_node($1.node, $3.node, NULL, "TODO");
                                                             printf("l-value -> type-id [ exp ]\n"); 
                                                         }
     | l_value ABRE_COLCHETE exp FECHA_COLCHETE          { 
+                                                            $$.node = inicializa_node($1.node, $3.node, NULL, "TODO");
                                                             printf("l-value -> l-value [ exp ]\n"); 
                                                         }
     ;
@@ -846,6 +860,7 @@ l_value:
 /**/
 expseq: 
       exp expseq1           {    
+                                $$.node = inicializa_node($1.node, $2.node, NULL, "TODO");
                                 printf("expseq -> exp expseq1\n"); 
                             } /* Nenhum código intermediário neste nó */
     |                       {   
@@ -857,9 +872,11 @@ expseq:
 /**/
 expseq1: 
       PONTO_E_VIRGULA exp expseq1               { 
+                                                    $$.node = inicializa_node($2.node, $3.node, NULL, "TODO");
                                                     printf("expseq1 -> ; exp expseq1\n"); 
                                                 } /* Nenhum código intermediário neste nó */
     |                                           { 
+                                                    $$.node = inicializa_node(NULL, NULL, NULL, "TODO");
                                                     printf("expseq1 -> \n"); 
                                                 } /* Nenhum código intermediário neste nó */
     ;
