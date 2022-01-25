@@ -1,0 +1,6 @@
+let
+ type list = {first: int, rest: list}
+ type intArray = array of int
+in
+
+end

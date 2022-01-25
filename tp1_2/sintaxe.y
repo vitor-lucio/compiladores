@@ -28,8 +28,9 @@
 */
 
 /* 
-Parametros, a serem usados dentro do codigo intermediario,
-para indicar locais onde precisamos inserir outro codigo intermediario, dentro de uma string */
+    Parametros, a serem usados dentro do codigo intermediario,
+    para indicar locais onde precisamos inserir outro codigo intermediario, dentro de uma string 
+*/
 char PARAMETRO1_CODIGO_INTERMEDIARIO[] = "$parametro1";
 char PARAMETRO2_CODIGO_INTERMEDIARIO[] = "$parametro2";
 char PARAMETRO3_CODIGO_INTERMEDIARIO[] = "$parametro3";
@@ -249,7 +250,7 @@ char* codigo_intermediario_final;
         return codigo_intermediario;
     }
 
-    char* constroi_codigo_intermediario_fundec(){
+    char* constroi_codigo_intermediario_fundec1(){
         char* codigo_intermediario = (char*) malloc(                                                       
                                                        
                                                         strlen(PARAMETRO2_CODIGO_INTERMEDIARIO) 
@@ -263,6 +264,24 @@ char* codigo_intermediario_final;
         strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
         strcat(codigo_intermediario, ", ");
         strcat(codigo_intermediario, PARAMETRO3_CODIGO_INTERMEDIARIO);
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_fundec2(){
+        char* codigo_intermediario = (char*) malloc(                                                       
+                                                       
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO) 
+                                                        + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO)  
+                                                        + 6                                                   
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, "MOVE(");
+        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, ", ");
+        strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
 
         return codigo_intermediario;
     }
@@ -322,6 +341,34 @@ char* codigo_intermediario_final;
         strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
         strcat(codigo_intermediario, ",");
         strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_ty(){
+        char* codigo_intermediario = (char*) malloc(                                                       
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)  
+                                                        + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO) 
+                                                        + 1                                                                                                
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_tydec(){
+        char* codigo_intermediario = (char*) malloc(                                                       
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)                                                      
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        // strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
 
         return codigo_intermediario;
     }
@@ -590,8 +637,9 @@ char* codigo_intermediario_final;
 %start exp
 
 %%
-
-exp:  exp MAIS exp                                      {
+/* EXPRESSOES */
+exp:  
+      exp MAIS exp                                      {
                                                             $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
                                                             $$.node->tipo = verifica_e_define_tipos_binop($$.node->node_filho1->tipo, $$.node->node_filho2->tipo);
                                                             printf("exp -> exp + exp\n"); 
@@ -697,7 +745,9 @@ exp:  exp MAIS exp                                      {
                                                         } /* ESEQ(decs, expseq) ou SEQ(decs, expseq) */
     ;  
 
-type_id: VARIAVEL                                       {   
+/* NOME DE TIPO */
+type_id: 
+      VARIAVEL                                          {   
                                                             $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_temp());                                                        
                                                             $$.node->valor = get_copia_string($1); 
 
@@ -708,17 +758,23 @@ type_id: VARIAVEL                                       {
                                                         }
     ;
 
-idexps: VIRGULA VARIAVEL IGUAL exp idexps               { printf("idexps  -> , id = exp idexps\n"); }
+/**/
+idexps: 
+      VIRGULA VARIAVEL IGUAL exp idexps                 { printf("idexps  -> , id = exp idexps\n"); }
     |                                                   { printf("idexps -> \n"); }
     ;
 
-l_value: type_id PONTO VARIAVEL                         { printf("l-value -> type-id . id\n"); }
+/**/
+l_value: 
+      type_id PONTO VARIAVEL                            { printf("l-value -> type-id . id\n"); }
     | l_value PONTO VARIAVEL                            { printf("l-value -> l-value . id\n"); }
     | type_id ABRE_COLCHETE exp FECHA_COLCHETE          { printf("l-value -> type-id [ exp ]\n"); }
     | l_value ABRE_COLCHETE exp FECHA_COLCHETE          { printf("l-value -> l-value [ exp ]\n"); }
     ;
 
-expseq: exp expseq1                                     {    
+/**/
+expseq: 
+      exp expseq1                                       {    
                                                             printf("expseq -> exp expseq1\n"); 
                                                         } /* Nenhum código intermediário neste nó */
     |                                                   {   
@@ -727,11 +783,15 @@ expseq: exp expseq1                                     {
                                                         } /* Nenhum código intermediário neste nó */
     ;
 
-expseq1: PONTO_E_VIRGULA exp expseq1                    { printf("expseq1 -> ; exp expseq1\n"); } /* Nenhum código intermediário neste nó */
+/**/
+expseq1: 
+      PONTO_E_VIRGULA exp expseq1                       { printf("expseq1 -> ; exp expseq1\n"); } /* Nenhum código intermediário neste nó */
     |                                                   { printf("expseq1 -> \n"); } /* Nenhum código intermediário neste nó */
     ;
 
-args: exp args1                                         { 
+/**/
+args: 
+      exp args1                                         { 
                                                             $$.node = inicializa_node($1.node, $2.node, NULL, constroi_codigo_intermediario_args());                                                            
                                                             printf("args -> exp args1\n"); 
                                                         }
@@ -741,7 +801,9 @@ args: exp args1                                         {
                                                         }
     ;
 
-args1: VIRGULA exp args1                                { 
+/**/
+args1: 
+      VIRGULA exp args1                                 { 
                                                             $$.node = inicializa_node($2.node, $3.node, NULL, constroi_codigo_intermediario_args1());
                                                             printf("args1 -> , exp args1\n"); 
                                                         }
@@ -751,7 +813,9 @@ args1: VIRGULA exp args1                                {
                                                         }
     ;
 
-tyfields: VARIAVEL DOIS_PONTOS type_id tyfields1        {   
+/**/
+tyfields: 
+      VARIAVEL DOIS_PONTOS type_id tyfields1            {   
                                                             $$.node = inicializa_node($3.node, $4.node, NULL, constroi_codigo_intermediario_tyfields());
                                                             printf("tyfields -> id : type-id tyfields1\n"); 
                                                         }
@@ -761,7 +825,9 @@ tyfields: VARIAVEL DOIS_PONTOS type_id tyfields1        {
                                                         }
     ;   
 
-tyfields1: VIRGULA VARIAVEL DOIS_PONTOS type_id tyfields1   { 
+/**/
+tyfields1: 
+      VIRGULA VARIAVEL DOIS_PONTOS type_id tyfields1        { 
                                                                 $$.node = inicializa_node($4.node, $5.node, NULL, constroi_codigo_intermediario_tyfields1());
                                                                 printf("tyfields1 -> , id : type-id tyfields1\n"); 
                                                             }
@@ -771,15 +837,33 @@ tyfields1: VIRGULA VARIAVEL DOIS_PONTOS type_id tyfields1   {
                                                             }
     ;
 
-ty: VARIAVEL                                                           { printf("ty -> id\n"); }
-    | ABRE_CHAVES VARIAVEL DOIS_PONTOS type_id tyfields1 FECHA_CHAVES  { printf("ty -> { id : type-id tyfields1 }\n"); }
-    | ARRAY OF VARIAVEL                                                { printf("ty -> array of id\n"); }
+/**/
+ty: 
+      VARIAVEL                                                          {  
+                                                                            $$.node = inicializa_node(NULL, NULL, NULL, "");                                                        
+                                                                            printf("ty -> id\n"); 
+                                                                        }
+    | ABRE_CHAVES VARIAVEL DOIS_PONTOS type_id tyfields1 FECHA_CHAVES   {    
+                                                                            $$.node = inicializa_node($4.node, $5.node, NULL, "");                                                        
+                                                                            printf("ty -> { id : type-id tyfields1 }\n"); 
+                                                                        }
+    | ARRAY OF VARIAVEL                                                 { 
+                                                                            $$.node = inicializa_node(NULL, NULL, NULL, "");                                                        
+                                                                            printf("ty -> array of id\n"); 
+                                                                        }
     ;
 
-tydec: TYPE VARIAVEL IGUAL ty                           { printf("tydec -> type id = ty\n"); }
+/**/
+tydec: 
+      TYPE VARIAVEL IGUAL ty                            { 
+                                                            $$.node = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_tydec());
+                                                            printf("tydec -> type id = ty\n"); 
+                                                        }
     ;
 
-vardec: VAR VARIAVEL ATRIBUICAO exp                     { 
+/**/
+vardec: 
+      VAR VARIAVEL ATRIBUICAO exp                       { 
                                                             $$.node = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_move());
                                                             printf("vardec -> var id := exp\n"); 
                                                         }
@@ -793,34 +877,21 @@ vardec: VAR VARIAVEL ATRIBUICAO exp                     {
                                                         }
     ;
 
-fundec: FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES IGUAL exp                   { printf("fundec -> function id ( tyfields ) = exp\n"); }
+/**/
+fundec: 
+      FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES IGUAL exp                     { 
+                                                                                                    $$.node = inicializa_node($4.node, $7.node, NULL, constroi_codigo_intermediario_fundec2());
+                                                                                                    printf("fundec -> function id ( tyfields ) = exp\n"); 
+                                                                                                }
     | FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES DOIS_PONTOS type_id IGUAL exp { 
-                                                                                                    $$.node = inicializa_node($4.node, $7.node, $9.node, constroi_codigo_intermediario_fundec());
+                                                                                                    $$.node = inicializa_node($4.node, $7.node, $9.node, constroi_codigo_intermediario_fundec1());
                                                                                                     printf("fundec -> function id ( tyfields ) : type-id = exp\n"); 
                                                                                                 }
     ;
-    // ESEQ(  
-    //         SEQ(  
-    //                 MOVE(
-    //                         TEMP t0, 
-    //                         binop(MAIS,TEMP t0,TEMP t0)
-    //                     ), 
-    //                 SEQ(
-    //                         MOVE(TEMP t0,CONST(0)), 
-                            
-    //                     )
-    //             ),    
-    //         MOVE(
-    //                 TEMP t0,
-    //                 CALL(
-    //                         CONST(2),
-    //                         CONST(5),
-                            
-    //                     )
-    //             )  
-    // )
 
-decs: dec decs                                          { 
+/**/
+decs: 
+      dec decs                                          { 
                                                             $$.node = inicializa_node($1.node, $2.node, NULL, constroi_codigo_intermediario_decs()); 
                                                             printf("decs -> dec decs\n"); 
                                                         }
@@ -830,7 +901,10 @@ decs: dec decs                                          {
                                                         } /* Nenhum código intermediário neste nó */
     ;
 
-dec: tydec                                              { 
+/**/
+dec: 
+      tydec                                             { 
+                                                            $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_dec());
                                                             printf("dec -> tydec\n"); 
                                                         }
     | vardec                                            { 
@@ -844,6 +918,8 @@ dec: tydec                                              {
     ;
 
 %%
+
+
 
 void printCode(char* filename){
     printf("\n----------------------------------------\n\n");
