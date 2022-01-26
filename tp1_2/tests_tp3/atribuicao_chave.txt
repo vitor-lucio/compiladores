@@ -1,0 +1,8 @@
+let
+    
+in
+    
+ if a=nil  
+    then list {first = 3, rest = 1}
+
+end

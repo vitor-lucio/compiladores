@@ -100,14 +100,13 @@ char* codigo_intermediario_final;
 
         char* codigo_intermediario = (char*) malloc(
                                                         strlen(valor_constante) 
-                                                        + 7 /* tamanho de: const() */
+                                                        + 5 /* tamanho de: const() */
                                                         + 1 /* \0 da string, indicando seu fim em C */
                                                     );
         
         codigo_intermediario[0] = '\0';
-        strcat(codigo_intermediario, "CONST(");
+        strcat(codigo_intermediario, "CONST ");
         strcat(codigo_intermediario, valor_constante);
-        strcat(codigo_intermediario, ")");
 
         return codigo_intermediario;
     }
@@ -415,6 +414,51 @@ char* codigo_intermediario_final;
         return codigo_intermediario;
     }
 
+    char* constroi_codigo_intermediario_mem(){
+        char* codigo_intermediario = (char*) malloc(                                                       
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)  
+                                                        + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO) 
+                                                        + strlen(PARAMETRO3_CODIGO_INTERMEDIARIO)
+                                                        + 29                                                                                               
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, "MEM(BINOP(PLUS,");
+        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, ",BINOP(MUL,");
+        strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, PARAMETRO3_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, ")");
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_l_value(){
+        char* codigo_intermediario = (char*) malloc(                                                       
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)                                                                                                           
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_expseq(){
+        char* codigo_intermediario = (char*) malloc(                                                       
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)                                                                                                           
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+
+        return codigo_intermediario;
+    }
+
 /*
 ////////////////////////////////////////////////////////////////////////////////
     Funcoes da arvore
@@ -588,7 +632,7 @@ char* codigo_intermediario_final;
         
         while(iterador != NULL){
             if(!strcmp(iterador->nome, s->nome)){
-                return s;
+                return iterador;
             }
             iterador = iterador->next;
         }
@@ -600,13 +644,12 @@ char* codigo_intermediario_final;
             tabela_simbolos.primeiro_elemento = s;
             tabela_simbolos.primeiro_elemento->next = NULL;
 
-            printf("SIMBOLO ADICIONADO: %s\n", tabela_simbolos.primeiro_elemento->nome);
+            printf("SIMBOLO ADICIONADO: %s %s\n", tabela_simbolos.primeiro_elemento->nome, tabela_simbolos.primeiro_elemento->tipo);
         }else{
 
             if(busca_simbolo(s)){
-                printf("ESSE SIMBOLO JA EXISTE!\n");
-                // atualiza_simbolo(s);
-                // return;
+                printf("%s ESSE SIMBOLO JA EXISTE!\n",s->nome);
+                return;
             }
 
             struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
@@ -618,7 +661,7 @@ char* codigo_intermediario_final;
             iterador->next = s;
             iterador->next->next = NULL;
 
-            printf("SIMBOLO ADICIONADO: %s\n", iterador->next->nome);
+            printf("SIMBOLO ADICIONADO: %s %s\n", iterador->next->nome, iterador->next->tipo);
         }
     }
 
@@ -653,9 +696,9 @@ char* codigo_intermediario_final;
 */
 
     char* verifica_e_define_tipos_binop(char* tipo_parametro_1, char* tipo_parametro_2){
-        if(tipo_parametro_1 == "int" && tipo_parametro_2 == "int"){
-            printf("TIPO: int\n");
-            return "int"; 
+        if(!strcmp(tipo_parametro_1, tipo_parametro_2)){
+            printf("TIPO: %s\n", tipo_parametro_1);
+            return tipo_parametro_1; 
         }else{
             printf("ERRO!\n");
             return "";
@@ -665,7 +708,7 @@ char* codigo_intermediario_final;
     char* verifica_e_define_tipos_vardec(char* tipo_parametro_1, char* tipo_parametro_2){
         if(strcmp(tipo_parametro_1, tipo_parametro_2)){
             printf("ERRO DE TIPAGEM!\n");
-            exit(1);
+            // exit(1);
         }
 
         return tipo_parametro_2;
@@ -698,10 +741,11 @@ char* codigo_intermediario_final;
 %%
 /* EXPRESSOES */
 exp:  
-      exp MAIS exp                                                  {
+      exp MAIS exp                                                  {                                                            
                                                                         $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
+                                                        
                                                                         $$.node->tipo = verifica_e_define_tipos_binop($$.node->node_filho1->tipo, $$.node->node_filho2->tipo);
-                                                                        $$.node->valor = calcula(($1.node)->valor, ($3.node)->valor, "+");
+                                                                        // $$.node->valor = calcula(($1.node)->valor, ($3.node)->valor, "+");
                                                                         printf("exp -> exp + exp\n"); 
                                                                     } /* BINOP(MAIS, exp, exp) */
     | exp MENOS exp                                                 {
@@ -801,6 +845,8 @@ exp:
                                                                     }
     | type_id ABRE_COLCHETE exp FECHA_COLCHETE OF exp               { 
                                                                         $$.node = inicializa_node($1.node, $3.node, $6.node, constroi_codigo_intermediario_call1());
+                                                                        $$.node->tipo  = ($1.node)->tipo;
+                                                                        $$.node->valor = ($3.node)->valor;
                                                                         printf("exp -> type-id [ exp ] of exp\n"); 
                                                                     }
     | l_value ATRIBUICAO exp                                        { 
@@ -812,11 +858,12 @@ exp:
                                                                         printf("exp -> type-id := exp\n"); 
                                                                     }
     | type_id                                                       { 
-                                                                        $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_type_id());                                                         
+                                                                        $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_type_id()); 
+                                                                        $$.node->tipo = ($1.node)->tipo; 
                                                                         printf("exp -> type-id\n"); 
                                                                     }
     | l_value                                                       { 
-                                                                        $$.node = inicializa_node($1.node, NULL, NULL, "TODO");
+                                                                        $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_l_value());
                                                                         printf("exp -> l-value\n"); 
                                                                     }
     | ABRE_PARENTESES expseq FECHA_PARENTESES                       { 
@@ -839,9 +886,16 @@ type_id:
       VARIAVEL  {   
                     $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_temp());                                                        
                     $$.node->valor = get_copia_string($1); 
-
-                    // struct simbolo *s = inicializa_simbolo($1, "?", "?", "?", "?", "?");
-                    // adiciona_simbolo(s);     
+                   
+                    struct simbolo *s = inicializa_simbolo($1, $1, "?", "type", "?", "?");
+                    if(busca_simbolo(s)){
+                        struct simbolo* s2 = busca_simbolo(s);
+                        printf("ACHEI O SIMB %s\n",s2->tipo);
+                        $$.node->tipo = s2->tipo;
+                    }else{
+                        $$.node->tipo = $1;
+                        adiciona_simbolo(s);     
+                    }
 
                     printf("type-id -> id\n"); 
                 }
@@ -870,7 +924,7 @@ l_value:
                                                             printf("l-value -> l-value . id\n"); 
                                                         }
     | type_id ABRE_COLCHETE exp FECHA_COLCHETE          { 
-                                                            $$.node = inicializa_node($1.node, $3.node, NULL, "TODO");
+                                                            $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_mem());
                                                             printf("l-value -> type-id [ exp ]\n"); 
                                                         }
     | l_value ABRE_COLCHETE exp FECHA_COLCHETE          { 
@@ -882,7 +936,7 @@ l_value:
 /**/
 expseq: 
       exp expseq1           {    
-                                $$.node = inicializa_node($1.node, $2.node, NULL, "TODO");
+                                $$.node = inicializa_node($1.node, $2.node, NULL, constroi_codigo_intermediario_expseq());
                                 printf("expseq -> exp expseq1\n"); 
                             } /* Nenhum código intermediário neste nó */
     |                       {   
@@ -919,6 +973,7 @@ args:
 args1: 
       VIRGULA exp args1             { 
                                         $$.node = inicializa_node($2.node, $3.node, NULL, constroi_codigo_intermediario_args1());
+                                        
                                         printf("args1 -> , exp args1\n"); 
                                     }
     |                               { 
@@ -931,6 +986,11 @@ args1:
 tyfields: 
       VARIAVEL DOIS_PONTOS type_id tyfields1            {   
                                                             $$.node = inicializa_node($3.node, $4.node, NULL, constroi_codigo_intermediario_tyfields());
+                                                            $$.node->tipo  = ($3.node)->valor;
+                                                            
+                                                            struct simbolo *s = inicializa_simbolo($1, $$.node->tipo, "?", "var", "?", "?");
+                                                            adiciona_simbolo(s); 
+                                                            
                                                             printf("tyfields -> id : type-id tyfields1\n"); 
                                                         }
     |                                                   { 
@@ -943,6 +1003,12 @@ tyfields:
 tyfields1: 
       VIRGULA VARIAVEL DOIS_PONTOS type_id tyfields1        { 
                                                                 $$.node = inicializa_node($4.node, $5.node, NULL, constroi_codigo_intermediario_tyfields1());
+                                                                $$.node->tipo  = ($4.node)->valor;
+                                                                // $$.node->valor = ($4.node)->valor;                                                          
+
+                                                                struct simbolo *s = inicializa_simbolo($2, $$.node->tipo, "?", "var", "?", "?");
+                                                                adiciona_simbolo(s);                                                                 
+                                                                
                                                                 printf("tyfields1 -> , id : type-id tyfields1\n"); 
                                                             }
     |                                                       { 
@@ -955,6 +1021,7 @@ tyfields1:
 ty: 
       VARIAVEL                                                          {  
                                                                             $$.node = inicializa_node(NULL, NULL, NULL, "");                                                        
+                                                                            $$.node->tipo = $1;
                                                                             printf("ty -> id\n"); 
                                                                         }
     | ABRE_CHAVES VARIAVEL DOIS_PONTOS type_id tyfields1 FECHA_CHAVES   {    
@@ -963,6 +1030,7 @@ ty:
                                                                         }
     | ARRAY OF VARIAVEL                                                 { 
                                                                             $$.node = inicializa_node(NULL, NULL, NULL, "");                                                        
+                                                                            $$.node->tipo = "array of";
                                                                             printf("ty -> array of id\n"); 
                                                                         }
     ;
@@ -971,6 +1039,11 @@ ty:
 tydec: 
       TYPE VARIAVEL IGUAL ty                            { 
                                                             $$.node = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_tydec());
+                                                            $$.node->tipo = ($4.node)->tipo;
+
+                                                            struct simbolo *s = inicializa_simbolo($2, $$.node->tipo, "?", "type", "?", "?");
+                                                            adiciona_simbolo(s);
+
                                                             printf("tydec -> type id = ty\n"); 
                                                         }
     ;
@@ -990,11 +1063,11 @@ vardec:
     | VAR VARIAVEL DOIS_PONTOS type_id ATRIBUICAO exp   {  
                                                             $$.node = inicializa_node($4.node, $6.node, NULL, constroi_codigo_intermediario_move());
                                                             
-                                                            // $$.node->tipo = verifica_e_define_tipos_vardec(($4.node)->valor, $$.node->node_filho2->tipo);
-                                                            // $$.node->valor = $$.node->node_filho2->valor;
+                                                            $$.node->tipo = verifica_e_define_tipos_vardec(($4.node)->valor, $$.node->node_filho2->tipo);
+                                                            $$.node->valor = $$.node->node_filho2->valor;
                                                         
-                                                            // struct simbolo *s = inicializa_simbolo($2, $$.node->tipo, $$.node->valor, "var", "?", "?");
-                                                            // adiciona_simbolo(s);
+                                                            struct simbolo *s = inicializa_simbolo($2, $$.node->tipo, $$.node->valor, "var", "?", "?");
+                                                            adiciona_simbolo(s);
                                                             
                                                             printf("vardec -> var id : type-id := exp\n");
                                                         }
@@ -1006,8 +1079,10 @@ fundec:
                                                                                                     $$.node = inicializa_node($4.node, $7.node, NULL, constroi_codigo_intermediario_fundec2());
                                                                                                     printf("fundec -> function id ( tyfields ) = exp\n"); 
                                                                                                 }
-    | FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES DOIS_PONTOS type_id IGUAL exp { 
+    | FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES DOIS_PONTOS type_id IGUAL exp {                                                                                                     
                                                                                                     $$.node = inicializa_node($4.node, $7.node, $9.node, constroi_codigo_intermediario_fundec1());
+                                                                                                    printf("%s\n", ($7.node)->tipo);
+                                                                                                    $$.node->tipo = verifica_e_define_tipos_vardec(($7.node)->tipo, ($9.node)->node_filho1->tipo);
                                                                                                     printf("fundec -> function id ( tyfields ) : type-id = exp\n"); 
                                                                                                 }
     ;
