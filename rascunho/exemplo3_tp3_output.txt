@@ -2,7 +2,7 @@ let
  type a = array of int /* Declaração de tipo não é escrita no código intermediário */
  type b = a /* Declaração de tipo não é escrita no código intermediário */
 
- var arr1:a := b [10] of 0
+ var arr1 : a := b [10] of 0
 in
  arr1[2]
 end
@@ -15,7 +15,7 @@ EXP( /* Esse EXP significa que o resultado (ou seja, o valor de arr1[2]) vai ser
     ESEQ(
         SEQ(
             EXP( /* Esse EXP é necessário para chamar SEQ em uma atribuição simples. Significa que vamos ignorar este valor (CONST 0) neste primeiro parâmetro de SEQ */
-            CONST 0
+                CONST 0
             ),
             MOVE(
                 TEMP t0,

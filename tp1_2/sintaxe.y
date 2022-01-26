@@ -317,10 +317,33 @@ char* codigo_intermediario_final;
         return codigo_intermediario;
     }
 
-    char* constroi_codigo_intermediario_call(){
+    char* constroi_codigo_intermediario_call1(){
         char* codigo_intermediario = (char*) malloc(                                                       
-                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)   
-                                                        + 7                                                                                                
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO) 
+                                                        + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO)
+                                                        + strlen(PARAMETRO3_CODIGO_INTERMEDIARIO)
+                                                        + 16                                                                                                
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, "CALL(");
+        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, "CONST 0");
+        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, PARAMETRO3_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, ")");
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_call2(){
+        char* codigo_intermediario = (char*) malloc(                                                       
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO) 
+                                                        + 6                                                                                                
                                                         + 1 /* \0 da string, indicando seu fim em C */
                                                     );
         
@@ -777,10 +800,9 @@ exp:
                                                                         printf("exp -> type-id { id = exp idexps }\n"); 
                                                                     }
     | type_id ABRE_COLCHETE exp FECHA_COLCHETE OF exp               { 
-                                                                        $$.node = inicializa_node($1.node, $3.node, $6.node, "TODO");
+                                                                        $$.node = inicializa_node($1.node, $3.node, $6.node, constroi_codigo_intermediario_call1());
                                                                         printf("exp -> type-id [ exp ] of exp\n"); 
                                                                     }
-
     | l_value ATRIBUICAO exp                                        { 
                                                                         $$.node = inicializa_node($1.node, $3.node, NULL, "TODO");
                                                                         printf("exp -> l-value := exp\n"); 
@@ -802,7 +824,7 @@ exp:
                                                                         printf("exp -> ( expseq )\n"); 
                                                                     } /* Nenhum código intermediário neste nó */
     | VARIAVEL ABRE_PARENTESES args FECHA_PARENTESES                { 
-                                                                        $$.node = inicializa_node($3.node, NULL, NULL, constroi_codigo_intermediario_call());
+                                                                        $$.node = inicializa_node($3.node, NULL, NULL, constroi_codigo_intermediario_call2());
                                                                         printf("exp -> id ( args )\n"); 
                                                                     }
     | LET decs IN expseq END                                        { 
@@ -967,11 +989,12 @@ vardec:
                                                         }
     | VAR VARIAVEL DOIS_PONTOS type_id ATRIBUICAO exp   {  
                                                             $$.node = inicializa_node($4.node, $6.node, NULL, constroi_codigo_intermediario_move());
-                                                            $$.node->tipo = verifica_e_define_tipos_vardec(($4.node)->valor, $$.node->node_filho2->tipo);
-                                                            $$.node->valor = $$.node->node_filho2->valor;
+                                                            
+                                                            // $$.node->tipo = verifica_e_define_tipos_vardec(($4.node)->valor, $$.node->node_filho2->tipo);
+                                                            // $$.node->valor = $$.node->node_filho2->valor;
                                                         
-                                                            struct simbolo *s = inicializa_simbolo($2, $$.node->tipo, $$.node->valor, "var", "?", "?");
-                                                            adiciona_simbolo(s);
+                                                            // struct simbolo *s = inicializa_simbolo($2, $$.node->tipo, $$.node->valor, "var", "?", "?");
+                                                            // adiciona_simbolo(s);
                                                             
                                                             printf("vardec -> var id : type-id := exp\n");
                                                         }
