@@ -1,6 +1,8 @@
 let
     type a = int
-    var arr1 : a := 1
+    type b = a
+
+   
 in
 
 end

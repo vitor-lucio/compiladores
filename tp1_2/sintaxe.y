@@ -590,7 +590,7 @@ char* codigo_intermediario_final;
         char* nome;
         char* tipo;
         char* classe;
-        char* numero_parametros;
+        char* nivel;
         char* valor; 
         char* endereco;    
 
@@ -610,13 +610,13 @@ char* codigo_intermediario_final;
 ////////////////////////////////////////////////////////////////////////////////
 */
 
-    struct simbolo* inicializa_simbolo(char* nome, char* tipo, char* valor, char* classe, char* numero_parametros, char* endereco){
+    struct simbolo* inicializa_simbolo(char* nome, char* tipo, char* valor, char* classe, char* nivel, char* endereco){
         struct simbolo* novo_simbolo = (struct simbolo*) malloc (sizeof(struct simbolo));
         
         novo_simbolo->nome              = get_copia_string(nome);
         novo_simbolo->tipo              = get_copia_string(tipo);
         novo_simbolo->classe            = get_copia_string(classe);
-        novo_simbolo->numero_parametros = get_copia_string(numero_parametros);
+        novo_simbolo->nivel = get_copia_string(nivel);
         novo_simbolo->endereco          = get_copia_string(endereco);
         novo_simbolo->valor             = get_copia_string(valor);
 
@@ -687,13 +687,13 @@ char* codigo_intermediario_final;
     void imprime_tabela_simbolos(){
         struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
         
-        printf("|    NOME   |    TIPO   |   VALOR   |   CLASSE  | NUM PARAM |  ENDERECO |");
+        printf("|    NOME   |    TIPO   |   VALOR   |   CLASSE  |   NIVEL   |  ENDERECO |");
         printf("\nx-----------x-----------x-----------x-----------x-----------x-----------x");
 
         while(iterador != NULL){
             printf("\n|%10s |%10s |%10s |%10s |%10s |%10s |", iterador->nome, iterador->tipo, 
                                                 iterador->valor, iterador->classe, 
-                                                iterador->numero_parametros, iterador->endereco);
+                                                iterador->nivel, iterador->endereco);
             iterador = iterador->next;
         }
 
@@ -1034,17 +1034,13 @@ tyfields1:
 /**/
 ty: 
       VARIAVEL                                                          {  
-                                                                            $$.node = inicializa_node(NULL, NULL, NULL, "");                                                        
-                                                                            $$.node->tipo = $1;
-
-                                                                            // struct simbolo *s = inicializa_simbolo($1, $$.node->tipo, "?", "var", "?", "?");
-                                                                            // adiciona_simbolo(s);
-
+                                                                            $$.node = inicializa_node(NULL, NULL, NULL, ""); 
+                                                                            $$.node->tipo = $1;                                                                           
                                                                             printf("ty -> id\n"); 
                                                                         }
     | ABRE_CHAVES VARIAVEL DOIS_PONTOS type_id tyfields1 FECHA_CHAVES   {   
                                                                             $$.node = inicializa_node($4.node, $5.node, NULL, "");                                                        
-                                                                            
+
                                                                             struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);
                                                                             atualiza_simbolo(simbolo_encontrado, ($4.node)->valor);                                                                                                                                
                                                                                                                                             
@@ -1063,7 +1059,7 @@ tydec:
                                                             $$.node = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_tydec());
 
                                                             struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);
-                                                            atualiza_simbolo(simbolo_encontrado, $2);                                                                                                                                   
+                                                            atualiza_simbolo(simbolo_encontrado, ($4.node)->tipo);                                                                                                                                   
 
                                                             printf("tydec -> type id = ty\n"); 
                                                         }
