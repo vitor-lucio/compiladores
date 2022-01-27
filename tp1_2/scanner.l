@@ -19,6 +19,7 @@
 
     struct simbolo* inicializa_simbolo(char* nome, char* tipo, char* valor, char* classe, char* numero_parametros, char* endereco);
     void adiciona_simbolo(struct simbolo *s);
+    void atualiza_simbolo(struct simbolo *s, char* tipo);
     void imprime_tabela_simbolos();
 %}
 
