@@ -50,6 +50,7 @@
 - Para as funções nativas do Tiger, como devemos proceder com o código intermediário, sendo que a gente não vai ter o código dessas funções para escrever no código intermediário? A gente só escreve o comando de CALL() e não cria o label?
 - Quando um comando do código intermediário não tem um dos parametros, por exemplo quando "SEQ(, BINOP(MAIS, CONST(1), CONST(2)))" seria o código intermediário de "let in 1 + 2 end". Devemos preencher o primeiro parametro de SEQ com "EXP(CONST(0))" como feito no exemplo 1 da documentação da linguagem TIGER?
 - Tem recursão de função no TIGER? (uma função dentro da outra, função recursiva...)
+- Registros recursivos: type list = {first: int, rest: list}
 
 ## Referências
 

@@ -1,6 +1,5 @@
 let
- type list = {first: int, rest: list}
- type intArray = array of int
+ type list = {first: int, rest: int}
 in
 
 end
