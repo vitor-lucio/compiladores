@@ -3,6 +3,20 @@
     #include"y.tab.h"
 
     char string_lexema[8000];
+    char* tipos_primitivos[2] = {"int", "string"};
+
+    int eh_tipo_primitivo(char* tipo){
+        int i = 0;
+
+        for(i = 0; i < 2; i++){
+            if(!strcmp(tipo,tipos_primitivos[i])){
+                return 1;
+            }
+        }
+
+        return 0;
+    }
+
     struct simbolo* inicializa_simbolo(char* nome, char* tipo, char* valor, char* classe, char* numero_parametros, char* endereco);
     void adiciona_simbolo(struct simbolo *s);
     void imprime_tabela_simbolos();
@@ -97,10 +111,12 @@
                                     strcpy(aux, yytext);
                                     yylval.valor_constante = aux; 
                                     
-                                    struct simbolo* novo_simbolo = inicializa_simbolo(yytext, "?", "?", "?", "?", "?");
-                                    adiciona_simbolo(novo_simbolo);
-                                    printf("VIM PELO LEXER!\n");
-                                    imprime_tabela_simbolos();
+                                    if(!eh_tipo_primitivo(yytext)){
+                                        struct simbolo* novo_simbolo = inicializa_simbolo(yytext, "?", "?", "?", "?", "?");
+                                        adiciona_simbolo(novo_simbolo);
+                                        printf("VIM PELO LEXER!\n");
+                                        imprime_tabela_simbolos();                                        
+                                    }
                                     
                                     return VARIAVEL;
                                 }
