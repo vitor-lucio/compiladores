@@ -3,6 +3,9 @@
     #include"y.tab.h"
 
     char string_lexema[8000];
+    struct simbolo* inicializa_simbolo(char* nome, char* tipo, char* valor, char* classe, char* numero_parametros, char* endereco);
+    void adiciona_simbolo(struct simbolo *s);
+    void imprime_tabela_simbolos();
 %}
 
 %x STRING COMENTARIO
@@ -93,6 +96,12 @@
                                     char* aux = (char*) malloc (strlen(yytext)+1);
                                     strcpy(aux, yytext);
                                     yylval.valor_constante = aux; 
+                                    
+                                    struct simbolo* novo_simbolo = inicializa_simbolo(yytext, "?", "?", "?", "?", "?");
+                                    adiciona_simbolo(novo_simbolo);
+                                    printf("VIM PELO LEXER!\n");
+                                    imprime_tabela_simbolos();
+                                    
                                     return VARIAVEL;
                                 }
 <INITIAL>[0-9]+                {

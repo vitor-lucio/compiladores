@@ -488,10 +488,10 @@ char* codigo_intermediario_final;
         /* Foi feita uma copia para evitar que o novo node aponte para a mesma memoria do parametro "codigo_intermediario" */
         novo_node->codigo_intermediario = get_copia_string(codigo_intermediario);
 
-        printf("\nnode: %s\n", novo_node->codigo_intermediario);
-        if(novo_node->node_filho1) printf("node filho1: %s\n", novo_node->node_filho1->codigo_intermediario);
-        if(novo_node->node_filho2) printf("node filho2: %s\n", novo_node->node_filho2->codigo_intermediario);
-        if(novo_node->node_filho3) printf("node filho3: %s\n", novo_node->node_filho3->codigo_intermediario);
+        printf("\n[    node pai: %s - %s ]\n", novo_node->codigo_intermediario, novo_node->tipo);
+        if(novo_node->node_filho1) printf("[ node filho1: %s - %s ]\n", novo_node->node_filho1->codigo_intermediario, novo_node->node_filho1->tipo);
+        if(novo_node->node_filho2) printf("[ node filho2: %s - %s ]\n", novo_node->node_filho2->codigo_intermediario, novo_node->node_filho2->tipo);
+        if(novo_node->node_filho3) printf("[ node filho3: %s - %s ]\n", novo_node->node_filho3->codigo_intermediario, novo_node->node_filho3->tipo);
 
         return novo_node;
     }
@@ -645,11 +645,11 @@ char* codigo_intermediario_final;
             tabela_simbolos.primeiro_elemento = s;
             tabela_simbolos.primeiro_elemento->next = NULL;
 
-            printf("SIMBOLO ADICIONADO: %s %s\n", tabela_simbolos.primeiro_elemento->nome, tabela_simbolos.primeiro_elemento->tipo);
+            printf("\nSIMBOLO ADICIONADO: %s %s\n", tabela_simbolos.primeiro_elemento->nome, tabela_simbolos.primeiro_elemento->tipo);
         }else{
 
             if(busca_simbolo(s)){
-                printf("SIMBOLO %s JA EXISTE!\n", s->nome);
+                printf("\nSIMBOLO %s JA EXISTE!\n", s->nome);
                 return;
             }
 
@@ -662,7 +662,7 @@ char* codigo_intermediario_final;
             iterador->next = s;
             iterador->next->next = NULL;
 
-            printf("SIMBOLO ADICIONADO: %s %s\n", iterador->next->nome, iterador->next->tipo);
+            printf("\nSIMBOLO ADICIONADO: %s %s\n", iterador->next->nome, iterador->next->tipo);
         }
     }
 
@@ -695,7 +695,7 @@ char* codigo_intermediario_final;
     char* verifica_e_define_tipos_binop(char* tipo_parametro_1, char* tipo_parametro_2){
         if(strcmp(tipo_parametro_1, tipo_parametro_2)){
             printf("ERRO DE TIPAGEM!\n");
-            exit(1);
+            // exit(1);
         }
 
         return tipo_parametro_1; 
@@ -704,7 +704,7 @@ char* codigo_intermediario_final;
     char* verifica_e_define_tipos_vardec(char* tipo_parametro_1, char* tipo_parametro_2){
         if(strcmp(tipo_parametro_1, tipo_parametro_2)){
             printf("ERRO DE TIPAGEM!\n");
-            exit(1);
+            // exit(1);
         }
 
         return tipo_parametro_2;
@@ -882,20 +882,20 @@ type_id:
                     $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_temp());                                                        
                     $$.node->valor = get_copia_string($1); 
 
-                    if(!(!strcmp($1,"int") || !strcmp($1,"string")))
-                    {
-                        struct simbolo* novo_simbolo = inicializa_simbolo($1, "?", "?", "?", "?", "?");
-                        struct simbolo* simbolo_encontrado = busca_simbolo(novo_simbolo);
+                    // if(!(!strcmp($1,"int") || !strcmp($1,"string")))
+                    // {
+                        // struct simbolo* novo_simbolo = inicializa_simbolo($1, "?", "?", "?", "?", "?");
+                        // struct simbolo* simbolo_encontrado = busca_simbolo(novo_simbolo);
 
-                        if(simbolo_encontrado){
-                            if(!strcmp(simbolo_encontrado->classe,"var")){
-                                $$.node->tipo = simbolo_encontrado->tipo;
-                            }
-                        }else{ // TODO: tirar isso e colocar aonde o type_id eh chamado (olhar declaracao de registros recursivos e todos os pontos que chamam essa regra)
-                            printf("ERRO: VARIAVEL NAO DECLARADA!\n");
-                            exit(1);
-                        }
-                    }
+                        // if(simbolo_encontrado){
+                            // if(!strcmp(simbolo_encontrado->classe,"var")){
+                                // $$.node->tipo = simbolo_encontrado->tipo;
+                            // }
+                        // }else{ // TODO: tirar isso e colocar aonde o type_id eh chamado (olhar declaracao de registros recursivos e todos os pontos que chamam essa regra)
+                            // printf("ERRO: VARIAVEL NAO DECLARADA!\n");
+                            // exit(1);
+                        // }
+                    // }
 
                     printf("type-id -> id\n"); 
                 }
@@ -973,7 +973,6 @@ args:
 args1: 
       VIRGULA exp args1             { 
                                         $$.node = inicializa_node($2.node, $3.node, NULL, constroi_codigo_intermediario_args1());
-                                        
                                         printf("args1 -> , exp args1\n"); 
                                     }
     |                               { 
@@ -988,8 +987,8 @@ tyfields:
                                                             $$.node = inicializa_node($3.node, $4.node, NULL, constroi_codigo_intermediario_tyfields());
                                                             $$.node->tipo = ($3.node)->valor;
                                                             
-                                                            struct simbolo *s = inicializa_simbolo($1, ($3.node)->valor, "?", "var", "?", "?");
-                                                            adiciona_simbolo(s); 
+                                                            // struct simbolo *s = inicializa_simbolo($1, ($3.node)->valor, "?", "var", "?", "?");
+                                                            // adiciona_simbolo(s); 
                                                             
                                                             printf("tyfields -> id : type-id tyfields1\n"); 
                                                         }
@@ -1005,8 +1004,8 @@ tyfields1:
                                                                 $$.node = inicializa_node($4.node, $5.node, NULL, constroi_codigo_intermediario_tyfields1());
                                                                 $$.node->tipo  = ($4.node)->valor;
                                                                
-                                                                struct simbolo *s = inicializa_simbolo($2, ($4.node)->valor, "?", "var", "?", "?");
-                                                                adiciona_simbolo(s);                                                                 
+                                                                // struct simbolo *s = inicializa_simbolo($2, ($4.node)->valor, "?", "var", "?", "?");
+                                                                // adiciona_simbolo(s);                                                                 
                                                                 
                                                                 printf("tyfields1 -> , id : type-id tyfields1\n"); 
                                                             }
@@ -1022,8 +1021,8 @@ ty:
                                                                             $$.node = inicializa_node(NULL, NULL, NULL, "");                                                        
                                                                             $$.node->tipo = $1;
 
-                                                                            struct simbolo *s = inicializa_simbolo($1, $$.node->tipo, "?", "var", "?", "?");
-                                                                            adiciona_simbolo(s);
+                                                                            // struct simbolo *s = inicializa_simbolo($1, $$.node->tipo, "?", "var", "?", "?");
+                                                                            // adiciona_simbolo(s);
 
                                                                             printf("ty -> id\n"); 
                                                                         }
@@ -1031,8 +1030,8 @@ ty:
                                                                             $$.node = inicializa_node($4.node, $5.node, NULL, "");                                                        
                                                                             $$.node->tipo  = ($4.node)->valor;
 
-                                                                            struct simbolo *s = inicializa_simbolo($2, ($4.node)->valor, "?", "var", "?", "?");
-                                                                            adiciona_simbolo(s);
+                                                                            // struct simbolo *s = inicializa_simbolo($2, ($4.node)->valor, "?", "var", "?", "?");
+                                                                            // adiciona_simbolo(s);
                                                                             
                                                                             printf("ty -> { id : type-id tyfields1 }\n"); 
                                                                         }
@@ -1049,8 +1048,8 @@ tydec:
                                                             $$.node = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_tydec());
                                                             $$.node->tipo = get_copia_string($2);
 
-                                                            struct simbolo *s = inicializa_simbolo($2, $$.node->tipo, "?", "type", "?", "?");
-                                                            adiciona_simbolo(s);
+                                                            // struct simbolo *s = inicializa_simbolo($2, $$.node->tipo, "?", "type", "?", "?");
+                                                            // adiciona_simbolo(s);
 
                                                             printf("tydec -> type id = ty\n"); 
                                                         }
@@ -1063,8 +1062,8 @@ vardec:
                                                             $$.node->tipo = ($4.node)->tipo;
                                                             // $$.node->valor = ($4.node)->valor;                                                          
 
-                                                            struct simbolo *s = inicializa_simbolo($2, ($4.node)->tipo, "?", "var", "?", "?");
-                                                            adiciona_simbolo(s); 
+                                                            // struct simbolo *s = inicializa_simbolo($2, ($4.node)->tipo, "?", "var", "?", "?");
+                                                            // adiciona_simbolo(s); 
 
                                                             printf("vardec -> var id := exp\n"); 
                                                         }
@@ -1073,8 +1072,8 @@ vardec:
                                                             $$.node->tipo = verifica_e_define_tipos_vardec(($4.node)->valor, ($6.node)->tipo);
                                                             // $$.node->valor = $$.node->node_filho2->valor;
                                                         
-                                                            struct simbolo *s = inicializa_simbolo($2, $$.node->tipo, "?", "var", "?", "?");
-                                                            adiciona_simbolo(s);
+                                                            // struct simbolo *s = inicializa_simbolo($2, $$.node->tipo, "?", "var", "?", "?");
+                                                            // adiciona_simbolo(s);
                                                             
                                                             printf("vardec -> var id : type-id := exp\n");
                                                         }
@@ -1084,14 +1083,18 @@ vardec:
 fundec: 
       FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES IGUAL exp                     { 
                                                                                                     $$.node = inicializa_node($4.node, $7.node, NULL, constroi_codigo_intermediario_fundec2());
+                                                                                                    
+                                                                                                    // struct simbolo *s = inicializa_simbolo($2, "?", "?", "fun", "?", "?");
+                                                                                                    // adiciona_simbolo(s);
+                                                                                                    
                                                                                                     printf("fundec -> function id ( tyfields ) = exp\n"); 
                                                                                                 }
     | FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES DOIS_PONTOS type_id IGUAL exp {                                                                                                     
                                                                                                     $$.node = inicializa_node($4.node, $7.node, $9.node, constroi_codigo_intermediario_fundec1());                                                                                                    
                                                                                                     $$.node->tipo = verifica_e_define_tipos_vardec(($7.node)->valor, ($9.node)->tipo);
                                                                                                     
-                                                                                                    struct simbolo *s = inicializa_simbolo($2, ($7.node)->valor, "?", "fun", "?", "?");
-                                                                                                    adiciona_simbolo(s);
+                                                                                                    // struct simbolo *s = inicializa_simbolo($2, ($7.node)->valor, "?", "fun", "?", "?");
+                                                                                                    // adiciona_simbolo(s);
                                                                                                     
                                                                                                     printf("fundec -> function id ( tyfields ) : type-id = exp\n"); 
                                                                                                 }
@@ -1112,11 +1115,11 @@ decs:
 /**/
 dec: 
       tydec         { 
-                        $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_dec());
+                        $$.node = inicializa_node($1.node, NULL, NULL, "");
                         printf("dec -> tydec\n"); 
                     }
     | vardec        { 
-                        $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_dec());                                                           
+                        $$.node = inicializa_node($1.node, NULL, NULL, "");                                                           
                         printf("dec -> vardec\n"); 
                     }
     | fundec        { 
@@ -1152,9 +1155,12 @@ int main(int argc, char** argv) {
         printf("\n----------------------------------------\n\n");
         printf("RESULTADO:\n\nANALISE SINTATICA OK!\n");
     }
+
     
     // printCode(argv[1]);
 
+    printf("\n----------------------------------------\n\n");
+    imprime_tabela_simbolos();
     printf("\n----------------------------------------\n\n");
     printf("CODIGO INTERMEDIARIO GERADO:\n\n");
     codigo_intermediario_final = monta_codigo_intermediario_da_arvore(raiz_da_arvore);
