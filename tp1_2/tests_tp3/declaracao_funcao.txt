@@ -1,5 +1,11 @@
 let
- function soma(x1: int, x2: int) : int = x1 + x2
+ type a = int
+ type b = a
+ type c = b
+
+ type d = b
+
+ function soma(x1: int, x2: c) : int = x1 + x2
 in
 
 end

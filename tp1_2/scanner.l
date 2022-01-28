@@ -3,12 +3,12 @@
     #include"y.tab.h"
 
     char string_lexema[8000];
-    char* tipos_primitivos[2] = {"int", "string"};
+    char* tipos_primitivos[] = {"int", "string", "array", "record"};
 
     int eh_tipo_primitivo(char* tipo){
         int i = 0;
 
-        for(i = 0; i < 2; i++){
+        for(i = 0; i < 4; i++){
             if(!strcmp(tipo,tipos_primitivos[i])){
                 return 1;
             }

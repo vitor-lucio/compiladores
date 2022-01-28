@@ -716,13 +716,72 @@ char* codigo_intermediario_final;
     }
 
     char* verifica_e_define_tipos_vardec(char* tipo_parametro_1, char* tipo_parametro_2){
-        if(strcmp(tipo_parametro_1, tipo_parametro_2)){
-            printf("ERRO DE TIPAGEM!\n");
-            exit(1);
+        char* t1 = tipo_parametro_1;
+        char* t2 = tipo_parametro_2;
+
+        if(!eh_tipo_primitivo(tipo_parametro_1)){
+            struct simbolo* simbolo_encontrado1 = busca_simbolo_pelo_nome(tipo_parametro_1);
+            
+            while(simbolo_encontrado1 != NULL){
+                if(eh_tipo_primitivo(simbolo_encontrado1->tipo)){
+                    break;
+                }
+                
+                simbolo_encontrado1 = busca_simbolo_pelo_nome(simbolo_encontrado1->tipo);
+            }
+            t1 = simbolo_encontrado1->tipo;
+            if(simbolo_encontrado1 != NULL)
+                printf("TO NO WHILE %s %s\n", simbolo_encontrado1->nome, simbolo_encontrado1->tipo);
+        }
+            
+        if(!eh_tipo_primitivo(tipo_parametro_2)){
+            struct simbolo* simbolo_encontrado2 = busca_simbolo_pelo_nome(tipo_parametro_2);
+
+            while(simbolo_encontrado2 != NULL){
+                if(eh_tipo_primitivo(simbolo_encontrado2->tipo)){
+                    break;
+                }
+                
+                simbolo_encontrado2 = busca_simbolo_pelo_nome(simbolo_encontrado2->tipo);
+            }
+            t2 = simbolo_encontrado2->tipo;
+            if(simbolo_encontrado2 != NULL)
+                printf("TO NO WHILE 2 %s %s\n", simbolo_encontrado2->nome, simbolo_encontrado2->tipo);
         }
 
-        return tipo_parametro_2;
-    }                                                                                                                                                   
+        if(!strcmp(t1, t2)){
+            return tipo_parametro_1;
+        }
+        printf("ERRO DE TIPAGEM!\n");
+        exit(1);
+        return NULL;
+    }     
+
+    char* verifica_e_define_tipos_vardec2(char* tipo_parametro_1){
+        
+        struct simbolo* simbolo_encontrado1 = busca_simbolo_pelo_nome(tipo_parametro_1);
+        
+        while(simbolo_encontrado1 != NULL){
+            if(eh_tipo_primitivo(simbolo_encontrado1->tipo)){
+                break;
+            }
+            
+            simbolo_encontrado1 = busca_simbolo_pelo_nome(simbolo_encontrado1->tipo);
+        }
+        if(simbolo_encontrado1 != NULL)
+            printf("TO NO WHILE %s %s\n", simbolo_encontrado1->nome, simbolo_encontrado1->tipo);
+
+        return tipo_parametro_1;
+        
+        // return NULL;
+        
+        // if(strcmp(tipo_parametro_1, tipo_parametro_2)){
+        //     printf("ERRO DE TIPAGEM!\n");
+        //     exit(1);
+        // }
+
+        // return tipo_parametro_2;
+    }                                                                                                                                              
                                                                                                             
 %}
 
@@ -753,22 +812,22 @@ char* codigo_intermediario_final;
 exp:  
       exp MAIS exp                                                  {                                                            
                                                                         $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
-                                                                        $$.node->tipo = verifica_e_define_tipos_binop(($1.node)->tipo, ($3.node)->tipo);                                                                        
+                                                                        $$.node->tipo = verifica_e_define_tipos_vardec(($1.node)->tipo, ($3.node)->tipo);                                                                        
                                                                         printf("exp -> exp + exp\n"); 
                                                                     } /* BINOP(MAIS, exp, exp) */
     | exp MENOS exp                                                 {
                                                                         $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
-                                                                        $$.node->tipo = verifica_e_define_tipos_binop(($1.node)->tipo, ($3.node)->tipo);                                                                        
+                                                                        $$.node->tipo = verifica_e_define_tipos_vardec(($1.node)->tipo, ($3.node)->tipo);                                                                        
                                                                         printf("exp -> exp - exp\n"); 
                                                                     } /* BINOP(MENOS, exp, exp) */
     | exp MULTIPLICACAO exp                                         {
                                                                         $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
-                                                                        $$.node->tipo = verifica_e_define_tipos_binop(($1.node)->tipo, ($3.node)->tipo);                                                                        
+                                                                        $$.node->tipo = verifica_e_define_tipos_vardec(($1.node)->tipo, ($3.node)->tipo);                                                                        
                                                                         printf("exp -> exp * exp\n"); 
                                                                     } /* BINOP(MULTIPLICACAO, exp, exp) */
     | exp DIVISAO exp                                               {
                                                                         $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
-                                                                        $$.node->tipo = verifica_e_define_tipos_binop(($1.node)->tipo, ($3.node)->tipo);                                                                        
+                                                                        $$.node->tipo = verifica_e_define_tipos_vardec(($1.node)->tipo, ($3.node)->tipo);                                                                        
                                                                         printf("exp -> exp / exp\n"); 
                                                                     } /* BINOP(DIVISAO, exp, exp) */
 
@@ -850,8 +909,7 @@ exp:
                                                                     }
     | type_id ABRE_COLCHETE exp FECHA_COLCHETE OF exp               { 
                                                                         $$.node = inicializa_node($1.node, $3.node, $6.node, constroi_codigo_intermediario_call1());
-                                                                        $$.node->tipo  = ($1.node)->tipo;
-                                                                        $$.node->valor = ($3.node)->valor;
+                                                                        $$.node->tipo = ($1.node)->valor;
                                                                         printf("exp -> type-id [ exp ] of exp\n"); 
                                                                     }
     | l_value ATRIBUICAO exp                                        { 
@@ -894,11 +952,11 @@ type_id:
 
                     struct simbolo* simbolo_encontrado = busca_simbolo_pelo_nome($1);
                     if(simbolo_encontrado){
-                        $$.node->tipo = simbolo_encontrado->tipo;                                                                                                                              
+                        $$.node->tipo = simbolo_encontrado->tipo;                                                                                                             
                     }else{
                         $$.node->tipo = get_copia_string($1);  
                     }
-                                                                                                    
+                                                                                        
 
                     // if(!(!strcmp($1,"int") || !strcmp($1,"string")))
                     // {
@@ -1040,6 +1098,7 @@ ty:
                                                                         }
     | ABRE_CHAVES VARIAVEL DOIS_PONTOS type_id tyfields1 FECHA_CHAVES   {   
                                                                             $$.node = inicializa_node($4.node, $5.node, NULL, "");                                                        
+                                                                            $$.node->tipo = "record";
 
                                                                             struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);
                                                                             atualiza_simbolo(simbolo_encontrado, ($4.node)->valor);                                                                                                                                
@@ -1048,7 +1107,7 @@ ty:
                                                                         }
     | ARRAY OF VARIAVEL                                                 { 
                                                                             $$.node = inicializa_node(NULL, NULL, NULL, "");                                                        
-                                                                            $$.node->tipo = "array of";
+                                                                            $$.node->tipo = "array";
                                                                             printf("ty -> array of id\n"); 
                                                                         }
     ;
@@ -1070,15 +1129,15 @@ vardec:
       VAR VARIAVEL ATRIBUICAO exp                       { 
                                                             $$.node  = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_move());
                                                             
-                                                            struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);
-                                                            atualiza_simbolo(simbolo_encontrado, ($4.node)->tipo);                                                                                                                                                                                            
+                                                            struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);                                                            
+                                                            atualiza_simbolo(simbolo_encontrado, verifica_e_define_tipos_vardec2(($4.node)->tipo));                                                                                                                                                                                            
 
                                                             printf("vardec -> var id := exp\n"); 
                                                         }
     | VAR VARIAVEL DOIS_PONTOS type_id ATRIBUICAO exp   {  
                                                             $$.node = inicializa_node($4.node, $6.node, NULL, constroi_codigo_intermediario_move());
                                                             
-                                                            struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);
+                                                            struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);                                                     
                                                             atualiza_simbolo(simbolo_encontrado, verifica_e_define_tipos_vardec(($4.node)->valor, ($6.node)->tipo));                                                                                                                                
                                                                 
                                                             printf("vardec -> var id : type-id := exp\n");
@@ -1182,4 +1241,5 @@ int main(int argc, char** argv) {
 void yyerror(const char* msg) {
     printf("\n----------------------------------------\n\n");
     printf("RESULTADO:\n\nERRO DE SINTAXE!\n");
+    exit(1);
 }

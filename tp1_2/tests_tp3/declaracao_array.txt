@@ -1,8 +1,12 @@
 let
-    type a = int
+    type a = array of int
     type b = a
+    type c = b
 
-   
+    type y = a 
+    type z = y
+
+    var arr1 : a := z [10] of 0
 in
 
 end
