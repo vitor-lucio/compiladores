@@ -54,6 +54,10 @@ char PARAMETRO1_CODIGO_INTERMEDIARIO[] = "$parametro1";
 char PARAMETRO2_CODIGO_INTERMEDIARIO[] = "$parametro2";
 char PARAMETRO3_CODIGO_INTERMEDIARIO[] = "$parametro3";
 
+
+char CLASSE_TIPO[] = "type";
+char CLASSE_VARIAVEL[] = "variable";
+
 /*
 ////////////////////////////////////////////////////////////////////////////////
     Estrutura do codigo intermediario final
@@ -653,6 +657,38 @@ char* codigo_intermediario_final;
         return NULL;
     }
 
+    struct simbolo* busca_simbolo_de_tipo_pelo_nome(char* nome){
+        struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
+        
+        while(iterador != NULL){
+            if(!strcmp(iterador->classe, CLASSE_TIPO)){
+                if(!strcmp(iterador->nome, nome)){
+                    return iterador;
+                }
+            }
+            
+            iterador = iterador->next;
+        }
+
+        return NULL;
+    }
+
+    struct simbolo* busca_simbolo_por_classe_e_nome(char* nome, char* classe){
+        struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
+        
+        while(iterador != NULL){
+            if(!strcmp(iterador->classe, classe)){
+                if(!strcmp(iterador->nome, nome)){
+                    return iterador;
+                }
+            }
+            
+            iterador = iterador->next;
+        }
+
+        return NULL;
+    }
+
 
     void adiciona_simbolo(struct simbolo *s){
         if(!tabela_simbolos.primeiro_elemento){
@@ -680,8 +716,30 @@ char* codigo_intermediario_final;
         }
     }
 
-    void atualiza_simbolo(struct simbolo *s, char* tipo){
-        s->tipo = tipo;
+    void adiciona_simbolo_sem_verificacoes(struct simbolo *s){
+        if(!tabela_simbolos.primeiro_elemento){
+            tabela_simbolos.primeiro_elemento = s;
+            tabela_simbolos.primeiro_elemento->next = NULL;
+
+            printf("\nSIMBOLO ADICIONADO: %s %s\n", tabela_simbolos.primeiro_elemento->nome, tabela_simbolos.primeiro_elemento->tipo);
+        }else{
+
+            struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
+            
+            while(iterador->next != NULL){
+                iterador = iterador->next;
+            }
+            
+            iterador->next = s;
+            iterador->next->next = NULL;
+
+            printf("\nSIMBOLO ADICIONADO: %s %s\n", iterador->next->nome, iterador->next->tipo);
+        }
+    }
+
+    void atualiza_simbolo(struct simbolo *s, char* tipo, char* classe){
+        s->tipo = get_copia_string(tipo);
+        s->classe = get_copia_string(classe);
     }
 
     void imprime_tabela_simbolos(){
@@ -720,14 +778,14 @@ char* codigo_intermediario_final;
         char* t2 = tipo_parametro_2;
 
         if(!eh_tipo_primitivo(tipo_parametro_1)){
-            struct simbolo* simbolo_encontrado1 = busca_simbolo_pelo_nome(tipo_parametro_1);
+            struct simbolo* simbolo_encontrado1 = busca_simbolo_de_tipo_pelo_nome(tipo_parametro_1);
             
             while(simbolo_encontrado1 != NULL){
                 if(eh_tipo_primitivo(simbolo_encontrado1->tipo)){
                     break;
                 }
                 
-                simbolo_encontrado1 = busca_simbolo_pelo_nome(simbolo_encontrado1->tipo);
+                simbolo_encontrado1 = busca_simbolo_de_tipo_pelo_nome(simbolo_encontrado1->tipo);
             }
             t1 = simbolo_encontrado1->tipo;
             if(simbolo_encontrado1 != NULL)
@@ -735,14 +793,14 @@ char* codigo_intermediario_final;
         }
             
         if(!eh_tipo_primitivo(tipo_parametro_2)){
-            struct simbolo* simbolo_encontrado2 = busca_simbolo_pelo_nome(tipo_parametro_2);
+            struct simbolo* simbolo_encontrado2 = busca_simbolo_de_tipo_pelo_nome(tipo_parametro_2);
 
             while(simbolo_encontrado2 != NULL){
                 if(eh_tipo_primitivo(simbolo_encontrado2->tipo)){
                     break;
                 }
                 
-                simbolo_encontrado2 = busca_simbolo_pelo_nome(simbolo_encontrado2->tipo);
+                simbolo_encontrado2 = busca_simbolo_de_tipo_pelo_nome(simbolo_encontrado2->tipo);
             }
             t2 = simbolo_encontrado2->tipo;
             if(simbolo_encontrado2 != NULL)
@@ -759,14 +817,14 @@ char* codigo_intermediario_final;
 
     char* verifica_e_define_tipos_vardec2(char* tipo_parametro_1){
         
-        struct simbolo* simbolo_encontrado1 = busca_simbolo_pelo_nome(tipo_parametro_1);
+        struct simbolo* simbolo_encontrado1 = busca_simbolo_de_tipo_pelo_nome(tipo_parametro_1);
         
         while(simbolo_encontrado1 != NULL){
             if(eh_tipo_primitivo(simbolo_encontrado1->tipo)){
                 break;
             }
             
-            simbolo_encontrado1 = busca_simbolo_pelo_nome(simbolo_encontrado1->tipo);
+            simbolo_encontrado1 = busca_simbolo_de_tipo_pelo_nome(simbolo_encontrado1->tipo);
         }
         if(simbolo_encontrado1 != NULL)
             printf("TO NO WHILE %s %s\n", simbolo_encontrado1->nome, simbolo_encontrado1->tipo);
@@ -1063,7 +1121,7 @@ tyfields:
                                                             $$.node = inicializa_node($3.node, $4.node, NULL, constroi_codigo_intermediario_tyfields());
                                                             
                                                             struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($1);
-                                                            atualiza_simbolo(simbolo_encontrado, ($3.node)->valor);                                                                                                                                
+                                                            atualiza_simbolo(simbolo_encontrado, ($3.node)->valor, "?");                                                                                                                                
                                                             
                                                             printf("tyfields -> id : type-id tyfields1\n"); 
                                                         }
@@ -1079,7 +1137,7 @@ tyfields1:
                                                                 $$.node = inicializa_node($4.node, $5.node, NULL, constroi_codigo_intermediario_tyfields1());
                                                                 
                                                                 struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);
-                                                                atualiza_simbolo(simbolo_encontrado, ($4.node)->valor);                                                                                                                                
+                                                                atualiza_simbolo(simbolo_encontrado, ($4.node)->valor, "?");                                                                                                                                
                                                                 
                                                                 printf("tyfields1 -> , id : type-id tyfields1\n"); 
                                                             }
@@ -1101,7 +1159,7 @@ ty:
                                                                             $$.node->tipo = "record";
 
                                                                             struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);
-                                                                            atualiza_simbolo(simbolo_encontrado, ($4.node)->valor);                                                                                                                                
+                                                                            atualiza_simbolo(simbolo_encontrado, ($4.node)->valor, "?");                                                                                                                                
                                                                                                                                             
                                                                             printf("ty -> { id : type-id tyfields1 }\n"); 
                                                                         }
@@ -1117,8 +1175,28 @@ tydec:
       TYPE VARIAVEL IGUAL ty                            { 
                                                             $$.node = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_tydec());
 
-                                                            struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);
-                                                            atualiza_simbolo(simbolo_encontrado, ($4.node)->tipo);                                                                                                                                   
+                                                            struct simbolo *simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_TIPO);
+                                                            if(simbolo_encontrado){
+                                                                printf("$$$$$ Tipo \"%s\" ja foi declarado na tabela de simbolos $$$$$\n", simbolo_encontrado->nome);
+                                                                exit(1);
+                                                            }
+                                                            
+                                                            simbolo_encontrado = busca_simbolo_pelo_nome($2);
+                                                            if(simbolo_encontrado == NULL){
+                                                                printf("######### tydec: Valor NULL #########");
+                                                                exit(1);
+                                                            }
+                                                            /*
+                                                                Verifica se precisamos atualizar um simbolo existente,
+                                                                ou criar outro (em casos onde o simbolo existente é de outra classe)
+                                                            */
+                                                            if(!strcmp(simbolo_encontrado->classe, "?")){
+                                                                atualiza_simbolo(simbolo_encontrado, ($4.node)->tipo, CLASSE_TIPO); 
+                                                            }
+                                                            else{
+                                                                struct simbolo* novo_simbolo = inicializa_simbolo(simbolo_encontrado->nome, simbolo_encontrado->tipo, "?", CLASSE_TIPO, "?", "?");
+                                                                adiciona_simbolo_sem_verificacoes(novo_simbolo);
+                                                            }                                                                                                                                                                                     
 
                                                             printf("tydec -> type id = ty\n"); 
                                                         }
@@ -1129,16 +1207,57 @@ vardec:
       VAR VARIAVEL ATRIBUICAO exp                       { 
                                                             $$.node  = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_move());
                                                             
-                                                            struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);                                                            
-                                                            atualiza_simbolo(simbolo_encontrado, verifica_e_define_tipos_vardec2(($4.node)->tipo));                                                                                                                                                                                            
+                                                            struct simbolo *simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_VARIAVEL);
+                                                            if(simbolo_encontrado){
+                                                                printf("$$$$$ Variavel \"%s\" ja foi declarado na tabela de simbolos $$$$$\n", simbolo_encontrado->nome);
+                                                                exit(1);
+                                                            }
+
+                                                            simbolo_encontrado = busca_simbolo_pelo_nome($2);
+                                                            if(simbolo_encontrado == NULL){
+                                                                printf("######### vardec: Valor NULL #########");
+                                                                exit(1);
+                                                            }
+                                                            /*
+                                                                Verifica se precisamos atualizar um simbolo existente,
+                                                                ou criar outro (em casos onde o simbolo existente é de outra classe)
+                                                            */
+                                                            if(!strcmp(simbolo_encontrado->classe, "?")){
+                                                                atualiza_simbolo(simbolo_encontrado, verifica_e_define_tipos_vardec2(($4.node)->tipo), CLASSE_VARIAVEL);
+                                                            }
+                                                            else{
+                                                                struct simbolo* novo_simbolo = inicializa_simbolo(simbolo_encontrado->nome, verifica_e_define_tipos_vardec2(($4.node)->tipo), "?", CLASSE_VARIAVEL, "?", "?");
+                                                                adiciona_simbolo_sem_verificacoes(novo_simbolo);
+                                                            }                                                                                                                                                                                                 
 
                                                             printf("vardec -> var id := exp\n"); 
                                                         }
     | VAR VARIAVEL DOIS_PONTOS type_id ATRIBUICAO exp   {  
                                                             $$.node = inicializa_node($4.node, $6.node, NULL, constroi_codigo_intermediario_move());
                                                             
-                                                            struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);                                                     
-                                                            atualiza_simbolo(simbolo_encontrado, verifica_e_define_tipos_vardec(($4.node)->valor, ($6.node)->tipo));                                                                                                                                
+                                                            struct simbolo *simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_VARIAVEL);
+                                                            if(simbolo_encontrado){
+                                                                printf("$$$$$ Variavel \"%s\" ja foi declarado na tabela de simbolos $$$$$\n", simbolo_encontrado->nome);
+                                                                exit(1);
+                                                            }
+
+                                                            simbolo_encontrado = busca_simbolo_pelo_nome($2);
+                                                            if(simbolo_encontrado == NULL){
+                                                                printf("######### vardec: Valor NULL #########");
+                                                                exit(1);
+                                                            }
+                                                            /*
+                                                                Verifica se precisamos atualizar um simbolo existente,
+                                                                ou criar outro (em casos onde o simbolo existente é de outra classe)
+                                                            */
+                                                            if(!strcmp(simbolo_encontrado->classe, "?")){
+                                                                atualiza_simbolo(simbolo_encontrado, verifica_e_define_tipos_vardec(($4.node)->valor, ($6.node)->tipo), CLASSE_VARIAVEL);
+                                                            }
+                                                            else{
+                                                                struct simbolo* novo_simbolo = inicializa_simbolo(simbolo_encontrado->nome, verifica_e_define_tipos_vardec(($4.node)->valor, ($6.node)->tipo), "?", CLASSE_VARIAVEL, "?", "?");
+                                                                adiciona_simbolo_sem_verificacoes(novo_simbolo);
+                                                            }
+                                                            /**/                                                                                                                           
                                                                 
                                                             printf("vardec -> var id : type-id := exp\n");
                                                         }
@@ -1150,7 +1269,7 @@ fundec:
                                                                                                     $$.node = inicializa_node($4.node, $7.node, NULL, constroi_codigo_intermediario_fundec2());
                                                                                                     
                                                                                                     struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);
-                                                                                                    atualiza_simbolo(simbolo_encontrado, "void");                                                                                                                              
+                                                                                                    atualiza_simbolo(simbolo_encontrado, "void", "?");                                                                                                                              
                                                                                                     
                                                                                                     printf("fundec -> function id ( tyfields ) = exp\n"); 
                                                                                                 }
@@ -1158,7 +1277,7 @@ fundec:
                                                                                                     $$.node = inicializa_node($4.node, $7.node, $9.node, constroi_codigo_intermediario_fundec1());                                                                                                  
                                                                                                     
                                                                                                     struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);
-                                                                                                    atualiza_simbolo(simbolo_encontrado, verifica_e_define_tipos_vardec(($7.node)->valor, ($9.node)->tipo));                                                                                                                              
+                                                                                                    atualiza_simbolo(simbolo_encontrado, verifica_e_define_tipos_vardec(($7.node)->valor, ($9.node)->tipo), "?");                                                                                                                              
                                                                                                     
                                                                                                     printf("fundec -> function id ( tyfields ) : type-id = exp\n"); 
                                                                                                 }

@@ -1,5 +1,7 @@
 let
  type list = {first: int, rest: list}
+ type b = a
+ type a = b
 in
 
 end

@@ -4,7 +4,7 @@ let
  type c = b
 
  type d = b
-
+ var x1 := 1
  function soma(x1: int, x2: c) : int = x1 + x2
 in
 

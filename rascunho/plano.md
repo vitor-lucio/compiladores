@@ -55,3 +55,18 @@
 ## Referências
 
 - [Tutorial de como fazer um compilador de c usando lex e yacc](https://medium.com/codex/building-a-c-compiler-using-lex-and-yacc-446262056aaa)
+
+## Rascunho
+
+- ~~Colocar classe para os tipos~~
+- ~~Fazer verificação de tipo considerando apenas tipos~~
+- ~~Validar e implementar declaracao de variavel e tipos com mesmo nome~~
+- ~~Testar casos onde existe uma variavel com o mesmo nome que um tipo~~
+- Verificar se o tipo de uma declaracao de array é, de fato, um array e lançar erro
+- Implementar casos de declaração de registros distintos com atributos iguais
+- Testar casos de registro com variaveis com mesmo nome
+- Validar e implementar declaracao de parametros, tipos e variaveis com mesmo nome
+- Colocar classe de tudo que e colocado na tabela de simbolos
+- Terminar declaração de função
+- Testar casos com várias declarações diferentes juntas, afim de validar se toda parte de validação esta funcionando
+- Terminar geração do código intermediário de declarações
