@@ -1,5 +1,8 @@
 let
+    var a := "asdasdasd"
     type a = array of int
+    type zeta = array of string
+    var zeta := 1
     type b = a
     type c = b
 

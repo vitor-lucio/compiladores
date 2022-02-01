@@ -115,7 +115,6 @@
                                     if(!eh_tipo_primitivo(yytext)){
                                         struct simbolo* novo_simbolo = inicializa_simbolo(yytext, "?", "?", "?", "?", "?");
                                         adiciona_simbolo(novo_simbolo);
-                                        printf("VIM PELO LEXER!\n");
                                         imprime_tabela_simbolos();                                        
                                     }
                                     

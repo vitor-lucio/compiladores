@@ -1166,6 +1166,7 @@ ty:
     | ARRAY OF VARIAVEL                                                 { 
                                                                             $$.node = inicializa_node(NULL, NULL, NULL, "");                                                        
                                                                             $$.node->tipo = "array";
+                                                                            $$.node->valor = get_copia_string($3);
                                                                             printf("ty -> array of id\n"); 
                                                                         }
     ;
@@ -1177,7 +1178,7 @@ tydec:
 
                                                             struct simbolo *simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_TIPO);
                                                             if(simbolo_encontrado){
-                                                                printf("$$$$$ Tipo \"%s\" ja foi declarado na tabela de simbolos $$$$$\n", simbolo_encontrado->nome);
+                                                                printf("******* Tipo \"%s\" ja foi declarado na tabela de simbolos *******\n", simbolo_encontrado->nome);
                                                                 exit(1);
                                                             }
                                                             
@@ -1191,10 +1192,19 @@ tydec:
                                                                 ou criar outro (em casos onde o simbolo existente é de outra classe)
                                                             */
                                                             if(!strcmp(simbolo_encontrado->classe, "?")){
+                                                                if(!strcmp(($4.node)->tipo, "array")){
+                                                                    simbolo_encontrado->valor = get_copia_string(($4.node)->valor);
+                                                                    printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n Array detectado na atualizacao de tipo na tabela %s\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n", ($4.node)->tipo);
+                                                                }
+
                                                                 atualiza_simbolo(simbolo_encontrado, ($4.node)->tipo, CLASSE_TIPO); 
                                                             }
                                                             else{
-                                                                struct simbolo* novo_simbolo = inicializa_simbolo(simbolo_encontrado->nome, simbolo_encontrado->tipo, "?", CLASSE_TIPO, "?", "?");
+                                                                struct simbolo* novo_simbolo = inicializa_simbolo(simbolo_encontrado->nome, ($4.node)->tipo, "?", CLASSE_TIPO, "?", "?");
+                                                                if(!strcmp(($4.node)->tipo, "array")){
+                                                                    novo_simbolo->valor = get_copia_string(($4.node)->valor);
+                                                                    printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n Array detectado na criacao de registro de tipo na tabela %s\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n", ($4.node)->tipo);
+                                                                }
                                                                 adiciona_simbolo_sem_verificacoes(novo_simbolo);
                                                             }                                                                                                                                                                                     
 
@@ -1209,7 +1219,7 @@ vardec:
                                                             
                                                             struct simbolo *simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_VARIAVEL);
                                                             if(simbolo_encontrado){
-                                                                printf("$$$$$ Variavel \"%s\" ja foi declarado na tabela de simbolos $$$$$\n", simbolo_encontrado->nome);
+                                                                printf("******* Variavel \"%s\" ja foi declarado na tabela de simbolos *******\n", simbolo_encontrado->nome);
                                                                 exit(1);
                                                             }
 
@@ -1237,7 +1247,7 @@ vardec:
                                                             
                                                             struct simbolo *simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_VARIAVEL);
                                                             if(simbolo_encontrado){
-                                                                printf("$$$$$ Variavel \"%s\" ja foi declarado na tabela de simbolos $$$$$\n", simbolo_encontrado->nome);
+                                                                printf("******* Variavel \"%s\" ja foi declarado na tabela de simbolos *******\n", simbolo_encontrado->nome);
                                                                 exit(1);
                                                             }
 

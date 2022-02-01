@@ -63,6 +63,7 @@
 - ~~Validar e implementar declaracao de variavel e tipos com mesmo nome~~
 - ~~Testar casos onde existe uma variavel com o mesmo nome que um tipo~~
 - Verificar se o tipo de uma declaracao de array é, de fato, um array e lançar erro
+- Criar e atribuir escopo para os casos de registro.
 - Implementar casos de declaração de registros distintos com atributos iguais
 - Testar casos de registro com variaveis com mesmo nome
 - Validar e implementar declaracao de parametros, tipos e variaveis com mesmo nome
