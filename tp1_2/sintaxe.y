@@ -57,6 +57,9 @@ char PARAMETRO3_CODIGO_INTERMEDIARIO[] = "$parametro3";
 
 char CLASSE_TIPO[] = "type";
 char CLASSE_VARIAVEL[] = "variable";
+char CLASSE_PARAMETRO[] = "parameter";
+char CLASSE_FUNCAO[] = "function";
+char CLASSE_REGISTRO[] = "record";
 
 /*
 ////////////////////////////////////////////////////////////////////////////////
@@ -78,6 +81,7 @@ char* codigo_intermediario_final;
         struct node* node_filho3;
         char* tipo;
         char* valor;
+        char* classe;
 	};
 
     struct node* raiz_da_arvore; /* raiz da arvore */
@@ -823,9 +827,10 @@ char* codigo_intermediario_final;
             if(eh_tipo_primitivo(simbolo_encontrado1->tipo)){
                 break;
             }
-            
+    
             simbolo_encontrado1 = busca_simbolo_de_tipo_pelo_nome(simbolo_encontrado1->tipo);
         }
+
         if(simbolo_encontrado1 != NULL)
             printf("TO NO WHILE %s %s\n", simbolo_encontrado1->nome, simbolo_encontrado1->tipo);
 
@@ -963,11 +968,17 @@ exp:
                                                                     } /* JUMP(labelAnteriorAoDoLabelQueExecutouBreak + proximoComandoDoLabelQueExecutouBreak, labelAnteriorAoDoLabelQueExecutouBreak + proximoComandoDoLabelQueExecutouBreak) */
     | type_id ABRE_CHAVES VARIAVEL IGUAL exp idexps FECHA_CHAVES    { 
                                                                         $$.node = inicializa_node($1.node, $5.node, $6.node, "TODO");
+                                                                        $$.node->tipo = "record";
+                                                                        // TODO: verificar se o tipo de exp é igual ao tipo de VARIAVEL na tabela
                                                                         printf("exp -> type-id { id = exp idexps }\n"); 
                                                                     }
     | type_id ABRE_COLCHETE exp FECHA_COLCHETE OF exp               { 
                                                                         $$.node = inicializa_node($1.node, $3.node, $6.node, constroi_codigo_intermediario_call1());
                                                                         $$.node->tipo = ($1.node)->valor;
+                                                                        //TODO: se type_id for um tipo da tabela, conferir se o tipo recursivo dele é igual ao do ultimo exp
+                                                                        $$.node->tipo = verifica_e_define_tipos_vardec(($1.node)->valor, ($6.node)->tipo);
+                                                                        // strcat($$.node->tipo, ($6.node)->tipo);
+                                                                        
                                                                         printf("exp -> type-id [ exp ] of exp\n"); 
                                                                     }
     | l_value ATRIBUICAO exp                                        { 
@@ -1121,7 +1132,7 @@ tyfields:
                                                             $$.node = inicializa_node($3.node, $4.node, NULL, constroi_codigo_intermediario_tyfields());
                                                             
                                                             struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($1);
-                                                            atualiza_simbolo(simbolo_encontrado, ($3.node)->valor, "?");                                                                                                                                
+                                                            atualiza_simbolo(simbolo_encontrado, ($3.node)->valor, CLASSE_PARAMETRO);                                                                                                                                
                                                             
                                                             printf("tyfields -> id : type-id tyfields1\n"); 
                                                         }
@@ -1137,7 +1148,7 @@ tyfields1:
                                                                 $$.node = inicializa_node($4.node, $5.node, NULL, constroi_codigo_intermediario_tyfields1());
                                                                 
                                                                 struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);
-                                                                atualiza_simbolo(simbolo_encontrado, ($4.node)->valor, "?");                                                                                                                                
+                                                                atualiza_simbolo(simbolo_encontrado, ($4.node)->valor, "?");  // Aqui pode ser parâmetro ou variavel de registro                                                                                                                              
                                                                 
                                                                 printf("tyfields1 -> , id : type-id tyfields1\n"); 
                                                             }
@@ -1159,13 +1170,14 @@ ty:
                                                                             $$.node->tipo = "record";
 
                                                                             struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);
-                                                                            atualiza_simbolo(simbolo_encontrado, ($4.node)->valor, "?");                                                                                                                                
+                                                                            atualiza_simbolo(simbolo_encontrado, ($4.node)->valor, CLASSE_VARIAVEL);                                                                                                                                
                                                                                                                                             
                                                                             printf("ty -> { id : type-id tyfields1 }\n"); 
                                                                         }
     | ARRAY OF VARIAVEL                                                 { 
                                                                             $$.node = inicializa_node(NULL, NULL, NULL, "");                                                        
-                                                                            $$.node->tipo = "array";
+                                                                            // $$.node->tipo = "array of";
+                                                                            $$.node->tipo = verifica_e_define_tipos_vardec2(($3));
                                                                             $$.node->valor = get_copia_string($3);
                                                                             printf("ty -> array of id\n"); 
                                                                         }
@@ -1279,7 +1291,7 @@ fundec:
                                                                                                     $$.node = inicializa_node($4.node, $7.node, NULL, constroi_codigo_intermediario_fundec2());
                                                                                                     
                                                                                                     struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);
-                                                                                                    atualiza_simbolo(simbolo_encontrado, "void", "?");                                                                                                                              
+                                                                                                    atualiza_simbolo(simbolo_encontrado, "void", CLASSE_FUNCAO);                                                                                                                              
                                                                                                     
                                                                                                     printf("fundec -> function id ( tyfields ) = exp\n"); 
                                                                                                 }
@@ -1287,7 +1299,7 @@ fundec:
                                                                                                     $$.node = inicializa_node($4.node, $7.node, $9.node, constroi_codigo_intermediario_fundec1());                                                                                                  
                                                                                                     
                                                                                                     struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);
-                                                                                                    atualiza_simbolo(simbolo_encontrado, verifica_e_define_tipos_vardec(($7.node)->valor, ($9.node)->tipo), "?");                                                                                                                              
+                                                                                                    atualiza_simbolo(simbolo_encontrado, verifica_e_define_tipos_vardec(($7.node)->valor, ($9.node)->tipo), CLASSE_FUNCAO);                                                                                                                              
                                                                                                     
                                                                                                     printf("fundec -> function id ( tyfields ) : type-id = exp\n"); 
                                                                                                 }
