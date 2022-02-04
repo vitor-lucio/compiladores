@@ -1,0 +1,11 @@
+let
+  type rec = int
+  type rec_arr = array of rec
+  type rec_arr2 = rec_arr
+  type rec_arr3 = rec_arr2
+        /* Se a classe (ou sei la) de rec_arr3 (recursivamente) for array e não tiver [exp] aqui, erro de tipagem */
+        /* isso não pode, mas ta passando => var table : rec_arr3 := 3 */
+  var table := rec_arr3 [2] of 3
+in
+ 
+end
