@@ -62,7 +62,7 @@
 - ~~Fazer verificação de tipo considerando apenas tipos~~
 - ~~Validar e implementar declaracao de variavel e tipos com mesmo nome~~
 - ~~Testar casos onde existe uma variavel com o mesmo nome que um tipo~~
-- Verificar se o tipo de uma declaracao de array é, de fato, um array e lançar erro
+- ~~Verificar se o tipo de uma declaracao de array é, de fato, um array e lançar erro~~
 - Declaração de tipos com array: var table : rec_arr3 := 3 (salvar que rec_arr3 é um array no node e comparar com o exp)
 - Criar variável global com o valor da classe e percorrer a tabela até a ultima posição (se a variavel for func ou record)
 - Criar e atribuir escopo para os casos de registro.

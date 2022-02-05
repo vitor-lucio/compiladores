@@ -82,6 +82,7 @@ char* codigo_intermediario_final;
         char* tipo;
         char* valor;
         char* classe;
+        int num_arrays;
 	};
 
     struct node* raiz_da_arvore; /* raiz da arvore */
@@ -844,7 +845,71 @@ char* codigo_intermediario_final;
         // }
 
         // return tipo_parametro_2;
-    }                                                                                                                                              
+    }     
+
+    char* pega_tipo_recursivo(char* tipo_inicial){
+        struct simbolo* simbolo_encontrado1 = busca_simbolo_de_tipo_pelo_nome(tipo_inicial);
+        
+        while(simbolo_encontrado1 != NULL){
+            if(eh_tipo_primitivo(simbolo_encontrado1->tipo)){
+                break;
+            }
+    
+            simbolo_encontrado1 = busca_simbolo_de_tipo_pelo_nome(simbolo_encontrado1->tipo);
+        }
+
+        if(!strcmp(simbolo_encontrado1->tipo, "array")){
+            if(eh_tipo_primitivo(simbolo_encontrado1->valor)){
+                return simbolo_encontrado1->valor;
+            }           
+            return pega_tipo_recursivo(simbolo_encontrado1->valor);          
+        }
+        return simbolo_encontrado1->tipo;
+    }      
+
+    char* pega_tipo_recursivo_pelo_tipo(char* tipo_inicial){
+
+        if(eh_tipo_primitivo(tipo_inicial)){
+            return tipo_inicial;
+        }
+
+        struct simbolo* simbolo_encontrado1 = busca_simbolo_de_tipo_pelo_nome(tipo_inicial);
+        
+        while(simbolo_encontrado1 != NULL){
+            if(eh_tipo_primitivo(simbolo_encontrado1->tipo)){
+                break;
+            }
+    
+            simbolo_encontrado1 = busca_simbolo_de_tipo_pelo_nome(simbolo_encontrado1->tipo);
+        }
+
+        if(eh_tipo_primitivo(simbolo_encontrado1->tipo)){            
+            return simbolo_encontrado1->tipo;         
+        }
+
+        return pega_tipo_recursivo(simbolo_encontrado1->tipo); 
+    } 
+
+    int pega_num_arrays(char* tipo_inicial, int num){
+        struct simbolo* simbolo_encontrado1 = busca_simbolo_de_tipo_pelo_nome(tipo_inicial);
+        
+        while(simbolo_encontrado1 != NULL){
+            if(eh_tipo_primitivo(simbolo_encontrado1->tipo) ){
+                break;
+            }
+    
+            simbolo_encontrado1 = busca_simbolo_de_tipo_pelo_nome(simbolo_encontrado1->tipo);
+        }
+
+        if(!strcmp(simbolo_encontrado1->tipo, "array")){
+            if(eh_tipo_primitivo(simbolo_encontrado1->valor)){
+                return num;
+            }           
+            return pega_num_arrays(simbolo_encontrado1->valor, num+1);          
+        }
+
+        return num;
+    }                                                                                                                                         
                                                                                                             
 %}
 
@@ -902,6 +967,7 @@ exp:
     | NUMERO                                                        {
                                                                         $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_const($1));
                                                                         $$.node->tipo = "int";
+                                                                        $$.node->num_arrays = 0;
                                                                         // $$.node->valor = $1;
                                                                         printf("exp -> num\n");
                                                                     } /* CONST(NUMERO) */
@@ -974,11 +1040,44 @@ exp:
                                                                     }
     | type_id ABRE_COLCHETE exp FECHA_COLCHETE OF exp               { 
                                                                         $$.node = inicializa_node($1.node, $3.node, $6.node, constroi_codigo_intermediario_call1());
-                                                                        $$.node->tipo = ($1.node)->valor;
-                                                                        //TODO: se type_id for um tipo da tabela, conferir se o tipo recursivo dele é igual ao do ultimo exp
-                                                                        $$.node->tipo = verifica_e_define_tipos_vardec(($1.node)->valor, ($6.node)->tipo);
-                                                                        // strcat($$.node->tipo, ($6.node)->tipo);
                                                                         
+                                                                        if(strcmp(($1.node)->tipo, "array") && eh_tipo_primitivo(($1.node)->valor)){
+                                                                            printf("******** Erro: O tipo não é um array na atribuicao! ********\n");
+                                                                            exit(1);
+                                                                        }
+                                                                        
+                                                                        if(eh_tipo_primitivo(($6.node)->tipo) && strcmp(($6.node)->tipo, "array")){
+                                                                            if(strcmp(pega_tipo_recursivo_pelo_tipo(($1.node)->valor), "array")){
+                                                                                printf("******** Erro: tipo a esquerda deveria ser um array! ********\n");
+                                                                                exit(1);
+                                                                            }
+
+                                                                            if(strcmp(pega_tipo_recursivo(($1.node)->valor), ($6.node)->tipo)){
+                                                                                printf("******** Erro: tipo do array inválido! ********\n");
+                                                                                exit(1);
+                                                                            }
+                                                                            
+                                                                            $$.node->num_arrays = pega_num_arrays(($1.node)->valor, 0);
+                                                                            $$.node->tipo = ($1.node)->valor;                                                                        
+                                                                         
+                                                                        }else{
+                                                                            if(strcmp(pega_tipo_recursivo(($1.node)->valor), pega_tipo_recursivo(($6.node)->tipo))){
+                                                                                printf("******** Erro: tipos dos arrays não batem! ********\n");
+                                                                                exit(1);
+                                                                            }else{
+                                                                                printf("NUM DE ARRAYS: %s %d\n", ($1.node)->valor, pega_num_arrays(($1.node)->valor, 0)-1); 
+                                                                                printf("NUM DE ARRAYS: %s %d\n", ($6.node)->tipo, ($6.node)->num_arrays);                                                                               
+                                                                               
+                                                                                if(pega_num_arrays(($1.node)->valor, 0)-1 == ($6.node)->num_arrays){
+                                                                                    $$.node->num_arrays = pega_num_arrays(($1.node)->valor, 0);
+                                                                                }else{
+                                                                                    printf("******** Erro: quantidade de arrays diferentes2! ********\n");
+                                                                                    exit(1);
+                                                                                }
+                                                                                $$.node->tipo = ($1.node)->valor;
+                                                                            }
+                                                                        }
+
                                                                         printf("exp -> type-id [ exp ] of exp\n"); 
                                                                     }
     | l_value ATRIBUICAO exp                                        { 
@@ -1176,8 +1275,8 @@ ty:
                                                                         }
     | ARRAY OF VARIAVEL                                                 { 
                                                                             $$.node = inicializa_node(NULL, NULL, NULL, "");                                                        
-                                                                            // $$.node->tipo = "array of";
-                                                                            $$.node->tipo = verifica_e_define_tipos_vardec2(($3));
+                                                                            $$.node->tipo = "array";
+                                                                            // $$.node->tipo = verifica_e_define_tipos_vardec2(($3));
                                                                             $$.node->valor = get_copia_string($3);
                                                                             printf("ty -> array of id\n"); 
                                                                         }
