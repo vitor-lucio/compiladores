@@ -460,13 +460,16 @@ vardec:
                                                             */
                                                             if(!strcmp(simbolo_encontrado->classe, "?")){
                                                                 atualiza_simbolo(simbolo_encontrado, compara_e_define_um_tipo(($4.node)->valor, ($6.node)->tipo), CLASSE_VARIAVEL);
-                                                            }
-                                                            else{
+                                                            }else{
                                                                 simbolo* novo_simbolo = inicializa_simbolo(simbolo_encontrado->nome, compara_e_define_um_tipo(($4.node)->valor, ($6.node)->tipo), "?", CLASSE_VARIAVEL, "?", "?");
                                                                 adiciona_simbolo_sem_verificacoes(novo_simbolo);
                                                             }
                                                             /**/                                                                                                                           
-                                                                
+                                                            if(pega_num_arrays_aninhados(($4.node)->valor,0) != pega_num_arrays_aninhados(($6.node)->tipo,0)){
+                                                                printf("******** Erro: quantidade de arrays diferentes2! ********\n");
+                                                                exit(1);
+                                                            }
+
                                                             printf("vardec -> var id : type-id := exp\n");
                                                         }
     ;
