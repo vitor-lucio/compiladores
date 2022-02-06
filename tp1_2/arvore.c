@@ -22,6 +22,7 @@ char* codigo_intermediario_final;
         char* valor;
         char* classe;
         int num_arrays;
+        int numero_de_parametros;
 	};
 
     struct node* raiz_da_arvore; /* raiz da arvore */

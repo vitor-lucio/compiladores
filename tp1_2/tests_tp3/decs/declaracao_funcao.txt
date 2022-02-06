@@ -5,7 +5,9 @@ let
 
  type d = b
  /* var x1 := 1 */
- function soma(x1: int, x2: c) : int = x1 + x2
+ function soma(x1: int, x2: c, x4: int, x5: a) : int = x1 + x2 + x5
+ function mult(x6: int, x7: c, x8: int) = x6 + x7 + x8
+ var x3 := 3
 in
 
 end

@@ -316,6 +316,7 @@ args1:
 tyfields: 
       VARIAVEL DOIS_PONTOS type_id tyfields1            {   
                                                             $$.node = inicializa_node($3.node, $4.node, NULL, constroi_codigo_intermediario_tyfields());
+                                                            $$.node->numero_de_parametros = ($4.node)->numero_de_parametros + 1;
                                                             
                                                             struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($1);
                                                             atualiza_simbolo(simbolo_encontrado, ($3.node)->valor, CLASSE_PARAMETRO);                                                                                                                                
@@ -324,6 +325,7 @@ tyfields:
                                                         }
     |                                                   { 
                                                             $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_vazio());
+                                                            $$.node->numero_de_parametros = 0;
                                                             printf("tyfields -> \n"); 
                                                         }
     ;   
@@ -332,7 +334,8 @@ tyfields:
 tyfields1: 
       VIRGULA VARIAVEL DOIS_PONTOS type_id tyfields1        { 
                                                                 $$.node = inicializa_node($4.node, $5.node, NULL, constroi_codigo_intermediario_tyfields1());
-                                                                
+                                                                $$.node->numero_de_parametros = ($5.node)->numero_de_parametros + 1;
+
                                                                 struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);
                                                                 atualiza_simbolo(simbolo_encontrado, ($4.node)->valor, "?");  // Aqui pode ser parâmetro ou variavel de registro                                                                                                                              
                                                                 
@@ -340,6 +343,7 @@ tyfields1:
                                                             }
     |                                                       { 
                                                                 $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_vazio());
+                                                                $$.node->numero_de_parametros = 0;
                                                                 printf("tyfields1 -> \n"); 
                                                             }
     ;
@@ -354,6 +358,7 @@ ty:
     | ABRE_CHAVES VARIAVEL DOIS_PONTOS type_id tyfields1 FECHA_CHAVES   {   
                                                                             $$.node = inicializa_node($4.node, $5.node, NULL, "");                                                        
                                                                             $$.node->tipo = "record";
+                                                                            $$.node->numero_de_parametros = ($5.node)->numero_de_parametros + 1;
 
                                                                             struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);
                                                                             atualiza_simbolo(simbolo_encontrado, ($4.node)->valor, CLASSE_VARIAVEL);                                                                                                                                
@@ -373,8 +378,8 @@ ty:
 tydec: 
       TYPE VARIAVEL IGUAL ty                            { 
                                                             $$.node = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_tydec());
-
-                                                            struct simbolo *simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_TIPO);
+                                                            
+                                                            simbolo* simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_TIPO);
                                                             if(simbolo_encontrado){
                                                                 printf("******* Tipo \"%s\" ja foi declarado na tabela de simbolos *******\n", simbolo_encontrado->nome);
                                                                 exit(1);
@@ -396,16 +401,22 @@ tydec:
                                                                 }
 
                                                                 atualiza_simbolo(simbolo_encontrado, ($4.node)->tipo, CLASSE_TIPO); 
+                                                                simbolo_encontrado->numero_de_parametros = ($4.node)->numero_de_parametros;
+                                                                if(!strcmp(($4.node)->tipo,"record")) atualiza_classe_simbolos_n_posicoes_a_frente(simbolo_encontrado, simbolo_encontrado->numero_de_parametros, "var rec");
                                                             }
                                                             else{
                                                                 struct simbolo* novo_simbolo = inicializa_simbolo(simbolo_encontrado->nome, ($4.node)->tipo, "?", CLASSE_TIPO, "?", "?");
+
                                                                 if(!strcmp(($4.node)->tipo, "array")){
                                                                     novo_simbolo->valor = get_copia_string(($4.node)->valor);
                                                                     printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n Array detectado na criacao de registro de tipo na tabela %s\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n", ($4.node)->tipo);
                                                                 }
-                                                                adiciona_simbolo_sem_verificacoes(novo_simbolo);
-                                                            }                                                                                                                                                                                     
 
+                                                                adiciona_simbolo_sem_verificacoes(novo_simbolo);
+                                                                novo_simbolo->numero_de_parametros = ($4.node)->numero_de_parametros;
+                                                                if(!strcmp(($4.node)->tipo,"record")) atualiza_classe_simbolos_n_posicoes_a_frente(novo_simbolo, novo_simbolo->numero_de_parametros, "var rec"); 
+                                                            }       
+                                           
                                                             printf("tydec -> type id = ty\n"); 
                                                         }
     ;
@@ -479,17 +490,21 @@ fundec:
       FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES IGUAL exp                     { 
                                                                                                     $$.node = inicializa_node($4.node, $7.node, NULL, constroi_codigo_intermediario_fundec2());
                                                                                                     
-                                                                                                    struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);
-                                                                                                    atualiza_simbolo(simbolo_encontrado, "void", CLASSE_FUNCAO);                                                                                                                              
+                                                                                                    simbolo* simbolo_encontrado = busca_simbolo_pelo_nome($2);
+                                                                                                    simbolo_encontrado->numero_de_parametros = ($4.node)->numero_de_parametros;
+                                                                                                    atualiza_simbolo(simbolo_encontrado, "void", CLASSE_FUNCAO);      
+                                                                                                    atualiza_classe_simbolos_n_posicoes_a_frente(simbolo_encontrado, simbolo_encontrado->numero_de_parametros, "parameter");                                                                                                                        
                                                                                                     
                                                                                                     printf("fundec -> function id ( tyfields ) = exp\n"); 
                                                                                                 }
     | FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES DOIS_PONTOS type_id IGUAL exp {                                                                                                     
                                                                                                     $$.node = inicializa_node($4.node, $7.node, $9.node, constroi_codigo_intermediario_fundec1());                                                                                                  
                                                                                                     
-                                                                                                    struct simbolo *simbolo_encontrado = busca_simbolo_pelo_nome($2);
+                                                                                                    simbolo* simbolo_encontrado = busca_simbolo_pelo_nome($2);
+                                                                                                    simbolo_encontrado->numero_de_parametros = ($4.node)->numero_de_parametros;
                                                                                                     atualiza_simbolo(simbolo_encontrado, compara_e_define_um_tipo(($7.node)->valor, ($9.node)->tipo), CLASSE_FUNCAO);                                                                                                                              
-                                                                                                    
+                                                                                                    atualiza_classe_simbolos_n_posicoes_a_frente(simbolo_encontrado, simbolo_encontrado->numero_de_parametros, "parameter");
+
                                                                                                     printf("fundec -> function id ( tyfields ) : type-id = exp\n"); 
                                                                                                 }
     ;

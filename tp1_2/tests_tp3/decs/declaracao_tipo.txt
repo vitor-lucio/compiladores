@@ -1,5 +1,5 @@
 let
- type list = {first: int, rest: list}
+ type list = {first: int, rest: list, oi : int, coco : list}
  type b = a
  type a = b
 in

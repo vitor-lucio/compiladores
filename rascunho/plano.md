@@ -64,12 +64,12 @@
 - ~~Testar casos onde existe uma variavel com o mesmo nome que um tipo~~
 - ~~Verificar se o tipo de uma declaracao de array é, de fato, um array e lançar erro~~
 - ~~Declaração de tipos com array: var table : rec_arr3 := 3 (salvar que rec_arr3 é um array no node e comparar com o exp)~~
-- Criar variável global com o valor da classe e percorrer a tabela até a ultima posição (se a variavel for func ou record)
-- Criar e atribuir escopo para os casos de registro.
+- ~~Criar variável global com o valor da classe e percorrer a tabela até a ultima posição (se a variavel for func ou record)~~
+- ~~Colocar classe de tudo que e colocado na tabela de simbolos~~
 - Implementar casos de declaração de registros distintos com atributos iguais
 - Testar casos de registro com variaveis com mesmo nome
 - Validar e implementar declaracao de parametros, tipos e variaveis com mesmo nome
-- Colocar classe de tudo que e colocado na tabela de simbolos
 - Terminar declaração de função
 - Testar casos com várias declarações diferentes juntas, afim de validar se toda parte de validação esta funcionando
 - Terminar geração do código intermediário de declarações
+- Verificar operacoes aritmeticas com numero + array (está passando sem erros, não deveria)
