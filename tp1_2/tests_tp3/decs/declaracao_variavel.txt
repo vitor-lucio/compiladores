@@ -1,5 +1,5 @@
 let
-    var coco : int := 1 + 2
+    var coco : int := 1 + "a"
     var xixi := 50 + 2 * 4
 in
     
