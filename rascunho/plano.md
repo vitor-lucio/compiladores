@@ -66,10 +66,12 @@
 - ~~Declaração de tipos com array: var table : rec_arr3 := 3 (salvar que rec_arr3 é um array no node e comparar com o exp)~~
 - ~~Criar variável global com o valor da classe e percorrer a tabela até a ultima posição (se a variavel for func ou record)~~
 - ~~Colocar classe de tudo que e colocado na tabela de simbolos~~
-- Implementar casos de declaração de registros distintos com atributos iguais
-- Testar casos de registro com variaveis com mesmo nome
+- Implementar casos de declaração de registros e funções distintos com atributos com mesmo nome
+- Testar casos de registro com variaveis com mesmo nome que o próprio registro
 - Validar e implementar declaracao de parametros, tipos e variaveis com mesmo nome
 - Terminar declaração de função
 - Testar casos com várias declarações diferentes juntas, afim de validar se toda parte de validação esta funcionando
 - Terminar geração do código intermediário de declarações
 - Verificar operacoes aritmeticas com numero + array (está passando sem erros, não deveria)
+- Tratar somas entre strings, registros etc (só pode somar se for int)
+- Verificação de tipos na chamada de função
