@@ -70,15 +70,16 @@
 - ~~Terminar declaração de função~~
 - ~~Implementar casos de declaração de registros e funções distintos com atributos com mesmo nome~~
 - ~~Verificar se no corpo da função existe variavel só dos parametros ou global~~
-- Verificaçao de tipo de expressões (comparar com parâmetros ou globais. Ver arvore.c)
-- Terminar geração do código intermediário de declarações
-- Verificar operacoes aritmeticas com numero + array (está passando sem erros, não deveria)
-- Tratar somas entre strings, registros etc (só pode somar se for int)
-- Verificação de tipos na chamada de função
+- ~~Verificaçao de tipo de expressões (comparar com parâmetros ou globais. Ver arvore.c)~~
+- Terminar geração do código intermediário de declarações tirando funções
+- Terminar geração do código intermediário da declaração de função
 - Declaração de variáveis dentro de funções
 
 - Testar casos com várias declarações diferentes juntas, afim de validar se toda parte de validação esta funcionando
 - Testar casos de registro com variaveis com mesmo nome que o próprio registro
 - Testar e implementar declaracao de parametros, tipos e variaveis com mesmo nome
 
-
+- Verificação de tipos na chamada de função
+- Verificar operacoes aritmeticas com numero + array (está passando sem erros, não deveria)
+- Tratar somas entre strings, registros etc (só pode somar se for int)
+- A produção de "type_id: VARIAVEL" busca simbolo apenas pelo nome, e as expressões usam o tipo desse simbolo para comparação de tipos, ou seja, a comparação de tipos das expressões não considera a classe da variável (foi necessario resolver isso na produção de função com tipo de retorno definido. Mas a solução foi feita apenas la, pois nao seria exatamente igual para outros casos)

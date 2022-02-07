@@ -7,7 +7,7 @@
 */
 
     void erro_de_tipagem_em_atribuicoes(){
-        printf("**** Erro: Tipo declarado difere do tipo atribuído! ****\n");
+        printf("**** Erro: Tipo declarado difere do tipo esperado! ****\n");
         exit(1);
     }
 

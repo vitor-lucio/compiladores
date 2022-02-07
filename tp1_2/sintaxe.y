@@ -193,7 +193,8 @@ exp:
                                                                     }
     | type_id                                                       { 
                                                                         $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_type_id()); 
-                                                                        $$.node->tipo = ($1.node)->tipo; 
+                                                                        $$.node->tipo = get_copia_string(($1.node)->tipo); 
+                                                                        $$.node->nome = get_copia_string(($1.node)->nome);
                                                                         printf("exp -> type-id\n"); 
                                                                     }
     | l_value                                                       { 
@@ -220,6 +221,7 @@ type_id:
       VARIAVEL  {   
                     $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_temp());                                                        
                     $$.node->valor = get_copia_string($1); 
+                    $$.node->nome = get_copia_string($1);
 
                     simbolo* simbolo_encontrado = busca_simbolo_pelo_nome($1);
                     if(simbolo_encontrado){
@@ -316,6 +318,7 @@ args1:
 tyfields: 
       VARIAVEL DOIS_PONTOS type_id tyfields1            {   
                                                             $$.node = inicializa_node($3.node, $4.node, NULL, constroi_codigo_intermediario_tyfields());
+                                                            printf("------------- Node de 'variavel : tipo' -------------\n");
                                                             $$.node->numero_de_parametros = ($4.node)->numero_de_parametros + 1;
                                                             
                                                             simbolo* simbolo_encontrado = busca_simbolo_por_classe_e_nome($1, CLASSE_PARAMETRO);
@@ -352,6 +355,7 @@ tyfields:
 tyfields1: 
       VIRGULA VARIAVEL DOIS_PONTOS type_id tyfields1        { 
                                                                 $$.node = inicializa_node($4.node, $5.node, NULL, constroi_codigo_intermediario_tyfields1());
+                                                                printf("------------- Node de ', variavel : tipo' -------------\n");
                                                                 $$.node->numero_de_parametros = ($5.node)->numero_de_parametros + 1;
 
                                                                 simbolo* simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_PARAMETRO);
@@ -398,6 +402,7 @@ ty:
                                                                         }
     | ABRE_CHAVES VARIAVEL DOIS_PONTOS type_id tyfields1 FECHA_CHAVES   {   
                                                                             $$.node = inicializa_node($4.node, $5.node, NULL, "");                                                        
+                                                                            printf("------------- Node do corpo do record -------------\n");
                                                                             $$.node->tipo = "record";
                                                                             $$.node->numero_de_parametros = ($5.node)->numero_de_parametros + 1;
 
@@ -489,7 +494,7 @@ tydec:
 vardec: 
       VAR VARIAVEL ATRIBUICAO exp                       { 
                                                             $$.node  = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_move());
-                                                            
+                                                            printf("------------- Node da declaracao de variavel -------------\n");
                                                             struct simbolo *simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_VARIAVEL);
                                                             if(simbolo_encontrado){
                                                                 printf("******* Variavel \"%s\" ja foi declarado na tabela de simbolos *******\n", simbolo_encontrado->nome);
@@ -517,7 +522,7 @@ vardec:
                                                         }
     | VAR VARIAVEL DOIS_PONTOS type_id ATRIBUICAO exp   {  
                                                             $$.node = inicializa_node($4.node, $6.node, NULL, constroi_codigo_intermediario_move());
-                                                            
+                                                            printf("------------- Node da declaracao de variavel -------------\n");
                                                             simbolo *simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_VARIAVEL);
                                                             if(simbolo_encontrado){
                                                                 printf("******* Variavel \"%s\" ja foi declarado na tabela de simbolos *******\n", simbolo_encontrado->nome);
@@ -553,7 +558,7 @@ vardec:
 fundec: 
       FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES IGUAL exp                     { 
                                                                                                     $$.node = inicializa_node($4.node, $7.node, NULL, constroi_codigo_intermediario_fundec2());
-                                                                                                    
+                                                                                                    printf("------------- Node da funcao -------------\n");
                                                                                                     simbolo* simbolo_encontrado = busca_simbolo_pelo_nome($2);
                                                                                                     simbolo_encontrado->numero_de_parametros = ($4.node)->numero_de_parametros;                                                                                                    
                                                                                                     atualiza_classe_e_esc_simbolos_n_posicoes_a_frente(simbolo_encontrado, simbolo_encontrado->numero_de_parametros, "parameter");                                                                                                                        
@@ -568,11 +573,29 @@ fundec:
                                                                                                 }
     | FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES DOIS_PONTOS type_id IGUAL exp {                                                                                                     
                                                                                                     $$.node = inicializa_node($4.node, $7.node, $9.node, constroi_codigo_intermediario_fundec1());                                                                                                  
-                                                                                                    
+                                                                                                    printf("------------- Node da funcao -------------\n");
                                                                                                     simbolo* simbolo_encontrado = busca_simbolo_pelo_nome($2);
                                                                                                     simbolo_encontrado->numero_de_parametros = ($4.node)->numero_de_parametros;
                                                                                                     atualiza_classe_e_esc_simbolos_n_posicoes_a_frente(simbolo_encontrado, simbolo_encontrado->numero_de_parametros, "parameter");
-                                                                                                    atualiza_simbolo(simbolo_encontrado, compara_e_define_um_tipo(($7.node)->valor, ($9.node)->tipo), CLASSE_FUNCAO);                                                                                                                              
+                                                                                                    
+                                                                                                    simbolo* simbolo_da_exp;
+                                                                                                    char* tipo_da_exp;
+                                                                                                    if(($9.node)->nome){
+                                                                                                        printf("------------- exp da funcao tem um nome (é uma variável ou parametro ou tipo) -------------\n");
+                                                                                                        simbolo_da_exp = busca_simbolo_por_classe_e_nome_e_bloco(($9.node)->nome, CLASSE_PARAMETRO, $2);
+
+                                                                                                        if(!simbolo_da_exp){
+                                                                                                            simbolo_da_exp = busca_simbolo_por_classe_e_nome(($9.node)->nome, CLASSE_VARIAVEL);
+                                                                                                        }
+                                                                                                    }
+
+                                                                                                    if(simbolo_da_exp){
+                                                                                                        tipo_da_exp = simbolo_da_exp->tipo;
+                                                                                                    }
+                                                                                                    else
+                                                                                                        tipo_da_exp = ($9.node)->tipo;
+
+                                                                                                    atualiza_simbolo(simbolo_encontrado, compara_e_define_um_tipo(($7.node)->valor, tipo_da_exp), CLASSE_FUNCAO);                                                                                                                              
                                                                                                     
                                                                                                     if(!procura_parametros_da_funcao_na_arvore(simbolo_encontrado, $9.node)){
                                                                                                         printf("**** Erro: funcao %s, chama simbolos invalidos! ****\n", $2);                                                                                                   

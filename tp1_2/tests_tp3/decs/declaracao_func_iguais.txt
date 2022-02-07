@@ -2,11 +2,17 @@ let
 
     /* Funções com parâmetros de mesmo nome */
     /* Linkar variável de dentro da função com o parâmetro correspondente a sua própria função */
+    type b = array of int
+    var x5 : b := b [2] of 2
+    
+    type c = array of string
+    var x4 : c := c [2] of "aaa"
 
-    var x5 : int := 3
-    function func1(x1: int, x2: int, x3: int, x5: int) : int = x1 + x2 + x3 + x5
+    function func1(x1: int, x2: int, x3: int, x5: int) : int = x5
     type a = {x1: int, x4: string, x5: int}
-    function func2(x2: string, x3: int, x4: int) = x2 + x2 + x5
+    function func2(x2: string, x3: int, x4: string) : b = x5
+    function func3(x1: int, x2: int, x4: int, x5: int) : int = x4
+    function func4(x2: string, x3: int, x4: c) : c = x4
 
     /* function func2(x2: string, x3: int) = x2 + x2 */
 

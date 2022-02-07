@@ -111,6 +111,24 @@
         return NULL;
     }
 
+    struct simbolo* busca_simbolo_por_classe_e_nome_e_bloco(char* nome, char* classe,char* bloco){
+        struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
+        
+        while(iterador != NULL){
+            if(!strcmp(iterador->classe, classe)){
+                if(!strcmp(iterador->nome, nome)){
+                    if(!strcmp(iterador->bloco, bloco)){
+                        return iterador;
+                    }
+                }
+            }
+            
+            iterador = iterador->next;
+        }
+
+        return NULL;
+    }
+
     simbolo* busca_simbolo_recursivamente(char* tipo_inicial){
         simbolo* simbolo_encontrado = busca_simbolo_de_tipo_pelo_nome(tipo_inicial);
 

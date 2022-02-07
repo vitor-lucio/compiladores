@@ -21,6 +21,7 @@ char* codigo_intermediario_final;
         char* tipo;
         char* valor;
         char* classe;
+        char* nome;
         int num_arrays;
         int numero_de_parametros;
 	};
