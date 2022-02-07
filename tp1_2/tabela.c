@@ -15,7 +15,7 @@
         char* classe;
         char* nivel;
         char* valor; 
-        char* endereco;    
+        char* bloco;    
         int numero_de_parametros;
 
         struct simbolo *next;
@@ -35,14 +35,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 */
 
-    struct simbolo* inicializa_simbolo(char* nome, char* tipo, char* valor, char* classe, char* nivel, char* endereco){
+    struct simbolo* inicializa_simbolo(char* nome, char* tipo, char* valor, char* classe, char* nivel, char* bloco){
         struct simbolo* novo_simbolo = (struct simbolo*) malloc (sizeof(struct simbolo));
         
         novo_simbolo->nome              = get_copia_string(nome);
         novo_simbolo->tipo              = get_copia_string(tipo);
         novo_simbolo->classe            = get_copia_string(classe);
-        novo_simbolo->nivel = get_copia_string(nivel);
-        novo_simbolo->endereco          = get_copia_string(endereco);
+        novo_simbolo->nivel             = get_copia_string(nivel);
+        novo_simbolo->bloco             = get_copia_string(bloco);
         novo_simbolo->valor             = get_copia_string(valor);
 
         return novo_simbolo;
@@ -152,7 +152,7 @@
         if(!tabela_simbolos.primeiro_elemento){
             tabela_simbolos.primeiro_elemento = s;
             tabela_simbolos.primeiro_elemento->next = NULL;
-
+            tabela_simbolos.tamanho++;
             printf("\nSIMBOLO ADICIONADO: %s %s\n", tabela_simbolos.primeiro_elemento->nome, tabela_simbolos.primeiro_elemento->tipo);
         }else{
 
@@ -164,7 +164,7 @@
             
             iterador->next = s;
             iterador->next->next = NULL;
-
+            tabela_simbolos.tamanho++;
             printf("\nSIMBOLO ADICIONADO: %s %s\n", iterador->next->nome, iterador->next->tipo);
         }
     }
@@ -178,34 +178,71 @@
         struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
         
         printf("TAMANHO DA TABELA: %d\n", tabela_simbolos.tamanho);
-        printf("|    NOME   |    TIPO   |   VALOR   |   CLASSE  |   NIVEL   |  ENDERECO |  NUM DE PARAM  |");
+        printf("|    NOME   |    TIPO   |   VALOR   |   CLASSE  |   NIVEL   |   BLOCO   |  NUM DE PARAM  |");
         printf("\nx-----------x-----------x-----------x-----------x-----------x-----------x----------------x");
         
         while(iterador != NULL){
             printf("\n|%10s |%10s |%10s |%10s |%10s |%10s | %14d |", iterador->nome, iterador->tipo, 
                                                 iterador->valor, iterador->classe, 
-                                                iterador->nivel, iterador->endereco, iterador->numero_de_parametros);
+                                                iterador->nivel, iterador->bloco, iterador->numero_de_parametros);
             iterador = iterador->next;
         }
 
         printf("\n");
     }
 
-    void atualiza_classe_simbolos_n_posicoes_a_frente(simbolo* simb, int n, char* classe){
-
+    void atualiza_classe_e_esc_simbolos_n_posicoes_a_frente(simbolo* simb, int n, char* classe){
+        
         simbolo* iterador = tabela_simbolos.primeiro_elemento;
         
         for(int i = 0; i < tabela_simbolos.tamanho; i++){
             if(!strcmp(iterador->nome, simb->nome)){
-                for(int j = 0; j < n; j++){
+                for(int j = 0; j < n; j++){                    
                     iterador = iterador->next;
                     iterador->classe = classe;
+                    iterador->bloco = simb->nome;
                 }    
                 return;    
             }
 
             iterador = iterador->next;
         }
+    }
+
+    int procura_simb_nas_n_posicoes_a_frente(simbolo* func, char* param){
+
+        simbolo* iterador = tabela_simbolos.primeiro_elemento;
+        
+        for(int i = 0; i < tabela_simbolos.tamanho; i++){
+            if(!strcmp(iterador->nome, func->nome)){
+                for(int j = 0; j < func->numero_de_parametros; j++){
+                    iterador = iterador->next;
+                    if(!strcmp(iterador->nome, param)){
+                        return 1;
+                    }
+                }    
+                return 0;    
+            }
+            iterador = iterador->next;
+        }
+
+        return 0;
+    }
+
+    int procura_simb_nos_simbolos_globais(char* valor){
+
+        simbolo* iterador = tabela_simbolos.primeiro_elemento;
+        
+        for(int i = 0; i < tabela_simbolos.tamanho; i++){
+            if(!strcmp(iterador->nome, valor)){
+                if(!strcmp(iterador->bloco, "?")){
+                    return 1;
+                }                  
+                return 0; 
+            }
+            iterador = iterador->next;
+        }
+        return 0;
     }
 
 

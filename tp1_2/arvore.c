@@ -148,6 +148,52 @@ char* codigo_intermediario_final;
         return get_copia_string(sub_arvore->codigo_intermediario);
     }
 
+    int procura_parametros_da_funcao_na_arvore(simbolo* func, struct node* sub_arvore){
+        int aux = 0;
+        
+        if(sub_arvore->node_filho1){
+            aux = procura_parametros_da_funcao_na_arvore(func, sub_arvore->node_filho1);
+            // printf("\n");
+            if(sub_arvore->node_filho1->valor != NULL) {
+                if(procura_simb_nas_n_posicoes_a_frente(func, sub_arvore->node_filho1->valor)){
+                    // printf("$$$ ACHEI NOS PARAMETROS DA FUNCAO %s O SIMBOLO %s $$$\n", func->nome, sub_arvore->node_filho1->valor);
+                }else if(procura_simb_nos_simbolos_globais(sub_arvore->node_filho1->valor)){
+                    // printf("$$$ ACHEI %s DA FUNCAO %s NOS SIMBOLOS GLOBAIS $$$\n", sub_arvore->node_filho1->valor, func->nome);
+                }else return 0;
+                aux = 1;
+            }
+        }
+
+        if(sub_arvore->node_filho2){
+            aux = procura_parametros_da_funcao_na_arvore(func, sub_arvore->node_filho2);
+            // printf("\n");
+            if(sub_arvore->node_filho2->valor != NULL) {
+                if(procura_simb_nas_n_posicoes_a_frente(func, sub_arvore->node_filho2->valor)){
+                    // printf("$$$ ACHEI NOS PARAMETROS DA FUNCAO %s O SIMBOLO %s $$$\n", func->nome, sub_arvore->node_filho2->valor);
+                }else if(procura_simb_nos_simbolos_globais(sub_arvore->node_filho2->valor)){
+                    // printf("$$$ ACHEI %s DA FUNCAO %s NOS SIMBOLOS GLOBAIS $$$\n", sub_arvore->node_filho2->valor, func->nome);
+                }else return 0;
+                aux = 1;
+            }
+        }
+
+        if(sub_arvore->node_filho3){
+            aux = procura_parametros_da_funcao_na_arvore(func, sub_arvore->node_filho3);
+            // printf("\n");
+            if(sub_arvore->node_filho3->valor != NULL) {
+                if(procura_simb_nas_n_posicoes_a_frente(func, sub_arvore->node_filho3->valor)){
+                    // TODO: mandar o tipo do node_filho pra comparar com o tipo do simbolo da tabela encontrado (se for diferente: erro)
+                    // printf("$$$ ACHEI NOS PARAMETROS DA FUNCAO %s O SIMBOLO %s $$$\n", func->nome, sub_arvore->node_filho3->valor);
+                }else if(procura_simb_nos_simbolos_globais(sub_arvore->node_filho3->valor)){
+                    // TODO: mandar o tipo do node_filho pra comparar com o tipo do simbolo da tabela encontrado (se for diferente: erro)
+                    // printf("$$$ ACHEI %s DA FUNCAO %s NOS SIMBOLOS GLOBAIS $$$\n", sub_arvore->node_filho3->valor, func->nome);
+                }else return 0;
+                aux = 1;
+            }
+        }
+
+        return aux;
+    }
 /*
 ////////////////////////////////////////////////////////////////////////////////
     Funcoes de construcao das strings de codigo intermediario

@@ -3,8 +3,12 @@ let
     /* Funções com parâmetros de mesmo nome */
     /* Linkar variável de dentro da função com o parâmetro correspondente a sua própria função */
 
-    function func1(x1: int, x2: int, x3: int) : int = x1 + x2 + x3
-    function func2(x2: string, x3: int) = x2 + x2
+    var x5 : int := 3
+    function func1(x1: int, x2: int, x3: int, x5: int) : int = x1 + x2 + x3 + x5
+    type a = {x1: int, x4: string, x5: int}
+    function func2(x2: string, x3: int, x4: int) = x2 + x2 + x5
+
+    /* function func2(x2: string, x3: int) = x2 + x2 */
 
 in
 
