@@ -1,6 +1,8 @@
 let
-    var coco : int := 1 + "a"
-    var xixi := 50 + 2 * 4
+
+    var va : int := 1
+    var vb := 50
+
 in
     
 end

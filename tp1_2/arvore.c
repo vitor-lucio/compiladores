@@ -14,6 +14,7 @@ char* codigo_intermediario_final;
 ////////////////////////////////////////////////////////////////////////////////
 */
     struct node {
+        char* codigo_abstrato;
 		char* codigo_intermediario;
         struct node* node_filho1;
         struct node* node_filho2;
@@ -121,6 +122,17 @@ char* codigo_intermediario_final;
         node->codigo_intermediario = codigo_intermediario_da_sub_arvore_com_parametro;
     }
 
+    void teste(struct node* node, char* nome_do_parametro, char* codigo_intermediario){
+        char* codigo_intermediario_da_sub_arvore_com_parametro = replaceWord(
+                                                                                node->codigo_intermediario, 
+                                                                                nome_do_parametro,
+                                                                                "EXP(CONST 0)"
+                                                                            );
+
+        free(node->codigo_intermediario);
+        node->codigo_intermediario = codigo_intermediario_da_sub_arvore_com_parametro;
+    }
+
     char* monta_codigo_intermediario_da_arvore(struct node* sub_arvore){
         if(sub_arvore->node_filho1){
             char* codigo_intermediario_do_node_filho = monta_codigo_intermediario_da_arvore(sub_arvore->node_filho1);
@@ -128,6 +140,9 @@ char* codigo_intermediario_final;
             substitui_parametro_por_codigo_intermediario_e_atribui_ao_node(sub_arvore, PARAMETRO1_CODIGO_INTERMEDIARIO, codigo_intermediario_do_node_filho);
             free(codigo_intermediario_do_node_filho);
         }
+        // else{
+        //     teste(sub_arvore, PARAMETRO1_CODIGO_INTERMEDIARIO, "EXP(CONST 0)"); 
+        // }
 
         if(sub_arvore->node_filho2){
             char* codigo_intermediario_do_node_filho = monta_codigo_intermediario_da_arvore(sub_arvore->node_filho2);
@@ -135,6 +150,10 @@ char* codigo_intermediario_final;
             substitui_parametro_por_codigo_intermediario_e_atribui_ao_node(sub_arvore, PARAMETRO2_CODIGO_INTERMEDIARIO, codigo_intermediario_do_node_filho); 
             free(codigo_intermediario_do_node_filho);
         }
+        // else{
+            
+        //     teste(sub_arvore, PARAMETRO2_CODIGO_INTERMEDIARIO, "EXP(CONST 0)"); 
+        // }
 
         if(sub_arvore->node_filho3){
             char* codigo_intermediario_do_node_filho = monta_codigo_intermediario_da_arvore(sub_arvore->node_filho3);
@@ -142,6 +161,9 @@ char* codigo_intermediario_final;
             substitui_parametro_por_codigo_intermediario_e_atribui_ao_node(sub_arvore, PARAMETRO3_CODIGO_INTERMEDIARIO, codigo_intermediario_do_node_filho);
             free(codigo_intermediario_do_node_filho);
         }
+        // else{
+        //     teste(sub_arvore, PARAMETRO3_CODIGO_INTERMEDIARIO, "EXP(CONST 0)"); 
+        // }
         
         /* Foi feita uma copia para evitar que outros ponteiros de char apontem para sub_arvore->codigo_intermediario,
            facilitando a interpretacao da memoria usada e permitindo o uso de free() para desalocar memoria nao usada
@@ -205,9 +227,11 @@ char* codigo_intermediario_final;
 
         char* codigo_intermediario = (char*) malloc(
                                                         1 /* \0 da string, indicando seu fim em C */
+                                                        + 12
                                                     );
         
         codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, "EXP(CONST 0)");
 
         return codigo_intermediario;
     }
@@ -238,7 +262,7 @@ char* codigo_intermediario_final;
                                                     );
         
         codigo_intermediario[0] = '\0';
-        strcat(codigo_intermediario, "binop(");
+        strcat(codigo_intermediario, "BINOP(");
         strcat(codigo_intermediario, tipo_operacao);
         strcat(codigo_intermediario, ",");
         strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
@@ -268,15 +292,17 @@ char* codigo_intermediario_final;
         return codigo_intermediario;
     }
 
-    char* constroi_codigo_intermediario_temp(){
+    char* constroi_codigo_intermediario_temp(int temp){
         char* codigo_intermediario = (char*) malloc(
                                                         // strlen(valor) 
                                                         + 5 /* tamanho de: temp */
                                                         + 1 /* \0 da string, indicando seu fim em C */
                                                     );
-        
+        char t[10];
+        sprintf(t,"%d",temp);
         codigo_intermediario[0] = '\0';
-        strcat(codigo_intermediario, "TEMP t0");
+        strcat(codigo_intermediario, "TEMP t");
+        strcat(codigo_intermediario, t);
         // strcat(codigo_intermediario, valor);
 
         return codigo_intermediario;
@@ -313,7 +339,43 @@ char* codigo_intermediario_final;
         return codigo_intermediario;
     }
 
-    char* constroi_codigo_intermediario_decs(){
+    char* constroi_codigo_intermediario_vardec2(){
+        char* codigo_intermediario = (char*) malloc(      
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)                                              
+                                                        + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO) 
+                                                        + 14 /* tamanho de: move(temp t2,) */
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, "MOVE(");
+        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, ")");
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_vardec1(){
+        char* codigo_intermediario = (char*) malloc(      
+                                                        strlen("TEMP t0")                                              
+                                                        + strlen(PARAMETRO1_CODIGO_INTERMEDIARIO) 
+                                                        + 14 /* tamanho de: move(temp t2,) */
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, "MOVE(");
+        strcat(codigo_intermediario, "TEMP t0");
+        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, ")");
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_decs1(){
         char* codigo_intermediario = (char*) malloc(                                                       
                                                         strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)
                                                         + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO) 
@@ -326,6 +388,36 @@ char* codigo_intermediario_final;
         strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
         strcat(codigo_intermediario, ", ");
         strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, ")");
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_decs2(){
+
+        char* codigo_intermediario = (char*) malloc(
+                                                        1 /* \0 da string, indicando seu fim em C */
+                                                        + 12
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, "EXP(CONST 0)");
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_exp(){
+
+        char* codigo_intermediario = (char*) malloc(       
+                                                        + 5 /* tamanho de exp() */                                                
+                                                        + 7 /* tamanho de: const 0 */
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, "EXP(");
+        strcat(codigo_intermediario, "CONST ");
+        strcat(codigo_intermediario, "0");
         strcat(codigo_intermediario, ")");
 
         return codigo_intermediario;
@@ -356,7 +448,7 @@ char* codigo_intermediario_final;
         return codigo_intermediario;
     }
 
-    char* constroi_codigo_intermediario_tyfields1(){
+    char* constroi_codigo_intermediario_tyfields11(){
         char* codigo_intermediario = (char*) malloc(                                                       
                                                         strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)
                                                         + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO)                                                     
@@ -366,6 +458,32 @@ char* codigo_intermediario_final;
         codigo_intermediario[0] = '\0';
         strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
         strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_tyfields12(){
+
+        char* codigo_intermediario = (char*) malloc(
+                                                        1 /* \0 da string, indicando seu fim em C */
+                                                        + 12
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, "EXP(CONST 0)");
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_tyfields2(){
+
+        char* codigo_intermediario = (char*) malloc(
+                                                        1 /* \0 da string, indicando seu fim em C */
+                                                        + 12
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, "EXP(CONST 0)");
 
         return codigo_intermediario;
     }
@@ -518,6 +636,54 @@ char* codigo_intermediario_final;
         return codigo_intermediario;
     }
 
+    char* constroi_codigo_intermediario_ty1(){
+        char* codigo_intermediario = (char*) malloc(                                                       
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)  
+                                                        + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO) 
+                                                        + 1                                                                                                
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_ty2(){
+        char* codigo_intermediario = (char*) malloc(                                                       
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)  
+                                                        + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO) 
+                                                        + 1                                                                                                
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_ty3(){
+        char* codigo_intermediario = (char*) malloc(                                                       
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)  
+                                                        + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO) 
+                                                        + 1                                                                                                
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
+
+        return codigo_intermediario;
+    }
+
     char* constroi_codigo_intermediario_tydec(){
         char* codigo_intermediario = (char*) malloc(                                                       
                                                         strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)                                                      
@@ -526,6 +692,42 @@ char* codigo_intermediario_final;
         
         codigo_intermediario[0] = '\0';
         // strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_dec_fundec(){
+        char* codigo_intermediario = (char*) malloc(                                                       
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)                                                      
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        // strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_dec_tydec(){
+        char* codigo_intermediario = (char*) malloc(                                                       
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)                                                      
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        // strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_dec_vardec(){
+        char* codigo_intermediario = (char*) malloc(                                                       
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)                                                      
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
 
         return codigo_intermediario;
     }
@@ -574,4 +776,17 @@ char* codigo_intermediario_final;
 
         return codigo_intermediario;
     }
+
+    char* constroi_codigo_intermediario_expseq1(){
+        char* codigo_intermediario = (char*) malloc(                                                       
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)                                                                                                           
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+
+        return codigo_intermediario;
+    }
+
 

@@ -8,6 +8,10 @@
     void yyerror(const char *s);
     int yylex();
     int yywrap();
+
+    int erroEncontrado = 0;
+    int linha = 0;
+    int caractere = 0;
                                                                                                       
 %}
 
@@ -219,11 +223,16 @@ exp:
 /* NOME DE TIPO ou VARIAVEL */
 type_id: 
       VARIAVEL  {   
-                    $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_temp());                                                        
+                    simbolo* simbolo_encontrado = busca_simbolo_pelo_nome($1);
+                    if(simbolo_encontrado){
+                        $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_temp(simbolo_encontrado->temp));                                                        
+                    }else{
+                        $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_temp(pega_ultimo_temp_de_todos()));  
+                    }
+
                     $$.node->valor = get_copia_string($1); 
                     $$.node->nome = get_copia_string($1);
 
-                    simbolo* simbolo_encontrado = busca_simbolo_pelo_nome($1);
                     if(simbolo_encontrado){
                         $$.node->tipo = simbolo_encontrado->tipo;                                                                                                             
                     }else{
@@ -281,11 +290,11 @@ expseq:
 /**/
 expseq1: 
       PONTO_E_VIRGULA exp expseq1               { 
-                                                    $$.node = inicializa_node($2.node, $3.node, NULL, "TODO");
+                                                    $$.node = inicializa_node($2.node, $3.node, NULL, constroi_codigo_intermediario_expseq1());
                                                     printf("expseq1 -> ; exp expseq1\n"); 
                                                 } /* Nenhum código intermediário neste nó */
     |                                           { 
-                                                    $$.node = inicializa_node(NULL, NULL, NULL, "TODO");
+                                                    $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_vazio());
                                                     printf("expseq1 -> \n"); 
                                                 } /* Nenhum código intermediário neste nó */
     ;
@@ -345,7 +354,7 @@ tyfields:
                                                             printf("tyfields -> id : type-id tyfields1\n"); 
                                                         }
     |                                                   { 
-                                                            $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_vazio());
+                                                            $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_tyfields2());
                                                             $$.node->numero_de_parametros = 0;
                                                             printf("tyfields -> \n"); 
                                                         }
@@ -354,7 +363,7 @@ tyfields:
 /**/
 tyfields1: 
       VIRGULA VARIAVEL DOIS_PONTOS type_id tyfields1        { 
-                                                                $$.node = inicializa_node($4.node, $5.node, NULL, constroi_codigo_intermediario_tyfields1());
+                                                                $$.node = inicializa_node($4.node, $5.node, NULL, constroi_codigo_intermediario_tyfields11());
                                                                 printf("------------- Node de ', variavel : tipo' -------------\n");
                                                                 $$.node->numero_de_parametros = ($5.node)->numero_de_parametros + 1;
 
@@ -387,7 +396,7 @@ tyfields1:
                                                                 printf("tyfields1 -> , id : type-id tyfields1\n"); 
                                                             }
     |                                                       { 
-                                                                $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_vazio());
+                                                                $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_tyfields12());
                                                                 $$.node->numero_de_parametros = 0;
                                                                 printf("tyfields1 -> \n"); 
                                                             }
@@ -396,12 +405,12 @@ tyfields1:
 /**/
 ty: 
       VARIAVEL                                                          {  
-                                                                            $$.node = inicializa_node(NULL, NULL, NULL, ""); 
+                                                                            $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_ty1()); 
                                                                             $$.node->tipo = $1;                                                                           
                                                                             printf("ty -> id\n"); 
                                                                         }
     | ABRE_CHAVES VARIAVEL DOIS_PONTOS type_id tyfields1 FECHA_CHAVES   {   
-                                                                            $$.node = inicializa_node($4.node, $5.node, NULL, "");                                                        
+                                                                            $$.node = inicializa_node($4.node, $5.node, NULL, constroi_codigo_intermediario_ty2());                                                        
                                                                             printf("------------- Node do corpo do record -------------\n");
                                                                             $$.node->tipo = "record";
                                                                             $$.node->numero_de_parametros = ($5.node)->numero_de_parametros + 1;
@@ -435,7 +444,7 @@ ty:
                                                                             printf("ty -> { id : type-id tyfields1 }\n"); 
                                                                         }
     | ARRAY OF VARIAVEL                                                 { 
-                                                                            $$.node = inicializa_node(NULL, NULL, NULL, "");                                                        
+                                                                            $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_ty3());                                                        
                                                                             $$.node->tipo = "array";
                                                                             // $$.node->tipo = busca_e_define_tipo(($3));
                                                                             $$.node->valor = get_copia_string($3);
@@ -493,7 +502,7 @@ tydec:
 /**/
 vardec: 
       VAR VARIAVEL ATRIBUICAO exp                       { 
-                                                            $$.node  = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_move());
+                                                            $$.node  = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_vardec1());
                                                             printf("------------- Node da declaracao de variavel -------------\n");
                                                             struct simbolo *simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_VARIAVEL);
                                                             if(simbolo_encontrado){
@@ -521,7 +530,7 @@ vardec:
                                                             printf("vardec -> var id := exp\n"); 
                                                         }
     | VAR VARIAVEL DOIS_PONTOS type_id ATRIBUICAO exp   {  
-                                                            $$.node = inicializa_node($4.node, $6.node, NULL, constroi_codigo_intermediario_move());
+                                                            $$.node = inicializa_node($4.node, $6.node, NULL, constroi_codigo_intermediario_vardec2());
                                                             printf("------------- Node da declaracao de variavel -------------\n");
                                                             simbolo *simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_VARIAVEL);
                                                             if(simbolo_encontrado){
@@ -590,7 +599,7 @@ fundec:
                                                                                                     }
 
                                                                                                     if(simbolo_da_exp){
-                                                                                                        tipo_da_exp = simbolo_da_exp->tipo;
+                                                                                                        tipo_da_exp = simbolo_da_exp->tipo; // SEG FAULT AQUI
                                                                                                     }
                                                                                                     else
                                                                                                         tipo_da_exp = ($9.node)->tipo;
@@ -609,11 +618,11 @@ fundec:
 /**/
 decs: 
       dec decs          { 
-                            $$.node = inicializa_node($1.node, $2.node, NULL, constroi_codigo_intermediario_decs()); 
+                            $$.node = inicializa_node($1.node, $2.node, NULL, constroi_codigo_intermediario_decs1()); 
                             printf("decs -> dec decs\n"); 
                         }
     |                   { 
-                            $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_vazio());
+                            $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_decs2());
                             printf("decs -> \n"); 
                         } /* Nenhum código intermediário neste nó */
     ;
@@ -621,15 +630,15 @@ decs:
 /**/
 dec: 
       tydec         { 
-                        $$.node = inicializa_node($1.node, NULL, NULL, "");
+                        $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_dec_tydec());
                         printf("dec -> tydec\n"); 
                     }
     | vardec        { 
-                        $$.node = inicializa_node($1.node, NULL, NULL, "");                                                           
+                        $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_dec_vardec());                                                           
                         printf("dec -> vardec\n"); 
                     }
     | fundec        { 
-                        $$.node = inicializa_node($1.node, NULL, NULL, "");                                                           
+                        $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_dec_fundec());                                                        
                         printf("dec -> fundec\n"); 
                     }
     ;
@@ -637,51 +646,60 @@ dec:
 %%
 
 void printCode(char* filename){
-    printf("\n----------------------------------------\n\n");
-    printf("CÓDIGO FONTE SUBMETIDO:\n\n");
+    int line = 1;
+    printf("\n==================================================================\n");           
 
     FILE *code = fopen(filename, "r" );
-    char c;
+    size_t len= 100;
+    char *linha = malloc(len);
 
-    while ((c = getc(code)) != EOF){
-        printf("%c", c);
+    while (getline(&linha, &len, code) > 0){
+        printf("%d: %s", line, linha);
+        line++;
     }
 
-    printf("\n");
+    printf("\n==================================================================\n\n");
     fclose(code);
 }
 
 int main(int argc, char** argv) {
     inicializa_tabela_simbolos();
-    printf("\nREGRAS UTILIZADAS:\n\n");
+
+    printCode(argv[1]);
 
     yyin = fopen(argv[1], "r" );
     
+    printf("Listagem da Sintaxe Abstrata:\n\n");
     if (!yyparse()){
-        printf("\n----------------------------------------\n\n");
-        printf("RESULTADO:\n\nANALISE SINTATICA OK!\n");
+        printf("\n\nANALISE SINTATICA: OK!\n");
+        printf("\n==================================================================\n\n");
     }
 
-    
-    // printCode(argv[1]);
-
-    printf("\n----------------------------------------\n\n");
-    imprime_tabela_simbolos();
-    printf("\n----------------------------------------\n\n");
-    printf("CODIGO INTERMEDIARIO GERADO:\n\n");
+    printf("Listagem do Codigo Intermediario:\n");
     codigo_intermediario_final = monta_codigo_intermediario_da_arvore(raiz_da_arvore);
-    printf("%s\n", codigo_intermediario_final);
 
-    printf("\n----------------------------------------\n\n");
-    printf("TABELA DE SIMBOLOS:\n\n");
+    if(erroEncontrado){
+        printf("\nNome do arquivo: %s\n",argv[1]);
+        printf("Linha: %d\n",linha);
+        printf("Caractere: %d\n",caractere);
+        printf("\nANALISE SEMANTICA: ERRO!\n");
+        printf("\n==================================================================\n");
+        exit(1);
+    }
+
+    printf("\n%s\n", codigo_intermediario_final);
+    printf("\nANALISE SEMANTICA: OK!\n");
+    printf("\n==================================================================\n\n");
     
+    printf("TABELA DE SIMBOLOS:\n\n");    
     imprime_tabela_simbolos();
+    printf("\n");  
 
     return 0;
 }
 
 void yyerror(const char* msg) {
-    printf("\n----------------------------------------\n\n");
-    printf("RESULTADO:\n\nERRO DE SINTAXE!\n");
+    printf("\n\nANALISE SINTATICA: ERRO!\n");
+    printf("\n==================================================================\n\n");
     exit(1);
 }

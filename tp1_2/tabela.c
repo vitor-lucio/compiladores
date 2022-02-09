@@ -17,6 +17,7 @@
         char* valor; 
         char* bloco;    
         int numero_de_parametros;
+        int temp;
 
         struct simbolo *next;
         
@@ -35,6 +36,34 @@
 ////////////////////////////////////////////////////////////////////////////////
 */
 
+    int pega_ultimo_temp(simbolo* simb){
+        struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
+
+        if(iterador == NULL) return 0;
+        
+        while(iterador->next != NULL){
+            if(!strcmp(iterador->nome, simb->nome) && !strcmp(iterador->classe, simb->classe) && !strcmp(iterador->bloco, simb->bloco)){                
+                return iterador->temp;
+            }
+            iterador = iterador->next;
+        }
+        printf("OIEEE HAHA %d\n",iterador->temp);
+        return iterador->temp+1;
+    }
+
+    int pega_ultimo_temp_de_todos(){
+        struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
+
+        if(iterador == NULL) return 0;
+        
+        while(iterador->next != NULL){
+            iterador = iterador->next;
+        }
+
+        return iterador->temp+1;
+    }
+
+
     struct simbolo* inicializa_simbolo(char* nome, char* tipo, char* valor, char* classe, char* nivel, char* bloco){
         struct simbolo* novo_simbolo = (struct simbolo*) malloc (sizeof(struct simbolo));
         
@@ -44,10 +73,12 @@
         novo_simbolo->nivel             = get_copia_string(nivel);
         novo_simbolo->bloco             = get_copia_string(bloco);
         novo_simbolo->valor             = get_copia_string(valor);
+        novo_simbolo->temp              = pega_ultimo_temp(novo_simbolo);
 
         return novo_simbolo;
     }
 
+    
     void inicializa_tabela_simbolos(){
         tabela_simbolos.primeiro_elemento = NULL;
         tabela_simbolos.tamanho = 0;
@@ -195,14 +226,13 @@
     void imprime_tabela_simbolos(){
         struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
         
-        printf("TAMANHO DA TABELA: %d\n", tabela_simbolos.tamanho);
         printf("|    NOME   |    TIPO   |   VALOR   |   CLASSE  |   NIVEL   |   BLOCO   |  NUM DE PARAM  |");
         printf("\nx-----------x-----------x-----------x-----------x-----------x-----------x----------------x");
         
         while(iterador != NULL){
-            printf("\n|%10s |%10s |%10s |%10s |%10s |%10s | %14d |", iterador->nome, iterador->tipo, 
+            printf("\n|%10s |%10s |%10s |%10s |%10s |%10s | %14d | t%d", iterador->nome, iterador->tipo, 
                                                 iterador->valor, iterador->classe, 
-                                                iterador->nivel, iterador->bloco, iterador->numero_de_parametros);
+                                                iterador->nivel, iterador->bloco, iterador->numero_de_parametros, iterador->temp);
             iterador = iterador->next;
         }
 

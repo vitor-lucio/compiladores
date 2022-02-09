@@ -1,9 +1,11 @@
 let
-    var a := "asdasdasd"
 
+    var a := "asdasdasd"
     type a = array of int
-    type zeta = array of string
-    var zeta := 1
+
+    type x = array of string
+    var x := 1
+
     type b = a
     type c = b
 
@@ -11,6 +13,7 @@ let
     type z = y
 
     var arr1 : a := z [10] of 0
+    
 in
 
 end

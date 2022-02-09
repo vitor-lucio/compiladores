@@ -1,0 +1,22 @@
+let
+
+  type a = int
+  type b = array of int 
+  
+  type rec_arr0 = array of a
+  type rec_arr1 = array of rec_arr0
+  type rec_arr2 = array of rec_arr1
+  type rec_arr3 = rec_arr2
+  type rec_arr4 = array of rec_arr3 
+
+  type c = int
+  type d = array of c
+  type e = array of d 
+
+  var table1 : rec_arr3 := rec_arr3 [2] of rec_arr1 [2] of rec_arr0 [2] of a [2] of 3  
+  var table2 : rec_arr3 := rec_arr3 [2] of rec_arr1 [2] of 3                     
+  var table3 : rec_arr3 := rec_arr3 [2] of rec_arr2 [2] of rec_arr0 [2] of 3
+
+in
+ 
+end
