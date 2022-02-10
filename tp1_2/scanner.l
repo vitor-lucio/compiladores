@@ -21,6 +21,7 @@
     void adiciona_simbolo(struct simbolo *s);
     void atualiza_simbolo(struct simbolo *s, char* tipo, char* classe);
     void imprime_tabela_simbolos();
+    int linhaAtual = -1;
 %}
 
 %x STRING COMENTARIO
@@ -168,7 +169,7 @@
  */
 
 " " {}
-"\n" {}
+"\n" { linhaAtual++; printf("LI UM BARRA N %d\n", linhaAtual); }
 "\t" {}
 %%
 

@@ -10,7 +10,7 @@
     int yywrap();
 
     int erroEncontrado = 0;
-    int linha = 0;
+  
     int caractere = 0;
     char* arquivo;
                                                                                                       
@@ -54,12 +54,15 @@ exp:
                                                                     } /* BINOP(MENOS, exp, exp) */
     | exp MULTIPLICACAO exp                                         {
                                                                         $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
-                                                                        $$.node->tipo = compara_e_define_um_tipo(($1.node)->tipo, ($3.node)->tipo);                                                                        
+                                                                        // Funcionando para declaracao de variavel com multiplicacao                                                                                                                   
+                                                                        $$.node->tipo = compara_e_define_um_tipo_binop(($1.node)->tipo, ($3.node)->tipo);        
+                                                                        $$.node->nome = $$.node->tipo;        
                                                                         printf("exp -> exp * exp\n"); 
                                                                     } /* BINOP(MULTIPLICACAO, exp, exp) */
     | exp DIVISAO exp                                               {
                                                                         $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
-                                                                        $$.node->tipo = compara_e_define_um_tipo(($1.node)->tipo, ($3.node)->tipo);                                                                        
+                                                                        $$.node->tipo = testinho(($1.node)->nome, ($3.node)->nome, ($1.node)->tipo, ($3.node)->tipo);     
+                                                                        $$.node->nome = $$.node->tipo;                                                                        
                                                                         printf("exp -> exp / exp\n"); 
                                                                     } /* BINOP(DIVISAO, exp, exp) */
 
@@ -609,6 +612,14 @@ vardec:
 fundec: 
       FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES IGUAL exp                     { 
                                                                                                     $$.node = inicializa_node($4.node, $7.node, NULL, constroi_codigo_intermediario_fundec2());
+
+                                                                                                    char* temp = get_copia_string(codigo_intermediario_funcao);
+                                                                                                    char* temp2 = get_copia_string(monta_codigo_intermediario_da_arvore($7.node));                                                                                                    
+                                                                                                    codigo_intermediario_funcao = (char*)malloc(strlen(temp)+strlen(temp2)+strlen("\n"));
+                                                                                                    strcat(codigo_intermediario_funcao, temp);
+                                                                                                    strcat(codigo_intermediario_funcao, "\n");
+                                                                                                    strcat(codigo_intermediario_funcao, temp2);
+
                                                                                                     printf("------------- Node da funcao -------------\n");
                                                                                                     simbolo* simbolo_encontrado = busca_simbolo_pelo_nome($2);
                                                                                                     simbolo_encontrado->numero_de_parametros = ($4.node)->numero_de_parametros;                                                                                                    
@@ -624,7 +635,15 @@ fundec:
                                                                                                     printf("fundec -> function id ( tyfields ) = exp\n"); 
                                                                                                 }
     | FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES DOIS_PONTOS type_id IGUAL exp {                                                                                                     
-                                                                                                    $$.node = inicializa_node($4.node, $7.node, $9.node, constroi_codigo_intermediario_fundec1());                                                                                                  
+                                                                                                    $$.node = inicializa_node($4.node, $7.node, $9.node, constroi_codigo_intermediario_fundec1()); 
+                                                                                                    
+                                                                                                    char* temp = get_copia_string(codigo_intermediario_funcao);
+                                                                                                    char* temp2 = get_copia_string(monta_codigo_intermediario_da_arvore($9.node));                                                                                                    
+                                                                                                    codigo_intermediario_funcao = (char*)malloc(strlen(temp)+strlen(temp2)+strlen("\n"));
+                                                                                                    strcat(codigo_intermediario_funcao, temp);
+                                                                                                    strcat(codigo_intermediario_funcao, "\n");
+                                                                                                    strcat(codigo_intermediario_funcao, temp2);
+                                                                                                    
                                                                                                     printf("------------- Node da funcao -------------\n");
                                                                                                     simbolo* simbolo_encontrado = busca_simbolo_pelo_nome($2);
                                                                                                     simbolo_encontrado->numero_de_parametros = ($4.node)->numero_de_parametros;
@@ -720,8 +739,8 @@ void printCode(char* filename){
 void escreveErro(){
     // if(erroEncontrado){
         printf("\nNome do arquivo: %s\n",arquivo);
-        printf("Linha: %d\n",linha);
-        printf("Caractere: %d\n",caractere);
+        printf("Linha: %d\n",linhaAtual);
+        // printf("Caractere: %d\n",caractere);
         printf("\nANALISE SEMANTICA: ERRO!\n");
         printf("\n==================================================================\n");
         exit(1);
@@ -742,15 +761,16 @@ int main(int argc, char** argv) {
     }
 
     printf("Listagem do Codigo Intermediario:\n");
-    codigo_intermediario_final = monta_codigo_intermediario_da_arvore(raiz_da_arvore);
+    codigo_intermediario_final = monta_codigo_intermediario_da_arvore(raiz_da_arvore);   
 
     printf("\n%s\n", codigo_intermediario_final);
+    printf("\n%s\n", codigo_intermediario_funcao);
     printf("\nANALISE SEMANTICA: OK!\n");
     printf("\n==================================================================\n\n");
     
-    printf("TABELA DE SIMBOLOS:\n\n");    
-    imprime_tabela_simbolos();
-    printf("\n");  
+    // printf("TABELA DE SIMBOLOS:\n\n");    
+    // imprime_tabela_simbolos();
+    // printf("\n");  
 
     return 0;
 }

@@ -7,6 +7,7 @@
 */
 
 char* codigo_intermediario_final;
+char* codigo_intermediario_funcao = "\0";
 
 /*
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,7 +15,7 @@ char* codigo_intermediario_final;
 ////////////////////////////////////////////////////////////////////////////////
 */
     struct node {
-        char* codigo_abstrato;
+        char* codigo_funcao;
 		char* codigo_intermediario;
         struct node* node_filho1;
         struct node* node_filho2;
@@ -29,6 +30,7 @@ char* codigo_intermediario_final;
 	};
 
     struct node* raiz_da_arvore; /* raiz da arvore */
+    struct node* raiz_da_arvore_funcoes; /* raiz da arvore */
 
 /*
 ////////////////////////////////////////////////////////////////////////////////
@@ -50,6 +52,20 @@ char* codigo_intermediario_final;
         return 1;
     }
 
+    int aponta_raiz_da_arvore_funcoes(struct node* node_raiz_candidato){
+        if(!node_raiz_candidato){ /* verifica se o node candidato e nulo */
+            printf("Este node nao pode ser a raiz da arvore");
+            return 0;
+        }
+
+        /* 
+            A raiz da arvore recebe o endereco do node candidato,
+            iniciando assim a arvore.
+        */
+        raiz_da_arvore_funcoes = node_raiz_candidato;
+        return 1;
+    }
+
     struct node* inicializa_node(struct node* node_filho1, struct node *node_filho2, struct node *node_filho3, char* codigo_intermediario) {
         struct node* novo_node = (struct node*) malloc(sizeof(struct node));
         
@@ -58,12 +74,6 @@ char* codigo_intermediario_final;
         novo_node->node_filho3 = node_filho3;
         /* Foi feita uma copia para evitar que o novo node aponte para a mesma memoria do parametro "codigo_intermediario" */
         novo_node->codigo_intermediario = get_copia_string(codigo_intermediario);
-
-        // printf("\n[    node pai: %s - %s ]\n", novo_node->codigo_intermediario, novo_node->tipo);
-        // if(novo_node->node_filho1) printf("[ node filho1: %s - %s ]\n", novo_node->node_filho1->codigo_intermediario, novo_node->node_filho1->tipo);
-        // if(novo_node->node_filho2) printf("[ node filho2: %s - %s ]\n", novo_node->node_filho2->codigo_intermediario, novo_node->node_filho2->tipo);
-        // if(novo_node->node_filho3) printf("[ node filho3: %s - %s ]\n", novo_node->node_filho3->codigo_intermediario, novo_node->node_filho3->tipo);
-
         return novo_node;
     }
 
@@ -123,17 +133,6 @@ char* codigo_intermediario_final;
         node->codigo_intermediario = codigo_intermediario_da_sub_arvore_com_parametro;
     }
 
-    void teste(struct node* node, char* nome_do_parametro, char* codigo_intermediario){
-        char* codigo_intermediario_da_sub_arvore_com_parametro = replaceWord(
-                                                                                node->codigo_intermediario, 
-                                                                                nome_do_parametro,
-                                                                                "EXP(CONST 0)"
-                                                                            );
-
-        free(node->codigo_intermediario);
-        node->codigo_intermediario = codigo_intermediario_da_sub_arvore_com_parametro;
-    }
-
     char* monta_codigo_intermediario_da_arvore(struct node* sub_arvore){
         if(sub_arvore->node_filho1){
             char* codigo_intermediario_do_node_filho = monta_codigo_intermediario_da_arvore(sub_arvore->node_filho1);
@@ -141,20 +140,13 @@ char* codigo_intermediario_final;
             substitui_parametro_por_codigo_intermediario_e_atribui_ao_node(sub_arvore, PARAMETRO1_CODIGO_INTERMEDIARIO, codigo_intermediario_do_node_filho);
             free(codigo_intermediario_do_node_filho);
         }
-        // else{
-        //     teste(sub_arvore, PARAMETRO1_CODIGO_INTERMEDIARIO, "EXP(CONST 0)"); 
-        // }
-
+       
         if(sub_arvore->node_filho2){
             char* codigo_intermediario_do_node_filho = monta_codigo_intermediario_da_arvore(sub_arvore->node_filho2);
        
             substitui_parametro_por_codigo_intermediario_e_atribui_ao_node(sub_arvore, PARAMETRO2_CODIGO_INTERMEDIARIO, codigo_intermediario_do_node_filho); 
             free(codigo_intermediario_do_node_filho);
         }
-        // else{
-            
-        //     teste(sub_arvore, PARAMETRO2_CODIGO_INTERMEDIARIO, "EXP(CONST 0)"); 
-        // }
 
         if(sub_arvore->node_filho3){
             char* codigo_intermediario_do_node_filho = monta_codigo_intermediario_da_arvore(sub_arvore->node_filho3);
@@ -162,10 +154,7 @@ char* codigo_intermediario_final;
             substitui_parametro_por_codigo_intermediario_e_atribui_ao_node(sub_arvore, PARAMETRO3_CODIGO_INTERMEDIARIO, codigo_intermediario_do_node_filho);
             free(codigo_intermediario_do_node_filho);
         }
-        // else{
-        //     teste(sub_arvore, PARAMETRO3_CODIGO_INTERMEDIARIO, "EXP(CONST 0)"); 
-        // }
-        
+
         /* Foi feita uma copia para evitar que outros ponteiros de char apontem para sub_arvore->codigo_intermediario,
            facilitando a interpretacao da memoria usada e permitindo o uso de free() para desalocar memoria nao usada
            e evitar erros inesperados */        

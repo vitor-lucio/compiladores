@@ -141,6 +141,21 @@
         return NULL;
     }
 
+    struct simbolo* busca_ultimo_simbolo_com_esse_nome(char* nome){
+        struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
+        struct simbolo *aux = NULL;
+        
+        while(iterador != NULL){         
+            if(!strcmp(iterador->nome, nome)){
+                aux = iterador;
+            }
+            
+            iterador = iterador->next;
+        }
+        
+        return aux;
+    }
+
     struct simbolo* busca_simbolo_por_classe_e_nome_e_bloco(char* nome, char* classe,char* bloco){
         struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
         

@@ -1,5 +1,6 @@
 #include "tabela.c"
 
+ int linha = 0;
 /*
 ////////////////////////////////////////////////////////////////////////////////
     Funcoes de tratamento de erros
@@ -18,6 +19,11 @@
         escreveErro();
     }
 
+    void erro_de_nao_inteiro_em_expressoes(){
+        printf("\n==================================================================\n\n");
+        printf("**** Erro: Não é possível realizar essa operação para tipos diferentes de inteiro! ****\n");
+        escreveErro();
+    }
     
     void erro_de_tipagem_parametros_funcoes(){
 
@@ -59,10 +65,38 @@
 
     char* compara_e_define_um_tipo_binop(char* tipo_parametro_1, char* tipo_parametro_2){
         
-        if(strcmp(tipo_parametro_1, tipo_parametro_2))
-            erro_de_tipagem_em_expressoes();
+        char* string_tipo_1 = tipo_parametro_1;
+        char* string_tipo_2 = tipo_parametro_2;
         
-        return tipo_parametro_1; 
+        if(!eh_tipo_primitivo(tipo_parametro_1)){
+            string_tipo_1 = busca_tipo_recursivo_ate_valor_primitivo(tipo_parametro_1);
+        }
+            
+        if(!eh_tipo_primitivo(tipo_parametro_2)){
+            string_tipo_2 = busca_tipo_recursivo_ate_valor_primitivo(tipo_parametro_2);
+        }
+        
+        if(!strcmp(string_tipo_1, string_tipo_2)){
+            if(!strcmp(string_tipo_1, "int"))
+                return tipo_parametro_1;
+            else
+                erro_de_nao_inteiro_em_expressoes();
+        }            
+        
+        erro_de_tipagem_em_expressoes();
+    }
+  
+    char* testinho(char* nome_parametro_1, char* nome_parametro_2, char* tipo_parametro_1, char* tipo_parametro_2){
+        
+        simbolo* simbolo_param_1 = busca_ultimo_simbolo_com_esse_nome(nome_parametro_1);
+        simbolo* simbolo_param_2 = busca_ultimo_simbolo_com_esse_nome(nome_parametro_2);
+        
+        if(!simbolo_param_1 && !simbolo_param_2) 
+            return compara_e_define_um_tipo_binop(tipo_parametro_1, tipo_parametro_2);
+        if(!simbolo_param_1) return compara_e_define_um_tipo_binop(tipo_parametro_1, simbolo_param_2->tipo);
+        if(!simbolo_param_2) return compara_e_define_um_tipo_binop(simbolo_param_1->tipo, tipo_parametro_2);
+    
+        return compara_e_define_um_tipo_binop(simbolo_param_1->tipo, simbolo_param_2->tipo);
     }
 
     char* busca_tipo_recursivo_ate_valor_primitivo(char* tipo_inicial){

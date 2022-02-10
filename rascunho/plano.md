@@ -85,3 +85,4 @@
 - A produção de "type_id: VARIAVEL" busca simbolo apenas pelo nome, e as expressões usam o tipo desse simbolo para comparação de tipos, ou seja, a comparação de tipos das expressões não considera a classe da variável (foi necessario resolver isso na produção de função com tipo de retorno definido. Mas a solução foi feita apenas la, pois nao seria exatamente igual para outros casos)
 
 - Declaracao registro: ESEQ(SEQ(MOVE(TEMP t5,CALL(NAME initarray,CONST 0,CONST 2,"TODO")),EXP(CONST 0)),EXP(CONST 0))
+- Se em uma SEQ o parametro 2 for vazio, tirar o EXP(CONST 0) e fundir o parametro 1 dessa SEQ na SEQ anterior
