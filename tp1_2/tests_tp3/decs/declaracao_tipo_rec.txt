@@ -18,10 +18,6 @@ let
   var table2 : rec_arr3 := rec_arr3 [2] of rec_arr1 [2] of b [2] of 3              
   var table3 : rec_arr2 := rec_arr3 [2] of rec_arr1 [2] of rec_arr0 [2] of 3  
 
-   /* var table4 : rec_arr3 := rec_arr3 [2] of rec_arr1 [2] of rec_arr0 [2] of a [2] of 3  ERRO OK 
-    var table5 : rec_arr3 := rec_arr3 [2] of rec_arr1 [2] of 3                      ERRO OK 
-    var table6 : rec_arr3 := rec_arr3 [2] of rec_arr2 [2] of rec_arr0 [2] of 3          ERRO OK */
-
 in
  
 end

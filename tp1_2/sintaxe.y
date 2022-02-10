@@ -43,7 +43,8 @@
 exp:  
       exp MAIS exp                                                  {                                                            
                                                                         $$.node = inicializa_node($1.node, $3.node, NULL, constroi_codigo_intermediario_binop($2));
-                                                                        $$.node->tipo = compara_e_define_um_tipo(($1.node)->tipo, ($3.node)->tipo);                                                                        
+                                                                        $$.node->tipo = compara_e_define_um_tipo(($1.node)->tipo, ($3.node)->tipo); 
+                                                                        $$.node->nome = $$.node->tipo;                                                                     
                                                                         printf("exp -> exp + exp\n"); 
                                                                     } /* BINOP(MAIS, exp, exp) */
     | exp MENOS exp                                                 {
@@ -69,12 +70,14 @@ exp:
     | NUMERO                                                        {
                                                                         $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_const($1));
                                                                         $$.node->tipo = "int";
+                                                                        $$.node->nome = "int";
                                                                         $$.node->num_arrays = 0;
                                                                         printf("exp -> num\n");
                                                                     } /* CONST(NUMERO) */
     | STRING_CONSTANTE                                              { 
                                                                         $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_const($1));
                                                                         $$.node->tipo = "string";
+                                                                        $$.node->nome = "string";
                                                                         printf("exp -> string\n"); 
                                                                     } /* 'STRING_CONSTANTE' */
     | NIL                                                           { 
@@ -139,8 +142,25 @@ exp:
                                                                         printf("exp -> type-id { id = exp idexps }\n"); 
                                                                     }
     | type_id ABRE_COLCHETE exp FECHA_COLCHETE OF exp               { 
-                                                                        $$.node = inicializa_node($1.node, $3.node, $6.node, constroi_codigo_intermediario_call1());
                                                                         
+                                                                        simbolo* expr = busca_simbolo_por_classe_e_nome(($3.node)->nome, "variable");
+                                                                        if(expr){                                                                            
+                                                                            if(strcmp(expr->tipo, "int")){
+                                                                                printf("\n==================================================================\n\n"); 
+                                                                                printf("**** Erro: Tamanho do array deve ser do tipo inteiro! ****\n");
+                                                                                escreveErro();
+                                                                            }
+                                                                            $$.node = inicializa_node($1.node, $3.node, $6.node, constroi_codigo_intermediario_call3(expr->temp));
+                                                                        }else{
+                                                                            if(strcmp(($3.node)->nome, "int")){
+                                                                                printf("\n==================================================================\n\n"); 
+                                                                                printf("**** Erro: Tamanho do array deve ser do tipo inteiro! ****\n");
+                                                                                escreveErro();
+                                                                            }
+                                                                            $$.node = inicializa_node($1.node, $3.node, $6.node, constroi_codigo_intermediario_call1());
+                                                                        }
+
+
                                                                         if(strcmp(($1.node)->tipo, "array") && eh_tipo_primitivo(($1.node)->valor)){
                                                                             printf("\n==================================================================\n\n"); 
                                                                             printf("**** Erro: O tipo não é um array na atribuicao! ****\n");
@@ -520,8 +540,8 @@ vardec:
                                                                 printf("\n==================================================================\n\n");
                                                                 printf("**** Variavel \"%s\" ja foi declarado na tabela de simbolos ****\n", simbolo_encontrado->nome);
                                                                 escreveErro();
-                                                            }
-
+                                                            }                                                            
+                                                            
                                                             simbolo_encontrado = busca_simbolo_pelo_nome($2);
                                                             if(simbolo_encontrado == NULL){
                                                                 printf("\n==================================================================\n\n");
@@ -529,23 +549,20 @@ vardec:
                                                                 escreveErro();
                                                             }
                                                             
-                                                            if(simbolo_encontrado){
-                                                                $$.node = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_vardec1(simbolo_encontrado->temp));                                                        
-                                                            }else{
-                                                                $$.node = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_vardec1(pega_ultimo_temp_de_todos()));  
-                                                            }
                                                             /*
                                                                 Verifica se precisamos atualizar um simbolo existente,
                                                                 ou criar outro (em casos onde o simbolo existente é de outra classe)
                                                             */
 
                                                             if(!strcmp(simbolo_encontrado->classe, "?")){
-                                                                atualiza_simbolo(simbolo_encontrado, busca_e_define_tipo(($4.node)->tipo), CLASSE_VARIAVEL);
+                                                                atualiza_simbolo(simbolo_encontrado, busca_e_define_tipo(($4.node)->tipo), CLASSE_VARIAVEL);                                                                
+                                                                $$.node = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_vardec1(simbolo_encontrado->temp));                                                        
                                                             }
                                                             else{
                                                                 struct simbolo* novo_simbolo = inicializa_simbolo(simbolo_encontrado->nome, busca_e_define_tipo(($4.node)->tipo), "?", CLASSE_VARIAVEL, "?", "?");
                                                                 adiciona_simbolo_sem_verificacoes(novo_simbolo);
-                                                            }                                                                                                                                                                                                 
+                                                                $$.node = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_vardec1(novo_simbolo->temp));  
+                                                            }                                                                                                                                                                                   
 
                                                             printf("vardec -> var id := exp\n"); 
                                                         }
@@ -564,21 +581,18 @@ vardec:
                                                                 escreveErro();
                                                             }
 
-                                                            if(simbolo_encontrado){
-                                                                $$.node = inicializa_node($4.node, $6.node, NULL, constroi_codigo_intermediario_vardec2(simbolo_encontrado->temp));                                                        
-                                                            }else{
-                                                                $$.node = inicializa_node($4.node, $6.node, NULL, constroi_codigo_intermediario_vardec2(pega_ultimo_temp_de_todos()));  
-                                                            }
-
                                                             /*
                                                                 Verifica se precisamos atualizar um simbolo existente,
                                                                 ou criar outro (em casos onde o simbolo existente é de outra classe)
                                                             */
+                                                            
                                                             if(!strcmp(simbolo_encontrado->classe, "?")){
                                                                 atualiza_simbolo(simbolo_encontrado, compara_e_define_um_tipo(($4.node)->valor, ($6.node)->tipo), CLASSE_VARIAVEL);
+                                                                $$.node = inicializa_node($4.node, $6.node, NULL, constroi_codigo_intermediario_vardec2(simbolo_encontrado->temp));                                                        
                                                             }else{
                                                                 simbolo* novo_simbolo = inicializa_simbolo(simbolo_encontrado->nome, compara_e_define_um_tipo(($4.node)->valor, ($6.node)->tipo), "?", CLASSE_VARIAVEL, "?", "?");
                                                                 adiciona_simbolo_sem_verificacoes(novo_simbolo);
+                                                                $$.node = inicializa_node($4.node, $6.node, NULL, constroi_codigo_intermediario_vardec2(novo_simbolo->temp));  
                                                             }
                                                             /**/                                                                                                                           
                                                             if(pega_num_arrays_aninhados(($4.node)->valor,0) != pega_num_arrays_aninhados(($6.node)->tipo,0)){

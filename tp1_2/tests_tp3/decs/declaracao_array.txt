@@ -6,13 +6,13 @@ let
     type b = a
 
     type x = array of string
-    var x := 1
+    var x : int := 10
 
-    type c = b
+    type c = int
 
     type y = a 
     type z = y 
-
+    
     var arr1 : a := b [10] of 0
     
 in

@@ -593,6 +593,32 @@ char* codigo_intermediario_final;
         return codigo_intermediario;
     }
 
+    char* constroi_codigo_intermediario_call3(int temp){
+        char* codigo_intermediario = (char*) malloc(                                                       
+                                                        strlen("NAME initarray") 
+                                                        + strlen("TEMP t0")
+                                                        + strlen(PARAMETRO3_CODIGO_INTERMEDIARIO)
+                                                        + 16                                                                                                
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        char t[10];
+        sprintf(t,"%d",temp);
+        codigo_intermediario[0] = '\0';        
+        strcat(codigo_intermediario, "CALL(");
+        strcat(codigo_intermediario, "NAME initarray");
+        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, "CONST 0");
+        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, "TEMP t");
+        strcat(codigo_intermediario, t);
+        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, PARAMETRO3_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, ")");
+
+        return codigo_intermediario;
+    }
+
     char* constroi_codigo_intermediario_call2(){
         char* codigo_intermediario = (char*) malloc(                                                       
                                                         strlen(PARAMETRO1_CODIGO_INTERMEDIARIO) 

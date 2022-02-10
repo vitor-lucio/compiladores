@@ -5,7 +5,7 @@ let
   type rec_arr2 = rec_arr1
   type rec_arr3 = rec_arr2
 
-  var  table1 := rec_arr3 [2] of rec { val = 42 }
+  var table1 := rec_arr3 [2] of rec { val = 42 }
 
 in
  
