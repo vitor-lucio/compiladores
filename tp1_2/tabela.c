@@ -47,7 +47,6 @@
             }
             iterador = iterador->next;
         }
-        printf("OIEEE HAHA %d\n",iterador->temp);
         return iterador->temp+1;
     }
 
@@ -226,13 +225,13 @@
     void imprime_tabela_simbolos(){
         struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
         
-        printf("|    NOME   |    TIPO   |   VALOR   |   CLASSE  |   NIVEL   |   BLOCO   |  NUM DE PARAM  |");
-        printf("\nx-----------x-----------x-----------x-----------x-----------x-----------x----------------x");
+        printf("|    NOME   |    TIPO   |   VALOR   |   CLASSE  |   BLOCO   |  NUM DE PARAM  |");
+        printf("\nx-----------x-----------x-----------x-----------x-----------x----------------x");
         
         while(iterador != NULL){
-            printf("\n|%10s |%10s |%10s |%10s |%10s |%10s | %14d | t%d", iterador->nome, iterador->tipo, 
+            printf("\n|%10s |%10s |%10s |%10s |%10s | %14d | t%d", iterador->nome, iterador->tipo, 
                                                 iterador->valor, iterador->classe, 
-                                                iterador->nivel, iterador->bloco, iterador->numero_de_parametros, iterador->temp);
+                                                iterador->bloco, iterador->numero_de_parametros, iterador->temp);
             iterador = iterador->next;
         }
 

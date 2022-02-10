@@ -7,13 +7,15 @@
 */
 
     void erro_de_tipagem_em_atribuicoes(){
+        printf("\n==================================================================\n\n");
         printf("**** Erro: Tipo declarado difere do tipo esperado! ****\n");
-        exit(1);
+        escreveErro();
     }
 
     void erro_de_tipagem_em_expressoes(){
+        printf("\n==================================================================\n\n");
         printf("**** Erro: Não é possível realizar essa operação para tipos distintos! ****\n");
-        exit(1);
+        escreveErro();
     }
 
     
@@ -43,8 +45,9 @@
 
     void erro_simbolo_nulo_possivel_de_segfault(simbolo* simbolo_encontrado){
         if(simbolo_encontrado == NULL){
-            printf("#### Erro: Não encontrei esse símbolo! ####\n");
-            exit(1);
+            printf("\n==================================================================\n\n");
+            printf("**** Erro: Símbolo não declarado! ****\n");
+            escreveErro();
         }
     }
 

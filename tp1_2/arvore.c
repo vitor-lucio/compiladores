@@ -25,6 +25,7 @@ char* codigo_intermediario_final;
         char* nome;
         int num_arrays;
         int numero_de_parametros;
+        int dec;
 	};
 
     struct node* raiz_da_arvore; /* raiz da arvore */
@@ -339,17 +340,19 @@ char* codigo_intermediario_final;
         return codigo_intermediario;
     }
 
-    char* constroi_codigo_intermediario_vardec2(){
+    char* constroi_codigo_intermediario_vardec2(int temp){
         char* codigo_intermediario = (char*) malloc(      
-                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)                                              
+                                                        strlen("TEMP t0")                                              
                                                         + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO) 
                                                         + 14 /* tamanho de: move(temp t2,) */
                                                         + 1 /* \0 da string, indicando seu fim em C */
                                                     );
-        
+        char t[10];
+        sprintf(t,"%d",temp);
         codigo_intermediario[0] = '\0';
         strcat(codigo_intermediario, "MOVE(");
-        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, "TEMP t");
+        strcat(codigo_intermediario, t);
         strcat(codigo_intermediario, ",");
         strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
         strcat(codigo_intermediario, ")");
@@ -357,7 +360,7 @@ char* codigo_intermediario_final;
         return codigo_intermediario;
     }
 
-    char* constroi_codigo_intermediario_vardec1(){
+    char* constroi_codigo_intermediario_vardec1(int temp){
         char* codigo_intermediario = (char*) malloc(      
                                                         strlen("TEMP t0")                                              
                                                         + strlen(PARAMETRO1_CODIGO_INTERMEDIARIO) 
@@ -365,9 +368,12 @@ char* codigo_intermediario_final;
                                                         + 1 /* \0 da string, indicando seu fim em C */
                                                     );
         
+        char t[10];
+        sprintf(t,"%d",temp);
         codigo_intermediario[0] = '\0';
         strcat(codigo_intermediario, "MOVE(");
-        strcat(codigo_intermediario, "TEMP t0");
+        strcat(codigo_intermediario, "TEMP t");
+        strcat(codigo_intermediario, t);
         strcat(codigo_intermediario, ",");
         strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
         strcat(codigo_intermediario, ")");
@@ -386,9 +392,23 @@ char* codigo_intermediario_final;
         codigo_intermediario[0] = '\0';
         strcat(codigo_intermediario, "SEQ(");
         strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
-        strcat(codigo_intermediario, ", ");
+        strcat(codigo_intermediario, ",");
         strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
         strcat(codigo_intermediario, ")");
+
+        return codigo_intermediario;
+    }
+
+    char* constroi_codigo_intermediario_decs1_vazio(){
+        char* codigo_intermediario = (char*) malloc(                                                       
+                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)                                               
+                                                        + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO)                       
+                                                        + 1 /* \0 da string, indicando seu fim em C */
+                                                    );
+        
+        codigo_intermediario[0] = '\0';
+        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
 
         return codigo_intermediario;
     }
@@ -514,7 +534,7 @@ char* codigo_intermediario_final;
         codigo_intermediario[0] = '\0';
         strcat(codigo_intermediario, "MOVE(");
         strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
-        strcat(codigo_intermediario, ", ");
+        strcat(codigo_intermediario, ",");
         strcat(codigo_intermediario, PARAMETRO3_CODIGO_INTERMEDIARIO);
 
         return codigo_intermediario;
@@ -552,7 +572,7 @@ char* codigo_intermediario_final;
 
     char* constroi_codigo_intermediario_call1(){
         char* codigo_intermediario = (char*) malloc(                                                       
-                                                        strlen(PARAMETRO1_CODIGO_INTERMEDIARIO) 
+                                                        strlen("NAME initarray") 
                                                         + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO)
                                                         + strlen(PARAMETRO3_CODIGO_INTERMEDIARIO)
                                                         + 16                                                                                                
@@ -561,7 +581,7 @@ char* codigo_intermediario_final;
         
         codigo_intermediario[0] = '\0';
         strcat(codigo_intermediario, "CALL(");
-        strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
+        strcat(codigo_intermediario, "NAME initarray");
         strcat(codigo_intermediario, ",");
         strcat(codigo_intermediario, "CONST 0");
         strcat(codigo_intermediario, ",");

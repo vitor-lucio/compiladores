@@ -12,6 +12,7 @@
     int erroEncontrado = 0;
     int linha = 0;
     int caractere = 0;
+    char* arquivo;
                                                                                                       
 %}
 
@@ -141,24 +142,28 @@ exp:
                                                                         $$.node = inicializa_node($1.node, $3.node, $6.node, constroi_codigo_intermediario_call1());
                                                                         
                                                                         if(strcmp(($1.node)->tipo, "array") && eh_tipo_primitivo(($1.node)->valor)){
-                                                                            printf("******** Erro: O tipo não é um array na atribuicao! ********\n");
-                                                                            exit(1);
+                                                                            printf("\n==================================================================\n\n"); 
+                                                                            printf("**** Erro: O tipo não é um array na atribuicao! ****\n");
+                                                                            escreveErro();
                                                                         }
                                                                         
                                                                         if(eh_tipo_primitivo(($6.node)->tipo) && strcmp(($6.node)->tipo, "array")){
                                                                             if(strcmp(busca_tipo_recursivo_ate_tipo_primitivo(($1.node)->valor), "array")){
-                                                                                printf("******** Erro: tipo a esquerda deveria ser um array! ********\n");
-                                                                                exit(1);
+                                                                                printf("\n==================================================================\n\n"); 
+                                                                                printf("**** Erro: tipo a esquerda deveria ser um array! ****\n");
+                                                                                escreveErro();
                                                                             }
 
                                                                             if(strcmp(busca_tipo_recursivo_ate_valor_primitivo(($1.node)->valor), ($6.node)->tipo)){
-                                                                                printf("******** Erro: tipo do array inválido! ********\n");
-                                                                                exit(1);
+                                                                                printf("\n==================================================================\n\n"); 
+                                                                                printf("**** Erro: tipo do array inválido! ****\n");
+                                                                                escreveErro();
                                                                             }
 
                                                                             if(pega_num_arrays_aninhados(($1.node)->valor, 0) > 1){
-                                                                                printf("******** Erro: quantidade de arrays diferentes3! ********\n");
-                                                                                exit(1);
+                                                                                printf("\n==================================================================\n\n"); 
+                                                                                printf("**** Erro: quantidade de arrays diferentes! ****\n");
+                                                                                escreveErro();
                                                                             }
 
                                                                             // printf("NUM DE ARRAYS: %s %d\n", ($1.node)->valor, pega_num_arrays_aninhados(($1.node)->valor, 0)-1); 
@@ -169,8 +174,9 @@ exp:
                                                                          
                                                                         }else{
                                                                             if(strcmp(busca_tipo_recursivo_ate_valor_primitivo(($1.node)->valor), busca_tipo_recursivo_ate_valor_primitivo(($6.node)->tipo))){
-                                                                                printf("******** Erro: tipos dos arrays não batem! ********\n");
-                                                                                exit(1);
+                                                                                printf("\n==================================================================\n\n"); 
+                                                                                printf("**** Erro: tipos dos arrays não batem! ****\n");
+                                                                                escreveErro();
                                                                             }else{
                                                                                 // printf("NUM DE ARRAYS: %s %d\n", ($1.node)->valor, pega_num_arrays_aninhados(($1.node)->valor, 0)-1); 
                                                                                 // printf("NUM DE ARRAYS: %s %d\n", ($6.node)->tipo, ($6.node)->num_arrays);                                                                               
@@ -178,8 +184,9 @@ exp:
                                                                                 if(pega_num_arrays_aninhados(($1.node)->valor, 0)-1 == ($6.node)->num_arrays){
                                                                                     $$.node->num_arrays = pega_num_arrays_aninhados(($1.node)->valor, 0);
                                                                                 }else{
-                                                                                    printf("******** Erro: quantidade de arrays diferentes2! ********\n");
-                                                                                    exit(1);
+                                                                                    printf("\n==================================================================\n\n"); 
+                                                                                    printf("**** Erro: quantidade de arrays diferentes! ****\n");
+                                                                                    escreveErro();
                                                                                 }
                                                                                 $$.node->tipo = ($1.node)->valor;
                                                                             }
@@ -332,13 +339,14 @@ tyfields:
                                                             
                                                             simbolo* simbolo_encontrado = busca_simbolo_por_classe_e_nome($1, CLASSE_PARAMETRO);
                                                             if(simbolo_encontrado){
-                                                                printf("******* Variavel \"%s\" ja foi declarado na tabela de simbolos, mas em outra funcao *******\n", simbolo_encontrado->nome);
+                                                                printf("**** Variavel \"%s\" ja foi declarada na tabela de simbolos, mas em outra funcao! ****\n", simbolo_encontrado->nome);
                                                             }
                                                             
                                                             simbolo_encontrado = busca_simbolo_pelo_nome($1);
                                                             if(simbolo_encontrado == NULL){
+                                                                printf("\n==================================================================\n\n");
                                                                 printf("######### tyfields: Valor NULL #########");
-                                                                exit(1);
+                                                                escreveErro();
                                                             }
                                                             /*
                                                                 Verifica se precisamos atualizar um simbolo existente,
@@ -369,18 +377,19 @@ tyfields1:
 
                                                                 simbolo* simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_PARAMETRO);
                                                                 if(simbolo_encontrado){
-                                                                    printf("******* Variavel \"%s\" ja foi declarado na tabela de simbolos, mas em outro bloco *******\n", simbolo_encontrado->nome);
+                                                                    printf("**** Variavel \"%s\" ja foi declarada na tabela de simbolos, mas em outro bloco! ****\n", simbolo_encontrado->nome);
                                                                 }
 
                                                                 simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, "var rec");
                                                                 if(simbolo_encontrado){
-                                                                    printf("******* Variavel \"%s\" ja foi declarado na tabela de simbolos, mas em outro bloco *******\n", simbolo_encontrado->nome);
+                                                                    printf("**** Variavel \"%s\" ja foi declarada na tabela de simbolos, mas em outro bloco! ****\n", simbolo_encontrado->nome);
                                                                 }
                                                                 
                                                                 simbolo_encontrado = busca_simbolo_pelo_nome($2);
                                                                 if(simbolo_encontrado == NULL){
+                                                                    printf("\n==================================================================\n\n");
                                                                     printf("######### tyfields1: Valor NULL #########\n");
-                                                                    exit(1);
+                                                                    escreveErro();
                                                                 }
                                                                 /*
                                                                     Verifica se precisamos atualizar um simbolo existente,
@@ -417,18 +426,19 @@ ty:
 
                                                                             simbolo* simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_PARAMETRO);
                                                                             if(simbolo_encontrado){
-                                                                                printf("******* Variavel \"%s\" ja foi declarado na tabela de simbolos, mas em outro bloco *******\n", simbolo_encontrado->nome);
+                                                                                printf("**** Variavel \"%s\" ja foi declarada na tabela de simbolos, mas em outro bloco! ****\n", simbolo_encontrado->nome);
                                                                             }
 
                                                                             simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, "var rec");
                                                                             if(simbolo_encontrado){
-                                                                                printf("******* Variavel \"%s\" ja foi declarado na tabela de simbolos, mas em outro bloco *******\n", simbolo_encontrado->nome);
+                                                                                printf("**** Variavel \"%s\" ja foi declarada na tabela de simbolos, mas em outro bloco! ****\n", simbolo_encontrado->nome);
                                                                             }
                                                                             
                                                                             simbolo_encontrado = busca_simbolo_pelo_nome($2);
                                                                             if(simbolo_encontrado == NULL){
+                                                                                printf("\n==================================================================\n\n");
                                                                                 printf("######### ty: Valor NULL #########\n");
-                                                                                exit(1);
+                                                                                escreveErro();
                                                                             }
                                                                             /*
                                                                                 Verifica se precisamos atualizar um simbolo existente,
@@ -459,14 +469,16 @@ tydec:
                                                             
                                                             simbolo* simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_TIPO);
                                                             if(simbolo_encontrado){
-                                                                printf("******* Tipo \"%s\" ja foi declarado na tabela de simbolos *******\n", simbolo_encontrado->nome);
-                                                                exit(1);
+                                                                printf("\n==================================================================\n\n");
+                                                                printf("**** Tipo \"%s\" ja foi declarado na tabela de simbolos! ****\n", simbolo_encontrado->nome);
+                                                                escreveErro();
                                                             }
                                                             
                                                             simbolo_encontrado = busca_simbolo_pelo_nome($2);
                                                             if(simbolo_encontrado == NULL){
+                                                                printf("\n==================================================================\n\n");
                                                                 printf("######### tydec: Valor NULL #########");
-                                                                exit(1);
+                                                                escreveErro();
                                                             }
                                                             /*
                                                                 Verifica se precisamos atualizar um simbolo existente,
@@ -501,24 +513,32 @@ tydec:
 
 /**/
 vardec: 
-      VAR VARIAVEL ATRIBUICAO exp                       { 
-                                                            $$.node  = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_vardec1());
+      VAR VARIAVEL ATRIBUICAO exp                       {                                                             
                                                             printf("------------- Node da declaracao de variavel -------------\n");
                                                             struct simbolo *simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_VARIAVEL);
                                                             if(simbolo_encontrado){
-                                                                printf("******* Variavel \"%s\" ja foi declarado na tabela de simbolos *******\n", simbolo_encontrado->nome);
-                                                                exit(1);
+                                                                printf("\n==================================================================\n\n");
+                                                                printf("**** Variavel \"%s\" ja foi declarado na tabela de simbolos ****\n", simbolo_encontrado->nome);
+                                                                escreveErro();
                                                             }
 
                                                             simbolo_encontrado = busca_simbolo_pelo_nome($2);
                                                             if(simbolo_encontrado == NULL){
+                                                                printf("\n==================================================================\n\n");
                                                                 printf("######### vardec: Valor NULL #########");
-                                                                exit(1);
+                                                                escreveErro();
+                                                            }
+                                                            
+                                                            if(simbolo_encontrado){
+                                                                $$.node = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_vardec1(simbolo_encontrado->temp));                                                        
+                                                            }else{
+                                                                $$.node = inicializa_node($4.node, NULL, NULL, constroi_codigo_intermediario_vardec1(pega_ultimo_temp_de_todos()));  
                                                             }
                                                             /*
                                                                 Verifica se precisamos atualizar um simbolo existente,
                                                                 ou criar outro (em casos onde o simbolo existente é de outra classe)
                                                             */
+
                                                             if(!strcmp(simbolo_encontrado->classe, "?")){
                                                                 atualiza_simbolo(simbolo_encontrado, busca_e_define_tipo(($4.node)->tipo), CLASSE_VARIAVEL);
                                                             }
@@ -530,19 +550,26 @@ vardec:
                                                             printf("vardec -> var id := exp\n"); 
                                                         }
     | VAR VARIAVEL DOIS_PONTOS type_id ATRIBUICAO exp   {  
-                                                            $$.node = inicializa_node($4.node, $6.node, NULL, constroi_codigo_intermediario_vardec2());
                                                             printf("------------- Node da declaracao de variavel -------------\n");
                                                             simbolo *simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_VARIAVEL);
                                                             if(simbolo_encontrado){
-                                                                printf("******* Variavel \"%s\" ja foi declarado na tabela de simbolos *******\n", simbolo_encontrado->nome);
-                                                                exit(1);
+                                                                printf("**** Variavel \"%s\" ja foi declarado na tabela de simbolos! ****\n", simbolo_encontrado->nome);
+                                                                escreveErro();
                                                             }
 
                                                             simbolo_encontrado = busca_simbolo_pelo_nome($2);
                                                             if(simbolo_encontrado == NULL){
+                                                                printf("\n==================================================================\n\n");
                                                                 printf("######### vardec: Valor NULL #########");
-                                                                exit(1);
+                                                                escreveErro();
                                                             }
+
+                                                            if(simbolo_encontrado){
+                                                                $$.node = inicializa_node($4.node, $6.node, NULL, constroi_codigo_intermediario_vardec2(simbolo_encontrado->temp));                                                        
+                                                            }else{
+                                                                $$.node = inicializa_node($4.node, $6.node, NULL, constroi_codigo_intermediario_vardec2(pega_ultimo_temp_de_todos()));  
+                                                            }
+
                                                             /*
                                                                 Verifica se precisamos atualizar um simbolo existente,
                                                                 ou criar outro (em casos onde o simbolo existente é de outra classe)
@@ -555,8 +582,9 @@ vardec:
                                                             }
                                                             /**/                                                                                                                           
                                                             if(pega_num_arrays_aninhados(($4.node)->valor,0) != pega_num_arrays_aninhados(($6.node)->tipo,0)){
-                                                                printf("******** Erro: quantidade de arrays diferentes2! ********\n");
-                                                                exit(1);
+                                                                printf("\n==================================================================\n\n");
+                                                                printf("**** Erro: quantidade de arrays diferentes! ****\n");
+                                                                escreveErro();
                                                             }
 
                                                             printf("vardec -> var id : type-id := exp\n");
@@ -574,8 +602,9 @@ fundec:
                                                                                                     atualiza_simbolo(simbolo_encontrado, "void", CLASSE_FUNCAO);      
                                                                                                    
                                                                                                     if(!procura_parametros_da_funcao_na_arvore(simbolo_encontrado, $7.node)){
+                                                                                                        printf("\n==================================================================\n\n");
                                                                                                         printf("**** Erro: funcao %s, chama simbolos invalidos! ****\n", $2);                                                                                                   
-                                                                                                        exit(1);
+                                                                                                        escreveErro();
                                                                                                     }
 
                                                                                                     printf("fundec -> function id ( tyfields ) = exp\n"); 
@@ -607,8 +636,9 @@ fundec:
                                                                                                     atualiza_simbolo(simbolo_encontrado, compara_e_define_um_tipo(($7.node)->valor, tipo_da_exp), CLASSE_FUNCAO);                                                                                                                              
                                                                                                     
                                                                                                     if(!procura_parametros_da_funcao_na_arvore(simbolo_encontrado, $9.node)){
+                                                                                                        printf("\n==================================================================\n\n");                                                                                                        
                                                                                                         printf("**** Erro: funcao %s, chama simbolos invalidos! ****\n", $2);                                                                                                   
-                                                                                                        exit(1);
+                                                                                                        escreveErro();
                                                                                                     }
 
                                                                                                     printf("fundec -> function id ( tyfields ) : type-id = exp\n"); 
@@ -617,12 +647,20 @@ fundec:
 
 /**/
 decs: 
-      dec decs          { 
-                            $$.node = inicializa_node($1.node, $2.node, NULL, constroi_codigo_intermediario_decs1()); 
+      dec decs          {   
+                            // if(($2.node)->node_filho2)
+                            //     if(($2.node)->dec == -1){
+                            //         $$.node = inicializa_node($1.node, $2.node, NULL, constroi_codigo_intermediario_decs1());
+                            //     }
+                            if(($1.node)->dec)
+                                $$.node = inicializa_node($1.node, $2.node, NULL, constroi_codigo_intermediario_decs1_vazio()); 
+                            else
+                                $$.node = inicializa_node($1.node, $2.node, NULL, constroi_codigo_intermediario_decs1()); 
                             printf("decs -> dec decs\n"); 
                         }
     |                   { 
                             $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_decs2());
+                            $$.node->dec = -1;
                             printf("decs -> \n"); 
                         } /* Nenhum código intermediário neste nó */
     ;
@@ -631,14 +669,17 @@ decs:
 dec: 
       tydec         { 
                         $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_dec_tydec());
+                        $$.node->dec = 1;
                         printf("dec -> tydec\n"); 
                     }
     | vardec        { 
                         $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_dec_vardec());                                                           
+                        $$.node->dec = 0;
                         printf("dec -> vardec\n"); 
                     }
     | fundec        { 
                         $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_dec_fundec());                                                        
+                        $$.node->dec = 1;
                         printf("dec -> fundec\n"); 
                     }
     ;
@@ -662,9 +703,20 @@ void printCode(char* filename){
     fclose(code);
 }
 
+void escreveErro(){
+    // if(erroEncontrado){
+        printf("\nNome do arquivo: %s\n",arquivo);
+        printf("Linha: %d\n",linha);
+        printf("Caractere: %d\n",caractere);
+        printf("\nANALISE SEMANTICA: ERRO!\n");
+        printf("\n==================================================================\n");
+        exit(1);
+    // }
+}
+
 int main(int argc, char** argv) {
     inicializa_tabela_simbolos();
-
+    arquivo = argv[1];
     printCode(argv[1]);
 
     yyin = fopen(argv[1], "r" );
@@ -677,15 +729,6 @@ int main(int argc, char** argv) {
 
     printf("Listagem do Codigo Intermediario:\n");
     codigo_intermediario_final = monta_codigo_intermediario_da_arvore(raiz_da_arvore);
-
-    if(erroEncontrado){
-        printf("\nNome do arquivo: %s\n",argv[1]);
-        printf("Linha: %d\n",linha);
-        printf("Caractere: %d\n",caractere);
-        printf("\nANALISE SEMANTICA: ERRO!\n");
-        printf("\n==================================================================\n");
-        exit(1);
-    }
 
     printf("\n%s\n", codigo_intermediario_final);
     printf("\nANALISE SEMANTICA: OK!\n");

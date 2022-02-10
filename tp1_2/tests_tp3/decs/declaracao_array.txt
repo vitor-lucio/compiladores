@@ -3,16 +3,17 @@ let
     var a := "asdasdasd"
     type a = array of int
 
+    type b = a
+
     type x = array of string
     var x := 1
 
-    type b = a
     type c = b
 
     type y = a 
-    type z = y
+    type z = y 
 
-    var arr1 : a := z [10] of 0
+    var arr1 : a := b [10] of 0
     
 in
 
