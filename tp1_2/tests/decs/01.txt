@@ -1,0 +1,11 @@
+/* declaracao de variaveis com expressoes simples */
+
+let
+    var va : int := 1
+    var vb := 2 + va * 1
+    var vc := 3
+    var vd : string := "aaa"
+    var ve := vd    
+in
+    
+end

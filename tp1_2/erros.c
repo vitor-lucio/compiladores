@@ -8,19 +8,22 @@
 */
 
     void erro_de_tipagem_em_atribuicoes(){
-        printf("\n==================================================================\n\n");
+        printf("\n\nANALISE SINTATICA: OK!\n");    
+        printf("\n===========================================================================================\n\n");
         printf("**** Erro: Tipo declarado difere do tipo esperado! ****\n");
         escreveErro();
     }
 
     void erro_de_tipagem_em_expressoes(){
-        printf("\n==================================================================\n\n");
+        printf("\n\nANALISE SINTATICA: OK!\n"); 
+        printf("\n===========================================================================================\n\n");
         printf("**** Erro: Não é possível realizar essa operação para tipos distintos! ****\n");
         escreveErro();
     }
 
     void erro_de_nao_inteiro_em_expressoes(){
-        printf("\n==================================================================\n\n");
+        printf("\n\nANALISE SINTATICA: OK!\n"); 
+        printf("\n===========================================================================================\n\n");
         printf("**** Erro: Não é possível realizar essa operação para tipos diferentes de inteiro! ****\n");
         escreveErro();
     }
@@ -51,7 +54,8 @@
 
     void erro_simbolo_nulo_possivel_de_segfault(simbolo* simbolo_encontrado){
         if(simbolo_encontrado == NULL){
-            printf("\n==================================================================\n\n");
+            printf("\n\nANALISE SINTATICA: OK!\n"); 
+            printf("\n===========================================================================================\n\n");
             printf("**** Erro: Símbolo não declarado! ****\n");
             escreveErro();
         }

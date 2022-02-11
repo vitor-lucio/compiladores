@@ -1,15 +1,11 @@
-let
+/* declaracoes de tipos */
 
+let
     type a = int
     type b = a
     type c = array of a
 
     type list = { first: int,  second : b, rest: list }
-
-    var x : list := 2
-    var y : b := "aaa"
-    var z : a := "aaa"
-
 in
 
 end

@@ -1,5 +1,6 @@
-let
+/* declaracoes de tipos recursivos e arrays recursivos */
 
+let
   type a = int
   type b = array of int 
   
@@ -17,7 +18,6 @@ let
   var table1 : a := x
   var table2 : rec_arr3 := rec_arr3 [2] of rec_arr1 [2] of b [2] of 3              
   var table3 : rec_arr2 := rec_arr3 [2] of rec_arr1 [2] of rec_arr0 [2] of 3  
-
 in
  
 end

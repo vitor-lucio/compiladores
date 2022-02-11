@@ -123,7 +123,7 @@
                                     if(!eh_tipo_primitivo(yytext)){
                                         struct simbolo* novo_simbolo = inicializa_simbolo(yytext, "?", "?", "?", "?", "?");
                                         adiciona_simbolo(novo_simbolo);
-                                        imprime_tabela_simbolos();                                        
+                                        // imprime_tabela_simbolos();                                        
                                     }
                                     
                                     return VARIAVEL;

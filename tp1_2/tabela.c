@@ -187,6 +187,7 @@
         }
         
         return aux;
+        // return NULL;
 
 
     }
@@ -225,11 +226,11 @@
             tabela_simbolos.primeiro_elemento = s;
             tabela_simbolos.primeiro_elemento->next = NULL;
             tabela_simbolos.tamanho++;
-            printf("\nSIMBOLO ADICIONADO: %s %s\n", tabela_simbolos.primeiro_elemento->nome, tabela_simbolos.primeiro_elemento->tipo);
+            // printf("\nSIMBOLO ADICIONADO: %s %s\n", tabela_simbolos.primeiro_elemento->nome, tabela_simbolos.primeiro_elemento->tipo);
         }else{
 
             if(busca_simbolo(s)){
-                printf("\nSIMBOLO %s JA EXISTE!\n", s->nome);
+                // printf("\nSIMBOLO %s JA EXISTE!\n", s->nome);
                 return;
             }
 
@@ -242,7 +243,7 @@
             iterador->next = s;
             iterador->next->next = NULL;
             tabela_simbolos.tamanho++;
-            printf("\nSIMBOLO ADICIONADO: %s %s\n", iterador->next->nome, iterador->next->tipo);
+            // printf("\nSIMBOLO ADICIONADO: %s %s\n", iterador->next->nome, iterador->next->tipo);
         }
     }
 
@@ -251,7 +252,7 @@
             tabela_simbolos.primeiro_elemento = s;
             tabela_simbolos.primeiro_elemento->next = NULL;
             tabela_simbolos.tamanho++;
-            printf("\nSIMBOLO ADICIONADO: %s %s\n", tabela_simbolos.primeiro_elemento->nome, tabela_simbolos.primeiro_elemento->tipo);
+            // printf("\nSIMBOLO ADICIONADO: %s %s\n", tabela_simbolos.primeiro_elemento->nome, tabela_simbolos.primeiro_elemento->tipo);
         }else{
 
             struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
@@ -263,7 +264,7 @@
             iterador->next = s;
             iterador->next->next = NULL;
             tabela_simbolos.tamanho++;
-            printf("\nSIMBOLO ADICIONADO: %s %s\n", iterador->next->nome, iterador->next->tipo);
+            // printf("\nSIMBOLO ADICIONADO: %s %s\n", iterador->next->nome, iterador->next->tipo);
         }
     }
 
@@ -275,15 +276,21 @@
     void imprime_tabela_simbolos(){
         struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
         
-        printf("|    NOME   |    TIPO   |   VALOR   |   CLASSE  |   BLOCO   |  NUM DE PARAM  |");
-        printf("\nx-----------x-----------x-----------x-----------x-----------x----------------x");
+        printf("|    NOME   |    TIPO   |   VALOR   |   CLASSE  |   BLOCO   |  NUM DE PARAM  |  ROTULO  |");
+        printf("\nx-----------x-----------x-----------x-----------x-----------x----------------x----------x");
         
         while(iterador != NULL){
-            // if(strcmp(iterador->nome,"-"))
-                printf("\n|%10s |%10s |%10s |%10s |%10s | %14d | t%d  L%d", iterador->nome, iterador->tipo, 
+            // if(strcmp(iterador->nome,"-"))                    t%d  L%d    
+                printf("\n|%10s |%10s |%10s |%10s |%10s | %14d |", iterador->nome, iterador->tipo, 
                                                     iterador->valor, iterador->classe, 
-                                                    iterador->bloco, iterador->numero_de_parametros, 
-                                                    iterador->temp, iterador->label);
+                                                    iterador->bloco, iterador->numero_de_parametros);
+                                                    // iterador->temp, iterador->label);
+                if(!strcmp(iterador->classe, CLASSE_VARIAVEL) || !strcmp(iterador->classe, CLASSE_PARAMETRO))
+                    printf("  %5s%-2d |", "t",iterador->temp);
+                else if(!strcmp(iterador->classe, CLASSE_FUNCAO))
+                    printf("  %5s%-2d |", "L",iterador->label);
+                else
+                    printf("  %7s |"," ");
             iterador = iterador->next;
         }
 
@@ -296,13 +303,13 @@
         while(iterador != NULL){
 
             if(!strcmp(iterador->classe,CLASSE_VARIAVEL)){
-                printf("Variavel '%s' esta associada a 't%d'.\n", iterador->nome, iterador->temp);
+                printf("%-10s %-10s esta associada a t%-2d\n", "Variavel", iterador->nome, iterador->temp);
             }
             if(!strcmp(iterador->classe,CLASSE_PARAMETRO)){
-                printf("Parametro '%s' esta associado a 't%d'.\n", iterador->nome, iterador->temp);
+                printf("%-10s %-10s esta associado a t%-2d\n", "Parametro", iterador->nome, iterador->temp);
             }
             if(!strcmp(iterador->classe,CLASSE_FUNCAO)){
-                printf("Funcao '%s' esta rotulada como 'L%d'.\n", iterador->nome, iterador->label);
+                printf("%-10s %-10s esta associada a L%-2d\n", "Funcao", iterador->nome, iterador->label);
             }
 
             iterador = iterador->next;

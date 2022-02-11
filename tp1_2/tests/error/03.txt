@@ -1,0 +1,7 @@
+/* Erro de tipagem na atribuicao de variaveis */
+
+let
+    var va : int := "a" + 5 * 2
+in
+    
+end

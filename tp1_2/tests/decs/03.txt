@@ -1,0 +1,14 @@
+/* declaracoes de funcoes com tipos recursivos e variaveis globais */
+
+let
+    type a = int
+    type b = a
+    type c = b  
+    type d = b
+
+    var x1 := 1
+    function soma(x1: int, x2: c, x4: int, x5: a) : int = x1 + x2 + x5
+    function mult(x6: int, x7: c, x8: int) = x6 + x7 + x8
+in
+
+end

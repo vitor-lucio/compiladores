@@ -1,20 +1,14 @@
-let
+/* declaracao de arrays com tipos recursivos e variaveis */
 
+let
     var a := "asdasdasd"
     type a = array of int
-
     type b = a
 
     type x = array of string
     var x : int := 10
-
-    type c = int
-
-    type y = a 
-    type z = y 
     
-    var arr1 : a := b [10] of 0
-    
+    var arr1 : a := b [x] of 0    
 in
 
 end

@@ -1,5 +1,6 @@
-let
+/* declaracao de funcoes com parametros de tipos globais */
 
+let
     type b = array of int
     var x5 : b := b [2] of 2
     
@@ -13,7 +14,6 @@ let
     function func2(x2: string, x3: int, x4: string) : b = x5
     function func3(x1: int, x2: int, x4: int, x5: int) : int = x4
     function func4(x2: string, x3: int, x4: c) : c = x4
-
 in
 
 end

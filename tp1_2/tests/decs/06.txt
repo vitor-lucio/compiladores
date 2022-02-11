@@ -1,10 +1,10 @@
-let
+/* declaracoes de tipos e variaveis com mesmo nome */
 
+let
     type a = int
     var a := 1
     var b : int := 1
     type b = a
-
 in
 
 end

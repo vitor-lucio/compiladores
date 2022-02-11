@@ -47,6 +47,10 @@ char PARAMETRO1_CODIGO_INTERMEDIARIO[] = "$parametro1";
 char PARAMETRO2_CODIGO_INTERMEDIARIO[] = "$parametro2";
 char PARAMETRO3_CODIGO_INTERMEDIARIO[] = "$parametro3";
 
+char PARAMETRO1_CODIGO_ABSTRATO[] = "$parametro1";
+char PARAMETRO2_CODIGO_ABSTRATO[] = "$parametro2";
+char PARAMETRO3_CODIGO_ABSTRATO[] = "$parametro3";
+
 char CLASSE_TIPO[] = "type";
 char CLASSE_VARIAVEL[] = "variable";
 char CLASSE_PARAMETRO[] = "parameter";
