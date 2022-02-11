@@ -370,11 +370,11 @@ char* codigo_intermediario_funcao = "\0";
                                                     );
         
         codigo_intermediario[0] = '\0';
-        strcat(codigo_intermediario, "ESEQ(");
+        strcat(codigo_intermediario, "ESEQ(\n ");
         strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
-        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, ",\n ");
         strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
-        strcat(codigo_intermediario, ")");
+        strcat(codigo_intermediario, "\n)");
 
         return codigo_intermediario;
     }
@@ -497,15 +497,15 @@ char* codigo_intermediario_funcao = "\0";
                                                         strlen(nome)                                              
                                                         + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO) 
                                                         + strlen(PARAMETRO1_CODIGO_INTERMEDIARIO) 
-                                                        + 9 /* tamanho de: move(temp t2,) */
+                                                        + 17 /* tamanho de: move(temp t2,) */
                                                         + 1 /* \0 da string, indicando seu fim em C */
                                                     );
         codigo_intermediario[0] = '\0';
         strcat(codigo_intermediario, "VarDec(");
         strcat(codigo_intermediario, nome);
-        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, ",\n   ");
         strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
-        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, ",\n   ");
         strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
         strcat(codigo_intermediario, ")");
 
@@ -537,13 +537,13 @@ char* codigo_intermediario_funcao = "\0";
         char* codigo_intermediario = (char*) malloc(      
                                                         strlen(nome)                                              
                                                         + strlen(PARAMETRO1_CODIGO_INTERMEDIARIO) 
-                                                        + 9 /* tamanho de: move(temp t2,) */
+                                                        + 13 /* tamanho de: move(temp t2,) */
                                                         + 1 /* \0 da string, indicando seu fim em C */
                                                     );
         codigo_intermediario[0] = '\0';
         strcat(codigo_intermediario, "VarDec(");
         strcat(codigo_intermediario, nome);
-        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, ",\n   ");
         strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
         strcat(codigo_intermediario, ")");
 
@@ -559,9 +559,9 @@ char* codigo_intermediario_funcao = "\0";
                                                     );
         
         codigo_intermediario[0] = '\0';
-        strcat(codigo_intermediario, "SEQ(");
+        strcat(codigo_intermediario, "SEQ(\n  ");
         strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
-        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, ",\n  ");
         strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
         strcat(codigo_intermediario, ")");
 
@@ -702,7 +702,7 @@ char* codigo_intermediario_funcao = "\0";
         char* codigo_intermediario = (char*) malloc(                                                       
                                                         strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)
                                                         + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO)
-                                                        + strlen("FieldList(,,)")        
+                                                        + strlen("FieldList(,\n   \n     ,)")        
                                                         + strlen(nome)                                             
                                                         + 1 /* \0 da string, indicando seu fim em C */
                                                     );
@@ -710,9 +710,9 @@ char* codigo_intermediario_funcao = "\0";
         codigo_intermediario[0] = '\0';
         strcat(codigo_intermediario, "Fieldlist(");
         strcat(codigo_intermediario, nome);
-        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, ",\n    ");
         strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
-        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, ",\n   ");
         strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
         strcat(codigo_intermediario, ")");
 
@@ -776,7 +776,7 @@ char* codigo_intermediario_funcao = "\0";
         char* codigo_intermediario = (char*) malloc(                                                       
                                                         strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)
                                                         + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO)
-                                                        + strlen("FieldList(,,)")        
+                                                        + strlen("FieldList(,\n   \n       ,)")        
                                                         + strlen(nome)                                             
                                                         + 1 /* \0 da string, indicando seu fim em C */
                                                     );
@@ -784,9 +784,9 @@ char* codigo_intermediario_funcao = "\0";
         codigo_intermediario[0] = '\0';
         strcat(codigo_intermediario, "Fieldlist(");
         strcat(codigo_intermediario, nome);
-        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, ",\n    ");
         strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
-        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, ",\n   ");
         strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
         strcat(codigo_intermediario, ")");
 
@@ -818,17 +818,17 @@ char* codigo_intermediario_funcao = "\0";
                                                         + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO)
                                                         +strlen(PARAMETRO3_CODIGO_INTERMEDIARIO) 
                                                         + strlen(nome) 
-                                                        + 6                                                   
+                                                        + 18                                                   
                                                         + 1 /* \0 da string, indicando seu fim em C */
                                                     );
         
         codigo_intermediario[0] = '\0';
         strcat(codigo_intermediario, nome);
-        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, ",\n   ");
         strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
-        strcat(codigo_intermediario, ", ");
+        strcat(codigo_intermediario, ",\n    ");
         strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
-        strcat(codigo_intermediario, ", ");
+        strcat(codigo_intermediario, ",\n    ");
         strcat(codigo_intermediario, PARAMETRO3_CODIGO_INTERMEDIARIO);
     }
 
@@ -857,17 +857,17 @@ char* codigo_intermediario_funcao = "\0";
                                                         +strlen(PARAMETRO2_CODIGO_INTERMEDIARIO) 
                                                         + strlen("void") 
                                                         + strlen(nome) 
-                                                        + 6                                                   
+                                                        + 10                                                  
                                                         + 1 /* \0 da string, indicando seu fim em C */
                                                     );
         
         codigo_intermediario[0] = '\0';
         strcat(codigo_intermediario, nome);
-        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, ",\n   ");
         strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
-        strcat(codigo_intermediario, ", ");
+        strcat(codigo_intermediario, ",\n    ");
         strcat(codigo_intermediario, "void");
-        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, ",\n    ");
         strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
 
         return codigo_intermediario;
@@ -1069,17 +1069,17 @@ char* codigo_intermediario_funcao = "\0";
         char* codigo_intermediario = (char*) malloc(                                                       
                                                         strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)  
                                                         + strlen(PARAMETRO2_CODIGO_INTERMEDIARIO) 
-                                                        +strlen("TypeRecord(Fieldlist(,,)")
+                                                        +strlen("TypeRecord(Fieldlist(,,)\n \n        \n     ")
                                                         + strlen(nome)
                                                         + 1 /* \0 da string, indicando seu fim em C */
                                                     );
         
         codigo_intermediario[0] = '\0';
-        strcat(codigo_intermediario, "TypeRecord(Fieldlist(");
+        strcat(codigo_intermediario, "TypeRecord(\n   Fieldlist(");
         strcat(codigo_intermediario, nome);
-        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, ",\n    ");
         strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
-        strcat(codigo_intermediario, ",");
+        strcat(codigo_intermediario, ",\n   ");
         strcat(codigo_intermediario, PARAMETRO2_CODIGO_INTERMEDIARIO);
         strcat(codigo_intermediario, ")");
 
@@ -1133,7 +1133,7 @@ char* codigo_intermediario_funcao = "\0";
     char* constroi_codigo_abstrato_tydec(char* nome){
         char* codigo_intermediario = (char*) malloc(                                                       
                                                         strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)   
-                                                        + strlen("TypeDec(,)\n  ")   
+                                                        + strlen("TypeDec(,)\n   ")   
                                                         +strlen(nome)                                                
                                                         + 1 /* \0 da string, indicando seu fim em C */
                                                     );
@@ -1163,12 +1163,12 @@ char* codigo_intermediario_funcao = "\0";
     char* constroi_codigo_abstrato_dec_fundec(){
         char* codigo_intermediario = (char*) malloc(                                                       
                                                         strlen(PARAMETRO1_CODIGO_INTERMEDIARIO)  
-                                                        + strlen("FunctionDec()")                                                    
+                                                        + strlen("FunctionDec()\n   ")                                                    
                                                         + 1 /* \0 da string, indicando seu fim em C */
                                                     );
         
         codigo_intermediario[0] = '\0';
-        strcat(codigo_intermediario, "FunctionDec(");
+        strcat(codigo_intermediario, "FunctionDec(\n   ");
         strcat(codigo_intermediario, PARAMETRO1_CODIGO_INTERMEDIARIO);
         strcat(codigo_intermediario, ")");
 

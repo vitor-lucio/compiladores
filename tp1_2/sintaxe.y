@@ -470,12 +470,12 @@ ty:
 
                                                                             simbolo* simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_PARAMETRO);
                                                                             if(simbolo_encontrado){
-                                                                                printf("**** Variavel \"%s\" ja foi declarada na tabela de simbolos, mas em outro bloco! ****\n", simbolo_encontrado->nome);
+                                                                                // printf("**** Variavel \"%s\" ja foi declarada na tabela de simbolos, mas em outro bloco! ****\n", simbolo_encontrado->nome);
                                                                             }
 
                                                                             simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, "var rec");
                                                                             if(simbolo_encontrado){
-                                                                                printf("**** Variavel \"%s\" ja foi declarada na tabela de simbolos, mas em outro bloco! ****\n", simbolo_encontrado->nome);
+                                                                                // printf("**** Variavel \"%s\" ja foi declarada na tabela de simbolos, mas em outro bloco! ****\n", simbolo_encontrado->nome);
                                                                             }
                                                                             
                                                                             simbolo_encontrado = busca_simbolo_pelo_nome($2);
@@ -558,7 +558,7 @@ vardec:
                                                             struct simbolo *simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_VARIAVEL);
                                                             if(simbolo_encontrado){
                                                                 printf("\n===========================================================================================\n\n");
-                                                                printf("**** Variavel \"%s\" ja foi declarado na tabela de simbolos ****\n", simbolo_encontrado->nome);
+                                                                // printf("**** Variavel \"%s\" ja foi declarado na tabela de simbolos ****\n", simbolo_encontrado->nome);
                                                                 escreveErro();
                                                             }                                                            
                                                             
