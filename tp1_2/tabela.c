@@ -18,6 +18,7 @@
         char* bloco;    
         int numero_de_parametros;
         int temp;
+        int label;
 
         struct simbolo *next;
         
@@ -142,6 +143,38 @@
     }
 
     struct simbolo* busca_ultimo_simbolo_com_esse_nome(char* nome){
+        // struct simbolo *iterador2 = tabela_simbolos.primeiro_elemento;
+        // struct simbolo *aux2 = NULL;
+        // int achei = 1;
+        
+        // while(iterador2 != NULL){         
+        //     if(!strcmp(iterador2->nome, "begin")){
+        //         aux2 = iterador2;                
+        //     }
+            
+        //     iterador2 = iterador2->next;
+        // }
+
+        // struct simbolo *aux_do_aux2 = NULL;
+        // if(aux2 != NULL){
+        //     aux_do_aux2 = aux2;
+        //     // printf("AU ENDIN AQ %s %d\n", aux2->nome, aux2->numero_de_parametros);
+        // // while(aux2 != NULL){
+        //     aux2 = aux2->next;
+        //     int n = aux2->numero_de_parametros;
+          
+        //     while(aux2->next != NULL && !strcmp(aux2->next->nome,nome)){
+        //         // if(i == n){
+        //             printf("OIAAAA %s\n", aux2->next->nome);
+        //             if(!strcmp(aux2->next->nome,nome)){
+                     
+        //                 return aux2->next;
+        //             }
+        //         // }
+        //         aux2 = aux2->next;
+        //     }
+        // }
+
         struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
         struct simbolo *aux = NULL;
         
@@ -154,6 +187,8 @@
         }
         
         return aux;
+
+
     }
 
     struct simbolo* busca_simbolo_por_classe_e_nome_e_bloco(char* nome, char* classe,char* bloco){
@@ -244,9 +279,32 @@
         printf("\nx-----------x-----------x-----------x-----------x-----------x----------------x");
         
         while(iterador != NULL){
-            printf("\n|%10s |%10s |%10s |%10s |%10s | %14d | t%d", iterador->nome, iterador->tipo, 
-                                                iterador->valor, iterador->classe, 
-                                                iterador->bloco, iterador->numero_de_parametros, iterador->temp);
+            // if(strcmp(iterador->nome,"-"))
+                printf("\n|%10s |%10s |%10s |%10s |%10s | %14d | t%d  L%d", iterador->nome, iterador->tipo, 
+                                                    iterador->valor, iterador->classe, 
+                                                    iterador->bloco, iterador->numero_de_parametros, 
+                                                    iterador->temp, iterador->label);
+            iterador = iterador->next;
+        }
+
+        printf("\n");
+    }
+
+    void imprime_tabela_rotulos(){
+        struct simbolo *iterador = tabela_simbolos.primeiro_elemento;
+        
+        while(iterador != NULL){
+
+            if(!strcmp(iterador->classe,CLASSE_VARIAVEL)){
+                printf("Variavel '%s' esta associada a 't%d'.\n", iterador->nome, iterador->temp);
+            }
+            if(!strcmp(iterador->classe,CLASSE_PARAMETRO)){
+                printf("Parametro '%s' esta associado a 't%d'.\n", iterador->nome, iterador->temp);
+            }
+            if(!strcmp(iterador->classe,CLASSE_FUNCAO)){
+                printf("Funcao '%s' esta rotulada como 'L%d'.\n", iterador->nome, iterador->label);
+            }
+
             iterador = iterador->next;
         }
 

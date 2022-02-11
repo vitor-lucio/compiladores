@@ -21,7 +21,10 @@
     void adiciona_simbolo(struct simbolo *s);
     void atualiza_simbolo(struct simbolo *s, char* tipo, char* classe);
     void imprime_tabela_simbolos();
+    void adiciona_simbolo_sem_verificacoes(struct simbolo*);
     int linhaAtual = -1;
+
+    int n_begins = 0;
 %}
 
 %x STRING COMENTARIO
@@ -92,7 +95,11 @@
 <INITIAL>"in"       {return IN;}
 <INITIAL>"end"      {return END;}
 <INITIAL>"var"      {return VAR;}
-<INITIAL>"function" {return FUNCTION;}
+<INITIAL>"function" {
+                        // struct simbolo* novo_simbolo2 = inicializa_simbolo("begin", "?", "?", "?", "?", "?");
+                        // adiciona_simbolo_sem_verificacoes(novo_simbolo2); 
+                        return FUNCTION;
+                    }
 <INITIAL>"array"    {return ARRAY;}
 <INITIAL>"of"       {return OF;}
 <INITIAL>"type"     {return TYPE;}
@@ -169,7 +176,7 @@
  */
 
 " " {}
-"\n" { linhaAtual++; printf("LI UM BARRA N %d\n", linhaAtual); }
+"\n" { linhaAtual++; }
 "\t" {}
 %%
 

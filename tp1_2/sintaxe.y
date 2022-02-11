@@ -13,6 +13,9 @@
   
     int caractere = 0;
     char* arquivo;
+
+    int labelAtual = 0;
+    // int close = 0;
                                                                                                       
 %}
 
@@ -253,8 +256,9 @@ exp:
 /* NOME DE TIPO ou VARIAVEL */
 type_id: 
       VARIAVEL  {   
-                    simbolo* simbolo_encontrado = busca_simbolo_pelo_nome($1);
+                    simbolo* simbolo_encontrado = busca_ultimo_simbolo_com_esse_nome($1);
                     if(simbolo_encontrado){
+                        printf("OLAAA\n");
                         $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_temp(simbolo_encontrado->temp));                                                        
                     }else{
                         $$.node = inicializa_node(NULL, NULL, NULL, constroi_codigo_intermediario_temp(pega_ultimo_temp_de_todos()));  
@@ -613,16 +617,26 @@ fundec:
       FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES IGUAL exp                     { 
                                                                                                     $$.node = inicializa_node($4.node, $7.node, NULL, constroi_codigo_intermediario_fundec2());
 
-                                                                                                    char* temp = get_copia_string(codigo_intermediario_funcao);
-                                                                                                    char* temp2 = get_copia_string(monta_codigo_intermediario_da_arvore($7.node));                                                                                                    
-                                                                                                    codigo_intermediario_funcao = (char*)malloc(strlen(temp)+strlen(temp2)+strlen("\n"));
-                                                                                                    strcat(codigo_intermediario_funcao, temp);
-                                                                                                    strcat(codigo_intermediario_funcao, "\n");
-                                                                                                    strcat(codigo_intermediario_funcao, temp2);
 
                                                                                                     printf("------------- Node da funcao -------------\n");
                                                                                                     simbolo* simbolo_encontrado = busca_simbolo_pelo_nome($2);
-                                                                                                    simbolo_encontrado->numero_de_parametros = ($4.node)->numero_de_parametros;                                                                                                    
+                                                                                                    simbolo_encontrado->numero_de_parametros = ($4.node)->numero_de_parametros;  
+                                                                                                    simbolo_encontrado->label = labelAtual;   
+                                                                                                    labelAtual++;
+                                                                                                      
+                                                                                                    char t[10];
+                                                                                                    sprintf(t,"%d",simbolo_encontrado->label);
+                                                                                                    char* temp = get_copia_string(codigo_intermediario_funcao);
+                                                                                                    char* temp2 = get_copia_string(monta_codigo_intermediario_da_arvore($7.node));                                                                                                    
+                                                                                                    codigo_intermediario_funcao = (char*)malloc(strlen(temp)+strlen(temp2)+strlen("\n")
+                                                                                                                                                +strlen("L:\n")+strlen(t));
+                                                                                                    strcat(codigo_intermediario_funcao, temp);
+                                                                                                    strcat(codigo_intermediario_funcao, "\n\nL");
+                                                                                                    strcat(codigo_intermediario_funcao, t);
+                                                                                                    strcat(codigo_intermediario_funcao, ":");
+                                                                                                    strcat(codigo_intermediario_funcao, "\n");
+                                                                                                    strcat(codigo_intermediario_funcao, temp2);
+                                                                                                    
                                                                                                     atualiza_classe_e_esc_simbolos_n_posicoes_a_frente(simbolo_encontrado, simbolo_encontrado->numero_de_parametros, "parameter");                                                                                                                        
                                                                                                     atualiza_simbolo(simbolo_encontrado, "void", CLASSE_FUNCAO);      
                                                                                                    
@@ -632,21 +646,36 @@ fundec:
                                                                                                         escreveErro();
                                                                                                     }
 
-                                                                                                    printf("fundec -> function id ( tyfields ) = exp\n"); 
+                                                                                                    printf("fundec -> function id ( tyfields ) = exp\n");  
+                                                                                                    // struct simbolo* novo_simbolo2 = inicializa_simbolo("end", "?", "?", "?", "?", "?");
+                                                                                                    // adiciona_simbolo_sem_verificacoes(novo_simbolo2);                                                                                                   
                                                                                                 }
     | FUNCTION VARIAVEL ABRE_PARENTESES tyfields FECHA_PARENTESES DOIS_PONTOS type_id IGUAL exp {                                                                                                     
                                                                                                     $$.node = inicializa_node($4.node, $7.node, $9.node, constroi_codigo_intermediario_fundec1()); 
                                                                                                     
-                                                                                                    char* temp = get_copia_string(codigo_intermediario_funcao);
-                                                                                                    char* temp2 = get_copia_string(monta_codigo_intermediario_da_arvore($9.node));                                                                                                    
-                                                                                                    codigo_intermediario_funcao = (char*)malloc(strlen(temp)+strlen(temp2)+strlen("\n"));
-                                                                                                    strcat(codigo_intermediario_funcao, temp);
-                                                                                                    strcat(codigo_intermediario_funcao, "\n");
-                                                                                                    strcat(codigo_intermediario_funcao, temp2);
                                                                                                     
                                                                                                     printf("------------- Node da funcao -------------\n");
                                                                                                     simbolo* simbolo_encontrado = busca_simbolo_pelo_nome($2);
                                                                                                     simbolo_encontrado->numero_de_parametros = ($4.node)->numero_de_parametros;
+                                                                                                    simbolo_encontrado->label = labelAtual;   
+                                                                                                    labelAtual++;
+                                                                                                      
+                                                                                                    char t[10];
+                                                                                                    sprintf(t,"%d",simbolo_encontrado->label);                                                                                                    
+                                                                                                    char* temp = get_copia_string(codigo_intermediario_funcao);
+                                                                                                    char* temp2 = get_copia_string(monta_codigo_intermediario_da_arvore($9.node));                                                                                                    
+                                                                                                    codigo_intermediario_funcao = (char*)malloc(strlen(temp)+strlen(temp2)+strlen("\n\n")
+                                                                                                                                                +strlen("L:\n")+strlen(t)+strlen("MOVE(TEMP rv,)"));
+
+                                                                                                    strcat(codigo_intermediario_funcao, temp);
+                                                                                                    strcat(codigo_intermediario_funcao, "\n\nL");
+                                                                                                    strcat(codigo_intermediario_funcao, t);
+                                                                                                    strcat(codigo_intermediario_funcao, ":");
+                                                                                                    strcat(codigo_intermediario_funcao, "\n");
+                                                                                                    strcat(codigo_intermediario_funcao, "MOVE(TEMP rv,");
+                                                                                                    strcat(codigo_intermediario_funcao, temp2);
+                                                                                                    strcat(codigo_intermediario_funcao, ")");
+                                                                                                    
                                                                                                     atualiza_classe_e_esc_simbolos_n_posicoes_a_frente(simbolo_encontrado, simbolo_encontrado->numero_de_parametros, "parameter");
                                                                                                     
                                                                                                     simbolo* simbolo_da_exp;
@@ -674,7 +703,9 @@ fundec:
                                                                                                         escreveErro();
                                                                                                     }
 
-                                                                                                    printf("fundec -> function id ( tyfields ) : type-id = exp\n"); 
+                                                                                                    printf("fundec -> function id ( tyfields ) : type-id = exp\n");  
+                                                                                                    // struct simbolo* novo_simbolo2 = inicializa_simbolo("end", "?", "?", "?", "?", "?");
+                                                                                                    // adiciona_simbolo_sem_verificacoes(novo_simbolo2);     
                                                                                                 }
     ;
 
@@ -710,9 +741,10 @@ dec:
                         $$.node->dec = 0;
                         printf("dec -> vardec\n"); 
                     }
-    | fundec        { 
+    | fundec        {                             
                         $$.node = inicializa_node($1.node, NULL, NULL, constroi_codigo_intermediario_dec_fundec());                                                        
-                        $$.node->dec = 1;
+                        $$.node->dec = 1;                        
+                                                                
                         printf("dec -> fundec\n"); 
                     }
     ;
@@ -760,17 +792,20 @@ int main(int argc, char** argv) {
         printf("\n==================================================================\n\n");
     }
 
-    printf("Listagem do Codigo Intermediario:\n");
+    printf("Listagem do Codigo Intermediario:\n\n");
+    imprime_tabela_rotulos();
+    printf("ANALISE SEMANTICA: OK!\n");
+
     codigo_intermediario_final = monta_codigo_intermediario_da_arvore(raiz_da_arvore);   
 
-    printf("\n%s\n", codigo_intermediario_final);
-    printf("\n%s\n", codigo_intermediario_funcao);
-    printf("\nANALISE SEMANTICA: OK!\n");
+    printf("\nnull:\n%s\n", codigo_intermediario_final);
+    printf("%s\n", codigo_intermediario_funcao);
     printf("\n==================================================================\n\n");
     
-    // printf("TABELA DE SIMBOLOS:\n\n");    
-    // imprime_tabela_simbolos();
-    // printf("\n");  
+    printf("TABELA DE SIMBOLOS:\n\n");    
+    imprime_tabela_simbolos();
+    printf("\n");  
+
 
     return 0;
 }
