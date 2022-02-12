@@ -1,0 +1,25 @@
+let
+    
+    type s = string
+    type c = s
+
+    var c : s := "aaa"
+
+    var a : int := 2 + 1 * 5
+    var b := 2 + a
+    
+    function sum (x1: int, x2: int) : int = x1 + x2 + b
+    function str (x1: string) = x1
+    
+    type rec0 = array of int
+    type rec1 = array of rec0
+    type rec2 = rec1
+
+    var x : rec2 := rec1 [b] of rec0 [10] of a 
+    
+    type list = { first: int, rest: list }
+    
+
+in
+    
+end

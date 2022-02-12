@@ -855,9 +855,8 @@ char* codigo_intermediario_funcao = "\0";
                                                        
                                                         strlen(PARAMETRO1_CODIGO_INTERMEDIARIO) 
                                                         +strlen(PARAMETRO2_CODIGO_INTERMEDIARIO) 
-                                                        + strlen("void") 
-                                                        + strlen(nome) 
-                                                        + 10                                                  
+                                                        + strlen("void\n   \n    \n    ") 
+                                                        + strlen(nome)                                                                                                         
                                                         + 1 /* \0 da string, indicando seu fim em C */
                                                     );
         

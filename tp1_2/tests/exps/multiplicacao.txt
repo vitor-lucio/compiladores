@@ -13,10 +13,7 @@ let
     var d : t4 := "bb"
     
     var x : int := a * b * 3
-
-    /* var y : int := a * b * c */
-    /* var z := c * d */
- 
+    
 in
 
 end

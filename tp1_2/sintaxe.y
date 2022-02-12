@@ -465,6 +465,7 @@ ty:
     | ABRE_CHAVES VARIAVEL DOIS_PONTOS type_id tyfields1 FECHA_CHAVES   {   
                                                                             $$.node = inicializa_node(constroi_codigo_abstrato_ty2($2),$4.node, $5.node, NULL, constroi_codigo_intermediario_ty2());                                                        
                                                                             // printf("------------- Node do corpo do record -------------\n");
+                                                                            
                                                                             $$.node->tipo = "record";
                                                                             $$.node->numero_de_parametros = ($5.node)->numero_de_parametros + 1;
 
@@ -489,8 +490,10 @@ ty:
                                                                                 ou criar outro (em casos onde o simbolo existente é de outra classe)
                                                                             */
                                                                             if(!strcmp(simbolo_encontrado->classe, "?")){
+                                                                                numero_do_param_atual++;
                                                                                 atualiza_simbolo(simbolo_encontrado, ($4.node)->valor, "var rec");
                                                                             }else{
+                                                                                numero_do_param_atual++;
                                                                                 simbolo* novo_simbolo = inicializa_simbolo(simbolo_encontrado->nome, ($4.node)->valor, "?", "var rec", "?", "?");
                                                                                 adiciona_simbolo_sem_verificacoes(novo_simbolo);
                                                                             }                                                                                                                          
@@ -508,7 +511,7 @@ ty:
 tydec: 
       TYPE VARIAVEL IGUAL ty                            { 
                                                             $$.node = inicializa_node(constroi_codigo_abstrato_tydec($2),$4.node, NULL, NULL, constroi_codigo_intermediario_tydec());
-                                                            
+                                                            numero_do_param_atual = 0;
                                                             simbolo* simbolo_encontrado = busca_simbolo_por_classe_e_nome($2, CLASSE_TIPO);
                                                             if(simbolo_encontrado){
                                                                 printf("\n===========================================================================================\n\n");
